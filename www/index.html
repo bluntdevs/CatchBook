@@ -67,7 +67,11 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .bgb,.bgm{position:absolute;inset:0;background-repeat:no-repeat}
 .bgb{background-size:cover;background-position:center;filter:blur(18px) brightness(.8);transform:scale(1.15)}
 .hbg,.pbg{overflow:hidden}
-#hdrQ{place-items:end center;background:rgba(0,0,0,.12)}
+#hdrQ{place-items:end center;background:transparent}
+#hdrQ .dbox{background:var(--card);background:color-mix(in srgb,var(--card) 62%,transparent);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);box-shadow:0 4px 18px rgba(0,0,0,.35)}
+#hdrQ .hint{margin:2px 0 6px}
+html.bgedit body>*:not(.top):not(.pbg):not(#hdrQ):not(#srcQ){visibility:hidden}
+.rng .off{opacity:.35}
 .rng label{display:grid;grid-template-columns:1fr auto 1fr}
 .rng label span:last-child{text-align:right}
 .rng .mid{color:var(--mute);font-size:.85em}
@@ -381,7 +385,7 @@ details.rd[open] summary::after{content:'▴'}
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
 <input type="file" id="phFile" accept="image/*" multiple hidden>
 <input type="file" id="hdrFile" accept="image/*" hidden>
-<div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"></div><label for="hdrX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"></div><label for="hdrPos"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div></div><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
+<div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"></div><label for="hdrX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"></div><label for="hdrPos"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div></div><p class="hint" id="hdrNo" hidden></p><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
@@ -548,18 +552,21 @@ var BGN={};
 function bgBox(k){return k==='hdr'?$('hbg'):$('pbg')}
 function bgLay(k){var h=bgGet(k),box=bgBox(k),n=BGN[k],m=box.querySelector('.bgm');if(!h||!n||box.hidden)return;
 var W=box.clientWidth,H=box.clientHeight;if(!W||!H)return;var ct=Math.min(W/n.w,H/n.h),cv=Math.max(W/n.w,H/n.h),z=(h.z==null?50:h.z)/100,sc=z<=.5?ct+(cv-ct)*z*2:cv*(1+(z-.5)*2);
-m.style.backgroundSize=Math.round(n.w*sc)+'px '+Math.round(n.h*sc)+'px';m.style.backgroundPosition=(h.x==null?50:h.x)+'% '+(h.y==null?50:h.y)+'%'}
+m.style.backgroundSize=Math.round(n.w*sc)+'px '+Math.round(n.h*sc)+'px';
+if(k===bgK&&!$('hdrQ').hidden){var fx=Math.abs(n.w*sc-W)<2,fy=Math.abs(n.h*sc-H)<2;[['hdrX',fx],['hdrPos',fy]].forEach(function(q){var r=$(q[0]).parentNode;r.classList.toggle('off',q[1]);r.previousElementSibling.classList.toggle('off',q[1])});
+$('hdrNo').hidden=!(fx||fy);$('hdrNo').textContent=fx||fy?'De foto vult nu precies de '+(fx?'breedte':'hoogte')+', dus '+(fx?'links/rechts':'hoger/lager')+' verschuiven heeft geen effect. Zoom wat in om dat ook te kunnen.':''}m.style.backgroundPosition=(h.x==null?50:h.x)+'% '+(h.y==null?50:h.y)+'%'}
 function bgApply(k){var h=bgGet(k),box=bgBox(k),on=function(v){box.hidden=!v;if(k==='hdr')$('top').classList.toggle('hasbg',v);else document.documentElement.classList.toggle('pagebg',v)};
 if(!h){on(false);return}pUrl(h.pid,function(u){if(!u){on(false);return}var im=new Image();im.onload=function(){BGN[k]={w:im.naturalWidth,h:im.naturalHeight};[].forEach.call(box.children,function(c){c.style.backgroundImage='url("'+u+'")'});on(true);bgLay(k)};im.src=u})}
 window.addEventListener('resize',function(){bgLay('hdr');bgLay('pbg')});
 function hdrShow(){bgApply('hdr');bgApply('pbg')}
-function bgDlg(k){bgK=k;var h=bgGet(k);$('hdrT').textContent=BG[k].t;$('hdrH').textContent=BG[k].h+' Ze wordt enkel op dit toestel bewaard.';$('hdrPick').textContent=h?'Andere foto kiezen':'Kies foto';$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(h){$('hdrPos').value=h.y==null?50:h.y;$('hdrX').value=h.x==null?50:h.x;$('hdrZ').value=h.z==null?50:h.z}$('hdrQ').hidden=false}
+function bgDlg(k){bgK=k;var h=bgGet(k);$('hdrT').textContent=BG[k].t;$('hdrH').textContent=BG[k].h+' Ze wordt enkel op dit toestel bewaard.';$('hdrPick').textContent=h?'Andere foto kiezen':'Kies foto';$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(h){$('hdrPos').value=h.y==null?50:h.y;$('hdrX').value=h.x==null?50:h.x;$('hdrZ').value=h.z==null?50:h.z}$('hdrNo').hidden=true;$('hdrQ').hidden=false;document.documentElement.classList.toggle('bgedit',!!h);if(h)bgLay(k)}
+function bgClose(){$('hdrQ').hidden=true;document.documentElement.classList.remove('bgedit')}
 $('hbgB').onclick=function(){bgDlg('hdr')};$('pbgB').onclick=function(){bgDlg('pbg')};
-$('hdrOk').onclick=function(){$('hdrQ').hidden=true};
-$('hdrPick').onclick=function(){$('hdrQ').hidden=true;pickSrc($('hdrFile'))};
+$('hdrOk').onclick=bgClose;
+$('hdrPick').onclick=function(){bgClose();pickSrc($('hdrFile'))};
 $('hdrFile').onchange=function(){var f=this.files[0],k=bgK;this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}var old=bgGet(k),pid=k+uid();pPut(pid,b);if(old){pDel(old.pid);delete PU[old.pid]}PU[pid]=URL.createObjectURL(b);bgSet(k,{pid:pid,x:50,y:50,z:50});bgApply(k)})};
 [['hdrPos','y'],['hdrX','x'],['hdrZ','z']].forEach(function(q){$(q[0]).oninput=function(){var k=bgK,h=bgGet(k);if(!h)return;var v=+this.value;if(v>=47&&v<=53&&v!==50){v=50;this.value=50}h[q[1]]=v;bgSet(k,h);bgLay(k)}});
-$('hdrDel').onclick=function(){var k=bgK,h=bgGet(k);if(h){pDel(h.pid);delete PU[h.pid]}bgSet(k,null);bgApply(k);$('hdrQ').hidden=true};
+$('hdrDel').onclick=function(){var k=bgK,h=bgGet(k);if(h){pDel(h.pid);delete PU[h.pid]}bgSet(k,null);bgApply(k);bgClose()};
 hdrShow();
 /* ---- weergave: thema en scherm aan ---- */
 function thGet(){try{return localStorage.getItem(KEY+'-theme')||'auto'}catch(e){return 'auto'}}
@@ -1006,7 +1013,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.4.0';
+var APP_VERSION='0.4.1';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
