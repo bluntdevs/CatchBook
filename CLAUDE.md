@@ -13,6 +13,7 @@ Persoonlijke vislogboek-app (vooral karpervissen) van Nicky. Communiceer in het 
 
 ## Stand van zaken (15 okt 2026)
 
+- Versie 0.4.0 (15 okt): voer als lijst + specificaties, wisknoppen, compacte stokken, lopende sessie met onderdelen, collage, camera/galerij-keuze, achtergrondfoto kopbalk én volledige pagina (beide houden), PR-labels + felicitatie, naam/kenmerken per vis (herkenning), notities in detail, snelle vangst onthoudt soort/stok, back-upherinnering na 7 dagen, thema Automatisch/Licht/Donker/Nacht (rood), scherm aan tijdens sessie. Nog niet gedaan: uitleg bij eerste opstart.
 - **`www/index.html` is de echte app** (PWA + bron voor Capacitor). `prototype/vislogboek.html` is de oude artifact-versie, enkel ter referentie.
 - `prototype/vislogboek.html` was de volledige, werkende app (één HTML-bestand, vanilla JS, geen frameworks). Gebouwd en getest als claude.ai-artifact. Dit is de bron voor de echte app.
 - Opslag in het prototype: `localStorage` (sleutel `vislogboek-v1`, `-steks`, `-locs`, `-bak`) en foto's in IndexedDB (`vislogboek`, store `p`). Back-up = JSON met sessies, steks en foto's (base64).
