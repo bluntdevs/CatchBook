@@ -282,6 +282,9 @@ details.acc[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 #shI{display:block;width:100%;border-radius:10px;margin-top:10px;aspect-ratio:4/5;background:var(--line);object-fit:cover}
 .pre{white-space:pre-wrap;margin:0}
 .legend .lg-hit{background:var(--hit)}.legend .lg-blank{background:var(--blank)}
+.ucb{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;background:repeating-linear-gradient(-45deg,var(--acc2) 0 8px,color-mix(in srgb,var(--acc2) 70%,#000) 8px 16px);color:#1b1400;font-family:system-ui,sans-serif;vertical-align:2px}.ucb.sm{font-size:.66rem;padding:1px 7px}
+.uc .ucb{margin-bottom:8px}.uc h3{margin:2px 0 4px}
+.nwc .nwv{font-weight:700;margin:10px 0 2px;color:var(--acc)}.nwc ul{margin:0;padding-left:20px}.nwc li{margin:3px 0}
 .skinbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.8rem;color:var(--mute);margin:-6px 0 10px}.skinbar .chip{padding:4px 10px;font-size:.8rem}
 .dbar h2{font-family:var(--fh)}
 .ldate{font-size:.85rem;font-weight:600;margin-top:1px;opacity:.9}
@@ -469,8 +472,9 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div id="logList"></div>
 <div class="g3 qa"><button type="button" class="ghost" data-fev="run">Misser</button><button type="button" class="ghost" data-fev="feed">Bijgevoerd</button><button type="button" class="ghost" data-fev="bait">Aas gewisseld</button></div>
 <button type="button" class="btn okb" data-conf="log">Bevestig</button></div></section>
-<section class="fs" data-sec="cond"><div class="fsh"><div><b>Omstandigheden</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="cond">Bewerk</button></div><div class="fb">
-<div class="sugbox" id="condTip" hidden><p><b>Sessie gestopt.</b><br><span class="hint">Vul de omstandigheden aan en tik op Bevestig om op te slaan. Later stelt de app hier automatisch het weer voor, zodat je enkel nog moet nakijken.</span></p></div>
+<section class="fs" data-sec="cond"><div class="fsh"><div><b>Omstandigheden</b> <span class="ucb sm">in opbouw</span><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="cond">Bewerk</button></div><div class="fb">
+<p class="hint ucl">In opbouw: binnenkort haalt de app het weer van tijdens je sessie automatisch op. Tot dan vul je het zelf in.</p>
+<div class="sugbox" id="condTip" hidden><p><b>Sessie gestopt.</b><br><span class="hint">Vul de omstandigheden aan en tik op Bevestig om op te slaan. </span></p></div>
 <div class="g2">
 <div><label for="wind">Windkracht</label><input id="wind" placeholder="bv. 3 Bft"></div>
 <div><label for="temp">Temperatuur (°C)</label><input type="text" inputmode="decimal" data-dec="1" autocomplete="off" id="temp"></div>
@@ -499,7 +503,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 
 <div id="det" hidden></div>
 <div id="vAna" hidden>
-<div class="empty">Analyse komt in de volgende stap: per locatie zien wanneer en onder welke condities je het best vangt.</div>
+<div class="sess uc"><span class="ucb">In opbouw</span><h3>Analyse</h3><p class="meta">Hier zie je straks per water en per stek wanneer en onder welke omstandigheden je het best vangt: uur van de dag, weer, luchtdruk, maan, aas en montage.</p><p class="hint">Hoe meer sessies je nu logt, hoe beter de analyse straks wordt.</p></div>
 </div>
 
 <div id="vBak" hidden>
@@ -526,7 +530,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <details class="acc sess" data-acc="set"><summary><span class="at">Alles wissen</span><span class="as">sessies, stekken en foto's</span></summary><div class="ab">
 <p class="meta">Wist alle sessies, stekken en foto's op dit toestel. Maak eerst een back-up als je iets wilt bewaren.</p><div class="row"><button class="ghost" id="wipe" style="color:var(--warn)">Alle gegevens wissen</button></div></div></details>
 <details class="acc sess" data-acc="set"><summary><span class="at">Over CatchBook</span><span class="as" id="appVer"></span></summary><div class="ab">
-<div class="row"><button class="ghost" id="updChk">Zoek naar update</button><button class="ghost" id="introB">Toon uitleg</button></div></div></details>
+<div class="row"><button class="ghost" id="updChk">Zoek naar update</button><button class="ghost" id="introB">Toon uitleg</button></div><div class="row"><button class="ghost" id="newsB">Wat is er nieuw?</button></div></div></details>
 </div>
 <div id="ed" class="ed" hidden><div class="edh"><b id="edT"></b><button type="button" class="ghost" id="edClr">Wis</button><button type="button" class="btn" id="edOk" style="width:auto">Klaar</button></div><div class="edb"><img id="edI" alt="Stekfoto"><div id="edM"></div></div></div>
 <div id="rn" class="dlg" hidden><div class="dbox"><b id="rnT">Naam wijzigen</b><label for="rnI">Nieuwe naam</label><input id="rnI" autocomplete="off"><p class="hint" id="rnH"></p><div class="pf"><button type="button" class="ghost" id="rnNo">Annuleer</button><button type="button" class="btn" id="rnYes">Wijzig</button></div></div></div>
@@ -544,6 +548,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
 <input type="file" id="phFile" accept="image/*" multiple hidden>
 <input type="file" id="hdrFile" accept="image/*" hidden>
+<div id="nw" class="dlg" hidden><div class="dbox"><h3 style="margin:0 0 6px">Wat is er nieuw?</h3><div id="nwC" class="nwc"></div><button type="button" class="btn" id="nwOk" style="margin-top:12px">Top, verder</button></div></div>
 <div id="intro" class="dlg" hidden><div class="dbox"><div id="inC"></div><div class="indots" id="inD"></div><div class="pf"><button type="button" class="ghost" id="inPrev">Vorige</button><button type="button" class="btn" id="inNext">Volgende</button></div><button type="button" class="lnkb" id="inSkip">Overslaan</button></div></div>
 <div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"></div><label for="hdrX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"></div><label for="hdrPos"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div></div><p class="hint" id="hdrNo" hidden></p><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
@@ -552,6 +557,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json" hidden>
 
 <script>
+var APP_VERSION='0.5.5';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -752,16 +758,29 @@ slSum();
 document.addEventListener('toggle',function(e){var d=e.target;if(!d.open||!d.dataset||!d.dataset.acc)return;[].forEach.call(document.querySelectorAll('details[data-acc="'+d.dataset.acc+'"][open]'),function(x){if(x!==d)x.open=false});setTimeout(function(){var r=d.getBoundingClientRect(),top=(document.querySelector('.top')||{}).offsetHeight||0;if(r.top<top)window.scrollBy(0,r.top-top-8)},0)},true);
 /* ---- uitleg bij eerste opstart ---- */
 var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stekken, stokken en vangsten op één plek.</p><p>In een paar stappen zie je hoe het werkt.</p>'],
-['Vissen','<ul><li><b>Start sessie</b> zodra je aan het water staat. De app houdt de tijd bij.</li><li>Tijdens de sessie: <b>Voeg vangst toe</b>, <b>Verplaats stok</b>, en log ook <b>missers</b>, <b>bijvoeren</b> en <b>aaswissels</b>.</li><li>Elk onderdeel (locatie, stokken, omstandigheden, foto\'s) pas je aan via <b>Bewerk</b>.</li><li>Klaar? <b>Stop sessie</b>.</li></ul><p>Vergeten te starten? Kies <b>Sessie achteraf invoeren</b>.</p>'],
+['Een sessie starten','<ul><li>Tik op <b>Start sessie</b> zodra je aan het water staat. De app houdt de tijd bij.</li><li>Je vult enkel <b>Wanneer</b>, <b>Locatie en water</b> en <b>Stokken</b> in. Per stok tik je op <b>Klaar met stok</b>, daarna op <b>Alle stokken klaar, verder</b> en <b>Sessie opslaan</b>.</li><li>Viste je hier al eerder? Dan stelt de app je stokken van vorige keer voor.</li></ul><p>Vergeten te starten? Kies <b>Sessie achteraf invoeren</b>.</p>'],
+['Tijdens het vissen','<ul><li><b>Voeg vangst toe</b>: soort, gewicht, uur, foto, naam van de vis. Met een ingestelde weegzak trekt de app die zelf af.</li><li><b>Verplaats stok</b>: duid meteen de nieuwe plek aan op de stekfoto.</li><li><b>Misser</b>, <b>Bijgevoerd</b> en <b>Aas gewisseld</b> noteer je met één tik.</li><li>Elk onderdeel pas je aan via <b>Bewerk</b>.</li><li><b>Stop sessie</b>: daarna vul je de omstandigheden in (of later).</li></ul>'],
 ['Stek en stokken','<ul><li>Gebruik GPS of plak de coördinaten uit Google Maps: een bekende stek binnen 50 m wordt herkend.</li><li>Neem een stekfoto en duid per stok aan waar hij ligt.</li><li>Verplaats je een stok, dan blijft de vorige plek bewaard (blank in grijs, vangst in groen).</li></ul>'],
-['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li></ul>'],
+['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht, met een tijdlijn per sessie.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li><li>Per ongeluk iets verwijderd? Tik op <b>Ongedaan maken</b>.</li></ul>'],
 ['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via <b>Instellingen → Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Na 7 dagen zonder back-up krijg je een herinnering.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
-['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (uit te zetten bij Instellingen → Weergave).</li></ul><p>Veel vangst!</p>']];
+['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (Instellingen → Weergave).</li><li><b>Weegzak</b>: stel het gewicht in bij Instellingen.</li></ul><p>Veel vangst!</p>']];
 var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+INTRO[inI][1];$('inD').innerHTML=INTRO.map(function(x,i){return '<span'+(i===inI?' class="on"':'')+'></span>'}).join('');$('inPrev').style.visibility=inI?'visible':'hidden';$('inNext').textContent=inI===INTRO.length-1?'Aan de slag':'Volgende';$('inSkip').hidden=inI===INTRO.length-1}
 function inOpen(){inI=0;inDraw();$('intro').hidden=false}
 function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
-(function(){var seen=null;try{seen=localStorage.getItem(KEY+'-intro')}catch(e){seen='1'}if(!seen)setTimeout(inOpen,300)})();
+/* ---- wat is er nieuw (na een update) ---- */
+var NEWS=[['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
+['0.5.4',['Duidelijker bij stokken: een kader per stok, "Klaar met stok", "+ Stok toevoegen" en "Alle stokken klaar, verder".']],
+['0.5.3',['Achtergrondfoto voor de hele pagina is weer volledig zichtbaar.']],
+['0.5.2',['Nachtwater is de nieuwe stijl.','Een nieuwe sessie vraagt enkel nog Wanneer, Locatie en Stokken.','Na Stop sessie vul je meteen de omstandigheden in (of later).']],
+['0.5.1',['"Misser" noteren met één tik.','Bijvoeren: enkel nog wat en hoeveel.']],
+['0.5.0',['Logboek per sessie: missers, bijvoeren en aaswissels.','Watertemperatuur en zicht.','Weegzak automatisch aftrekken.','Stokken van vorige keer op dezelfde stek overnemen.','Vangst delen als foto, zoeken, ongedaan maken.','Nieuwe look en een tijdlijn per sessie.']]];
+function vNum(v){return String(v||'0').split('.').map(function(x){return ('000'+x).slice(-3)}).join('.')}
+function newsOpen(from){var l=NEWS.filter(function(n){return !from||vNum(n[0])>vNum(from)});if(!l.length)l=NEWS.slice(0,1);
+$('nwC').innerHTML=l.map(function(n){return '<p class="nwv">Versie '+n[0]+'</p><ul>'+n[1].map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>'}).join('');$('nw').hidden=false}
+$('nwOk').onclick=function(){$('nw').hidden=true};$('newsB').onclick=function(){newsOpen('0.4.9')};
+(function(){var seen=null,last=null;try{seen=localStorage.getItem(KEY+'-intro');last=localStorage.getItem(KEY+'-ver');localStorage.setItem(KEY+'-ver',APP_VERSION)}catch(e){seen='1'}
+if(!seen)setTimeout(inOpen,300);else if(last!==APP_VERSION&&(last||data.length))setTimeout(function(){newsOpen(last)},400)})();
 var WL=null;function wakeOn(){try{return localStorage.getItem(KEY+'-wake')!=='0'}catch(e){return true}}
 function wakeUpd(){var want=wakeOn()&&!!activeSes()&&document.visibilityState==='visible';
 if(want&&!WL&&navigator.wakeLock){WL='pending';navigator.wakeLock.request('screen').then(function(l){WL=l;l.addEventListener('release',function(){if(WL===l)WL=null})}).catch(function(){WL=null})}
@@ -1322,7 +1341,6 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.5.4';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
