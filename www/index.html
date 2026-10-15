@@ -194,6 +194,8 @@ button:disabled{opacity:.45;cursor:default}
 .ckl{display:flex;gap:8px;align-items:center;margin-top:12px;font-weight:600}.ckl input{width:auto;margin:0}
 .indots{display:flex;gap:6px;justify-content:center;margin:12px 0 4px}.indots span{width:8px;height:8px;border-radius:50%;background:var(--line)}.indots span.on{background:var(--acc)}
 #inC h3{margin:0 0 8px}#inC p{margin:6px 0}#inC ul{margin:6px 0;padding-left:20px}#inC li{margin:4px 0}
+.inimg{display:block;max-width:100%;max-height:36vh;margin:2px auto 10px;border-radius:12px;border:1px solid var(--line);cursor:zoom-in}
+#pv{z-index:40}
 .lnkb{background:none;border:0;color:var(--mute);text-decoration:underline;width:100%;margin-top:8px;padding:6px;font:inherit;cursor:pointer}
 .prt{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--acc2);color:#1b1400;margin-left:4px;vertical-align:1px;font-family:system-ui,sans-serif}
 .prt.w{background:#d8c27a}
@@ -564,7 +566,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json" hidden>
 
 <script>
-var APP_VERSION='0.5.7';
+var APP_VERSION='0.5.8';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -771,12 +773,15 @@ var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stek
 ['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht, met een tijdlijn per sessie.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li><li>Per ongeluk iets verwijderd? Tik op <b>Ongedaan maken</b>.</li></ul>'],
 ['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via <b>Instellingen → Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Kies bij Instellingen → Back-up hoe vaak: na elke sessie, elke dag, elke week of zelf in te stellen. Op dat moment vraagt de app je met één tik om een back-up.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
 ['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (Instellingen → Weergave).</li><li><b>Weegzak</b>: stel het gewicht in bij Instellingen.</li></ul><p>Veel vangst!</p>']];
-var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+INTRO[inI][1];$('inD').innerHTML=INTRO.map(function(x,i){return '<span'+(i===inI?' class="on"':'')+'></span>'}).join('');$('inPrev').style.visibility=inI?'visible':'hidden';$('inNext').textContent=inI===INTRO.length-1?'Aan de slag':'Volgende';$('inSkip').hidden=inI===INTRO.length-1}
+var INIMG=['h0_welkom','h1_start','h2_vissen','h3_stek','h4_sessies','h5_backup','h6_extra'];
+var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+(INIMG[inI]?'<img class="inimg" src="help/'+INIMG[inI]+'.jpg" alt="Voorbeeldscherm" data-big="1">':'')+INTRO[inI][1];$('inD').innerHTML=INTRO.map(function(x,i){return '<span'+(i===inI?' class="on"':'')+'></span>'}).join('');$('inPrev').style.visibility=inI?'visible':'hidden';$('inNext').textContent=inI===INTRO.length-1?'Aan de slag':'Volgende';$('inSkip').hidden=inI===INTRO.length-1}
 function inOpen(){inI=0;inDraw();$('intro').hidden=false}
 function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
+$('inC').addEventListener('click',function(e){var i=e.target.closest('img[data-big]');if(i){$('pvI').src=i.src;$('pvC').textContent='Voorbeeld met verzonnen sessies';$('pv').hidden=false}});
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
+var NEWS=[['0.5.8',['De uitleg heeft nu bij elke stap een voorbeeldscherm, met de knoppen aangeduid. Tik op een scherm om het groot te zien (Instellingen → Over CatchBook → Toon uitleg).']],
+['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
 ['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
 ['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
 ['0.5.4',['Duidelijker bij stokken: een kader per stok, "Klaar met stok", "+ Stok toevoegen" en "Alle stokken klaar, verder".']],

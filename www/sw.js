@@ -1,6 +1,6 @@
 // CatchBook service worker: werkt zonder bereik en meldt nieuwe versies.
 // Verhoog VERSION bij elke release (samen met APP_VERSION in index.html en package.json).
-const VERSION = '0.5.7';
+const VERSION = '0.5.8';
 const CACHE = 'catchbook-' + VERSION;
 const FILES = [
   './',
@@ -13,7 +13,14 @@ const FILES = [
   'fonts/interd-600.woff',
   'fonts/interd-700.woff',
   'fonts/poppins-500.woff',
-  'fonts/poppins-700.woff'
+  'fonts/poppins-700.woff',
+  'help/h0_welkom.jpg',
+  'help/h1_start.jpg',
+  'help/h2_vissen.jpg',
+  'help/h3_stek.jpg',
+  'help/h4_sessies.jpg',
+  'help/h5_backup.jpg',
+  'help/h6_extra.jpg'
 ];
 
 // cache: 'reload' = altijd vers van de server, niet uit de browsercache (GitHub Pages bewaart 10 min).
