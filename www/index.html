@@ -356,6 +356,8 @@ html[data-skin="nachtwater"] .runcard{border-color:rgba(242,212,121,.35)}
 html[data-skin="nachtwater"] .runcard .runtime{font-size:3.4rem;color:var(--acc);font-weight:600;letter-spacing:-.02em}
 html[data-skin="nachtwater"] .live-dot{background:var(--acc)}
 
+/* met achtergrondfoto voor de hele pagina: body altijd doorzichtig (ook in elke stijl en in nachtstand) */
+html.pagebg[data-skin] body,html.pagebg[data-skin][data-theme] body{background:transparent}
 /* nachtstand (rood) wint altijd */
 html[data-theme="night"][data-skin]{--bg:#000;--card:#110303;--ink:#ff5b4d;--mute:#b4433a;--line:#3d0f0b;--acc:#d8392b;--accink:#000;--warn:#ff8a7c;--hit:#a12a1d;--blank:#5a1a14;--acc2:#ff7a5c;--soft:#1c0606;--bar:#0a0101;color-scheme:dark}
 html[data-theme="night"][data-skin] body{background:#000}
@@ -1314,7 +1316,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.5.2';
+var APP_VERSION='0.5.3';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
