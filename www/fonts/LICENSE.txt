@@ -1,0 +1,4 @@
+Lettertypes in deze map (deelverzamelingen, enkel Latijnse tekens):
+- Inter Display (interd-600.woff, interd-700.woff) — © The Inter Project Authors, SIL Open Font License 1.1
+- Poppins (poppins-500.woff, poppins-700.woff) — © Indian Type Foundry, SIL Open Font License 1.1
+Volledige licentietekst: https://openfontlicense.org

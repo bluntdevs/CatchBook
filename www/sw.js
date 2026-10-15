@@ -1,6 +1,6 @@
 // CatchBook service worker: werkt zonder bereik en meldt nieuwe versies.
 // Verhoog VERSION bij elke release (samen met APP_VERSION in index.html en package.json).
-const VERSION = '0.4.3';
+const VERSION = '0.5.0';
 const CACHE = 'catchbook-' + VERSION;
 const FILES = [
   './',
@@ -9,7 +9,11 @@ const FILES = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/maskable-512.png',
-  'icons/apple-touch-icon.png'
+  'icons/apple-touch-icon.png',
+  'fonts/interd-600.woff',
+  'fonts/interd-700.woff',
+  'fonts/poppins-500.woff',
+  'fonts/poppins-700.woff'
 ];
 
 // cache: 'reload' = altijd vers van de server, niet uit de browsercache (GitHub Pages bewaart 10 min).
