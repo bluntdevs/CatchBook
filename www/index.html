@@ -57,13 +57,16 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .hbtn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .top{overflow:hidden}
 .hbg{position:absolute;inset:0;z-index:0;pointer-events:none}
-.hbg img{width:100%;height:100%;object-fit:cover;display:block}
+.bgb,.bgm{position:absolute;inset:0;background-repeat:no-repeat}
+.bgb{background-size:cover;background-position:center;filter:blur(18px) brightness(.8);transform:scale(1.15)}
+.hbg,.pbg{overflow:hidden}
+#hdrQ{place-items:end center;background:rgba(0,0,0,.12)}
+.rng label{display:flex;justify-content:space-between}
 .hbg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
 .top>.hrow,.top>.tabs{position:relative;z-index:1}
 .top.hasbg{border-bottom-color:transparent}
 .hbtns{display:flex;gap:10px}
 .pbg{position:fixed;inset:0;z-index:-1;pointer-events:none}
-.pbg img{width:100%;height:100%;object-fit:cover;display:block}
 .pbg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.25)}
 html.pagebg body{background:transparent}
 html.pagebg{background:#000}
@@ -224,9 +227,9 @@ details.rd[open] summary::after{content:'▴'}
 </style>
 </head>
 <body>
-<div class="pbg" id="pbg" hidden><img id="pbgI" alt=""></div>
+<div class="pbg" id="pbg" hidden><div class="bgb"></div><div class="bgm"></div></div>
 <header class="top" id="top">
-<div class="hbg" id="hbg" hidden><img id="hbgI" alt=""></div>
+<div class="hbg" id="hbg" hidden><div class="bgb"></div><div class="bgm"></div></div>
 <div class="hrow"><h1>CatchBook</h1><span class="hbtns"><button type="button" class="hbtn" id="hbgB" aria-label="Achtergrondfoto kopbalk"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></button><button type="button" class="hbtn" id="pbgB" aria-label="Achtergrondfoto volledige pagina (test)" title="Test: achtergrond volledige pagina"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="10" cy="9" r="1.6"/><path d="M20 17l-5-5-9 9"/></svg></button></span></div>
 <nav class="tabs" role="tablist">
 <button class="tab" role="tab" id="tVis" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M2 12c3-5 9-6.5 14-2l5-3v10l-5-3c-5 4.5-11 3-14-2z"/><circle cx="7" cy="11" r=".6"/></svg>Vissen</button>
@@ -356,7 +359,7 @@ details.rd[open] summary::after{content:'▴'}
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
 <input type="file" id="phFile" accept="image/*" multiple hidden>
 <input type="file" id="hdrFile" accept="image/*" hidden>
-<div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" hidden><label for="hdrPos">Uitsnede (hoger / lager)</label><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
+<div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span>Inzoomen</span></label><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"><label for="hdrX"><span>Links</span><span>Rechts</span></label><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"><label for="hdrPos"><span>Hoger</span><span>Lager</span></label><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
@@ -519,15 +522,21 @@ var BG={hdr:{key:'vislogboek-hdr',t:'Achtergrondfoto kopbalk',h:'Kies een foto v
 function bgGet(k){try{return JSON.parse(localStorage.getItem(BG[k].key)||'null')}catch(e){return null}}
 function bgSet(k,v){try{if(v)localStorage.setItem(BG[k].key,JSON.stringify(v));else localStorage.removeItem(BG[k].key)}catch(e){}}
 function hdrGet(){return bgGet('hdr')}function hdrSet(v){bgSet('hdr',v)}
-function bgApply(k){var h=bgGet(k),box=k==='hdr'?$('hbg'):$('pbg'),img=k==='hdr'?$('hbgI'):$('pbgI'),on=function(v){box.hidden=!v;if(k==='hdr')$('top').classList.toggle('hasbg',v);else document.documentElement.classList.toggle('pagebg',v)};
-if(!h){on(false);return}pUrl(h.pid,function(u){if(!u){on(false);return}img.src=u;img.style.objectPosition='50% '+(h.y==null?50:h.y)+'%';on(true)})}
+var BGN={};
+function bgBox(k){return k==='hdr'?$('hbg'):$('pbg')}
+function bgLay(k){var h=bgGet(k),box=bgBox(k),n=BGN[k],m=box.querySelector('.bgm');if(!h||!n||box.hidden)return;
+var W=box.clientWidth,H=box.clientHeight;if(!W||!H)return;var ct=Math.min(W/n.w,H/n.h),cv=Math.max(W/n.w,H/n.h),z=(h.z==null?50:h.z)/100,sc=z<=.5?ct+(cv-ct)*z*2:cv*(1+(z-.5)*2);
+m.style.backgroundSize=Math.round(n.w*sc)+'px '+Math.round(n.h*sc)+'px';m.style.backgroundPosition=(h.x==null?50:h.x)+'% '+(h.y==null?50:h.y)+'%'}
+function bgApply(k){var h=bgGet(k),box=bgBox(k),on=function(v){box.hidden=!v;if(k==='hdr')$('top').classList.toggle('hasbg',v);else document.documentElement.classList.toggle('pagebg',v)};
+if(!h){on(false);return}pUrl(h.pid,function(u){if(!u){on(false);return}var im=new Image();im.onload=function(){BGN[k]={w:im.naturalWidth,h:im.naturalHeight};[].forEach.call(box.children,function(c){c.style.backgroundImage='url("'+u+'")'});on(true);bgLay(k)};im.src=u})}
+window.addEventListener('resize',function(){bgLay('hdr');bgLay('pbg')});
 function hdrShow(){bgApply('hdr');bgApply('pbg')}
-function bgDlg(k){bgK=k;var h=bgGet(k);$('hdrT').textContent=BG[k].t;$('hdrH').textContent=BG[k].h+' Ze wordt enkel op dit toestel bewaard.';$('hdrPick').textContent=h?'Andere foto kiezen':'Kies foto';$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(h)$('hdrPos').value=h.y==null?50:h.y;$('hdrQ').hidden=false}
+function bgDlg(k){bgK=k;var h=bgGet(k);$('hdrT').textContent=BG[k].t;$('hdrH').textContent=BG[k].h+' Ze wordt enkel op dit toestel bewaard.';$('hdrPick').textContent=h?'Andere foto kiezen':'Kies foto';$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(h){$('hdrPos').value=h.y==null?50:h.y;$('hdrX').value=h.x==null?50:h.x;$('hdrZ').value=h.z==null?50:h.z}$('hdrQ').hidden=false}
 $('hbgB').onclick=function(){bgDlg('hdr')};$('pbgB').onclick=function(){bgDlg('pbg')};
 $('hdrOk').onclick=function(){$('hdrQ').hidden=true};
 $('hdrPick').onclick=function(){$('hdrQ').hidden=true;pickSrc($('hdrFile'))};
-$('hdrFile').onchange=function(){var f=this.files[0],k=bgK;this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}var old=bgGet(k),pid=k+uid();pPut(pid,b);if(old){pDel(old.pid);delete PU[old.pid]}PU[pid]=URL.createObjectURL(b);bgSet(k,{pid:pid,y:50});bgApply(k)})};
-$('hdrPos').oninput=function(){var k=bgK,h=bgGet(k);if(!h)return;h.y=+this.value;bgSet(k,h);(k==='hdr'?$('hbgI'):$('pbgI')).style.objectPosition='50% '+h.y+'%'};
+$('hdrFile').onchange=function(){var f=this.files[0],k=bgK;this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}var old=bgGet(k),pid=k+uid();pPut(pid,b);if(old){pDel(old.pid);delete PU[old.pid]}PU[pid]=URL.createObjectURL(b);bgSet(k,{pid:pid,x:50,y:50,z:50});bgApply(k)})};
+[['hdrPos','y'],['hdrX','x'],['hdrZ','z']].forEach(function(q){$(q[0]).oninput=function(){var k=bgK,h=bgGet(k);if(!h)return;h[q[1]]=+this.value;bgSet(k,h);bgLay(k)}});
 $('hdrDel').onclick=function(){var k=bgK,h=bgGet(k);if(h){pDel(h.pid);delete PU[h.pid]}bgSet(k,null);bgApply(k);$('hdrQ').hidden=true};
 hdrShow();
 $('stekFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}stekBlob=b;stekPicked=true;if(stekObj){URL.revokeObjectURL(stekObj);stekObj=null}photoChanged()})};
@@ -943,7 +952,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.3.1';
+var APP_VERSION='0.3.2';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
