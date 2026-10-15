@@ -557,7 +557,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json" hidden>
 
 <script>
-var APP_VERSION='0.5.5';
+var APP_VERSION='0.5.6';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -769,7 +769,8 @@ function inOpen(){inI=0;inDraw();$('intro').hidden=false}
 function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
+var NEWS=[['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
+['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
 ['0.5.4',['Duidelijker bij stokken: een kader per stok, "Klaar met stok", "+ Stok toevoegen" en "Alle stokken klaar, verder".']],
 ['0.5.3',['Achtergrondfoto voor de hele pagina is weer volledig zichtbaar.']],
 ['0.5.2',['Nachtwater is de nieuwe stijl.','Een nieuwe sessie vraagt enkel nog Wanneer, Locatie en Stokken.','Na Stop sessie vul je meteen de omstandigheden in (of later).']],
@@ -1138,7 +1139,7 @@ var sh=g.createLinearGradient(0,H*.45,0,H);sh.addColorStop(0,'rgba(0,0,0,0)');sh
 g.fillStyle='#fff';g.textBaseline='alphabetic';var y=H-90,F='CBHead, "Inter Display", system-ui, sans-serif',B='system-ui, sans-serif';
 g.font='500 34px '+B;g.globalAlpha=.85;g.fillText([fmtD(s.date,true),$('shW').checked?s.wname:''].filter(Boolean).join('  ·  '),72,y);g.globalAlpha=1;y-=62;
 if(c.name){g.font='600 44px '+F;g.fillText('„'+c.name+'”',72,y);y-=70}
-g.font='600 56px '+F;g.fillText(c.sp||'Vangst',72,y);y-=40;
+g.font='600 56px '+F;g.fillText(c.sp||'Vangst',72,y);y-=78;
 if(c.kg){g.font='700 210px '+F;var kt=kgs(c.kg);g.fillText(kt,64,y);var w=g.measureText(kt).width;g.font='700 80px '+F;g.fillText('kg',64+w+18,y)}
 var p=prOf(c);if(p==='pr'||p.indexOf('v:')===0){var t=p==='pr'?'PR':'PR '+shortSp(p.slice(2));g.font='700 40px '+B;var tw=g.measureText(t).width+44;g.fillStyle='#e9b949';g.beginPath();if(g.roundRect)g.roundRect(72,80,tw,64,32);else g.rect(72,80,tw,64);g.fill();g.fillStyle='#1b1400';g.fillText(t,94,125)}
 g.fillStyle='rgba(255,255,255,.75)';g.font='600 30px '+B;var bt='CatchBook';g.fillText(bt,W-72-g.measureText(bt).width,125);
