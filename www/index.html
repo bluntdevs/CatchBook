@@ -1017,7 +1017,7 @@ $('feats').innerHTML=Object.keys(ft).sort().map(function(k){return '<option valu
 var fnm={};data.forEach(function(s){s.catches.forEach(function(c){if(c.name)fnm[c.name]=1})});$('fnames').innerHTML=Object.keys(fnm).sort(function(a,b){return a.localeCompare(b,'nl')}).map(function(k){return '<option value="'+esc(k)+'">'}).join('');
 ['rigs','baits','feeds','feats'].forEach(function(id){var seen={};[].slice.call($(id).options).forEach(function(o){var k=tidyKey(o.value);if(seen[k])o.remove();else seen[k]=1})});
 names();
-if(!n){$('list').innerHTML='<div class="empty">'+(data.length?'Geen sessies met deze filters.':'Nog geen sessies. Tik op "Nieuwe sessie" om te beginnen.')+'</div>';return}
+if(!n){$('list').innerHTML='<div class="empty">'+(data.length?'Geen sessies met deze filters.':'Nog geen sessies. Ga naar Vissen om een sessie te starten of achteraf in te voeren.')+'</div>';return}
 $('list').innerHTML=d.map(function(s){
 var on=sel&&selSet.indexOf(String(s.id))>-1;
 var w=[s.access,s.water,s.spot].filter(Boolean).join(' · ');
@@ -1035,7 +1035,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.4.2';
+var APP_VERSION='0.4.3';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
