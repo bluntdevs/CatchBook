@@ -127,7 +127,17 @@ dt{color:var(--mute);font-size:.88rem}
 dd{margin:0}
 .dlg{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}
 .dbox{background:var(--card);border-radius:14px;padding:18px;max-width:340px;width:100%}
-#cdq{z-index:21}#shq{z-index:22}.cl2{display:flex;gap:10px;align-items:center;cursor:pointer}.cl2 .clb{flex:1;min-width:0}.cthb{width:58px;height:58px;flex:none;border-radius:10px;object-fit:cover;background:var(--line)}.cthn{display:grid;place-items:center;font-size:24px;opacity:.6}.chev{font-size:22px;opacity:.5}.cdbox{max-width:480px;width:100%}#cdPh img{width:100%;max-height:52vh;object-fit:cover;border-radius:12px;display:block;margin-bottom:10px}#cdPh .cthn{height:120px;width:100%;margin-bottom:10px}.cdg{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0}.cdg dt{color:var(--mut,inherit);opacity:.75}.cdg dd{margin:0}
+#cdq{position:fixed;inset:0;z-index:21;background:var(--bg);display:flex;flex-direction:column}#cdq[hidden]{display:none}#cdPh{flex:0 0 50vh;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;background:#000}#cdPh::-webkit-scrollbar{display:none}#cdPh img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:center}#cdPh .cthn{flex:1;font-size:48px}#cdN{display:flex;justify-content:center;gap:6px;padding:8px 0 0}#cdN i{width:7px;height:7px;border-radius:50%;background:var(--line)}#cdN i.on{background:var(--acc)}#cdB{flex:1;overflow-y:auto;padding:12px 16px}.cdf{padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));margin:0;border-top:1px solid var(--line)}#shq{z-index:22}.cl2{display:flex;gap:10px;align-items:center;cursor:pointer}.cl2 .clb{flex:1;min-width:0}.cthb{width:58px;height:58px;flex:none;border-radius:10px;object-fit:cover;background:var(--line)}.cthn{display:grid;place-items:center;font-size:24px;opacity:.6}.chev{font-size:22px;opacity:.5}.cdg{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0}.cdg dt{color:var(--mut,inherit);opacity:.75}.cdg dd{margin:0}
+.warr{display:inline-block;font-weight:700;line-height:1}
+.wxlh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.wxlh .at{margin:0}.wxlb{display:flex;gap:6px}#wxSearch{margin-top:10px}#wxRes{display:flex;flex-direction:column;gap:4px;margin-top:6px}.wxg{text-align:left;background:none;border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink)}
+.wxnow{display:flex;align-items:center;gap:12px}.wxbig{font-size:44px;line-height:1}.wxt{font-size:2rem;font-weight:700;margin:0;line-height:1}.wxnow .meta{margin:2px 0 0}.wxnr{margin-left:auto;text-align:right;font-size:.88rem}.wxnr p{margin:2px 0}
+.wxdays{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin-bottom:6px;scrollbar-width:none}.wxdays::-webkit-scrollbar{display:none}
+.wxday{flex:0 0 84px;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 4px;color:var(--ink);font-size:.82rem}.wxday.on{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}.wxi{font-size:26px;line-height:1.1}.wxr{color:#6cb6ff}
+.wxtab{font-size:.84rem;margin-top:8px}.wxrow{display:grid;grid-template-columns:1.25fr .7fr 1.05fr .75fr 1.45fr .8fr;gap:4px;padding:6px 0;border-bottom:1px solid var(--line);align-items:center}.wxrow span:not(:first-child){text-align:right}.wxrow small{opacity:.65}.wxhd{font-weight:600;color:var(--mute);font-size:.74rem;border-bottom-width:2px}
+.wxpr svg{width:100%;height:60px;display:block;margin-top:8px}.wxmoon{display:flex;gap:12px;align-items:center}.wxmoon p{margin:2px 0}
+.wxmin{display:flex;align-items:flex-end;gap:3px;height:70px;margin:8px 0 18px}.wxmin div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;position:relative}.wxmin i{display:block;background:var(--line);border-radius:3px 3px 0 0}.wxmin i.r{background:#6cb6ff}.wxmin span{position:absolute;bottom:-16px;left:0;font-size:.68rem;color:var(--mute)}
+.wxrad img{width:100%;border-radius:12px;display:block;margin-top:6px;background:var(--line);min-height:120px}.wxsrc{text-align:center;margin:6px 0 14px}.wxsrc a,.wxrad+p a{color:inherit}
+html.bnav .tab svg{padding:2px 10px}
 #srcQ{z-index:26}#dlg{z-index:27}#svq{z-index:25}#abq,#nw{z-index:24}
 .dbox p{margin:0 0 4px}
 .rod{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
@@ -181,7 +191,7 @@ button:disabled{opacity:.45;cursor:default}
 .th select{margin-top:4px;padding:5px;font-size:.8rem}
 .th .cap{font-size:.78rem;color:var(--mute);margin-top:3px;line-height:1.25}
 .cph{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 10px}
-.cph .th{width:56px}
+.cph .th{width:56px}.th .pstar{position:absolute;bottom:4px;left:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:.95rem;line-height:1;padding:0;display:grid;place-items:center}.th .pstar.on,.mainph .pstar{color:#f3d36b}.mainph img{outline:2px solid #f3d36b;outline-offset:-2px}#ptq{z-index:26}
 .cph .th .pdel{width:22px;height:22px;font-size:.9rem;top:2px;right:2px}
 .phb{padding:6px 10px;font-size:.85rem}
 #pv{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:16px}
@@ -398,6 +408,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div class="hrow"><h1>CatchBook</h1><span class="hbtns"><button type="button" class="hbtn" id="nightB" aria-label="Nachtstand aan/uit" title="Nachtstand"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button><button type="button" class="hbtn" id="hbgB" aria-label="Achtergrondfoto kopbalk"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></button><button type="button" class="hbtn" id="pbgB" aria-label="Achtergrondfoto volledige pagina (test)" title="Test: achtergrond volledige pagina"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="10" cy="9" r="1.6"/><path d="M20 17l-5-5-9 9"/></svg></button></span></div>
 <nav class="tabs" role="tablist">
 <button class="tab" role="tab" id="tVis" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M2 12c3-5 9-6.5 14-2l5-3v10l-5-3c-5 4.5-11 3-14-2z"/><circle cx="7" cy="11" r=".6"/></svg>Vissen</button>
+<button class="tab" role="tab" id="tWx" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 00.5-7.97A6 6 0 006.2 11.1 3.5 3.5 0 007 18z"/><path d="M12 2v2M4.9 4.9l1.4 1.4M19.1 4.9l-1.4 1.4"/></svg>Weer</button>
 <button class="tab" role="tab" id="tSes" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Sessies</button>
 <button class="tab" role="tab" id="tAna" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analyse</button>
 <button class="tab" role="tab" id="tBak" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Instellingen</button>
@@ -515,6 +526,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 </form>
 
 <div id="det" hidden></div>
+<div id="vWeer" hidden></div>
 <div id="vAna" hidden>
 <div class="sess uc"><span class="ucb">In opbouw</span><h3>Analyse</h3><p class="meta">Hier zie je straks per water en per stek wanneer en onder welke omstandigheden je het best vangt: uur van de dag, weer, luchtdruk, maan, aas en montage.</p><p class="hint">Hoe meer sessies je nu logt, hoe beter de analyse straks wordt.</p></div>
 </div>
@@ -576,13 +588,14 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div id="intro" class="dlg" hidden><div class="dbox"><div id="inC"></div><div class="indots" id="inD"></div><div class="pf"><button type="button" class="ghost" id="inPrev">Vorige</button><button type="button" class="btn" id="inNext">Volgende</button></div><button type="button" class="lnkb" id="inSkip">Overslaan</button></div></div>
 <div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"></div><label for="hdrX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"></div><label for="hdrPos"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div></div><p class="hint" id="hdrNo" hidden></p><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
-<div id="cdq" class="dlg" hidden><div class="dbox cdbox"><div id="cdPh"></div><div id="cdB"></div><div class="pf"><button type="button" class="ghost" id="cdX">Sluiten</button><button type="button" class="btn" id="cdSh">Deel</button></div></div></div>
+<div id="ptq" class="dlg" hidden><div class="dbox"><b>Wat voor foto('s)?</b><p class="hint">Een sfeerfoto, of een foto van een vangst? Kies dan bij welke vangst hij hoort.</p><select id="ptS"></select><div class="pf"><button type="button" class="ghost" id="ptNo">Annuleer</button><button type="button" class="btn" id="ptOk">Kies foto's</button></div></div></div>
+<div id="cdq" hidden><div id="cdPh"></div><div id="cdN"></div><div id="cdB"></div><div class="pf cdf"><button type="button" class="ghost" id="cdX">Sluiten</button><button type="button" class="btn" id="cdSh">Deel</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
 <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
 
 <script>
-var APP_VERSION='0.6.0';
+var APP_VERSION='0.7.0';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -623,12 +636,12 @@ function setMode(m){mode=m;layout()}
 function layout(){var ses=tabNow==='ses',ana=tabNow==='ana',vis=tabNow==='vis',L=mode==='list',S=mode==='select',showL=ses&&(L||S),FD=mode==='form'||mode==='detail';
 $('vSes').hidden=!ses||FD;$('sStats').hidden=!showL;$('list').hidden=!showL;$('vVis').hidden=!(vis&&L);
 $('f').hidden=mode!=='form';$('det').hidden=mode!=='detail';
-$('vAna').hidden=!(ana&&L);$('vBak').hidden=tabNow!=='bak'||FD;
+$('vAna').hidden=!(ana&&L);$('vWeer').hidden=!(tabNow==='weer'&&L);$('vBak').hidden=tabNow!=='bak'||FD;
 $('fbar').hidden=!(ses&&L);$('srchW').hidden=!(ses&&(L||S));$('bakWarn').hidden=!((ses||vis)&&L&&bakDue());
 $('pF').hidden=mode!=='filter';$('pS').hidden=mode!=='sort';$('pSel').hidden=!(ses&&S)}
-var TB={vis:'tVis',ses:'tSes',ana:'tAna',bak:'tBak'};
-function tab(t){tabNow=t;if(t==='bak')drawNames();editId=null;selSet=[];mode='list';Object.keys(TB).forEach(function(k){$(TB[k]).setAttribute('aria-selected',k===t)});render();layout();window.scrollTo(0,0)}
-['vis','ses','ana','bak'].forEach(function(k){$(TB[k]).onclick=function(){leaveForm(function(){discardForm();tab(k)})}});
+var TB={vis:'tVis',weer:'tWx',ses:'tSes',ana:'tAna',bak:'tBak'};
+function tab(t){tabNow=t;if(t==='bak')drawNames();editId=null;selSet=[];mode='list';Object.keys(TB).forEach(function(k){$(TB[k]).setAttribute('aria-selected',k===t)});render();layout();window.scrollTo(0,0);if(t==='weer')wxOpen()}
+['vis','weer','ses','ana','bak'].forEach(function(k){$(TB[k]).onclick=function(){leaveForm(function(){discardForm();tab(k)})}});
 
 /* ---- formulier ---- */
 var CARP=['Karper','Spiegelkarper','Schubkarper','Volschubkarper','Rijenkarper','Leerkarper'];
@@ -786,7 +799,7 @@ var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stek
 ['Een sessie starten','<ul><li>Tik op <b>Start sessie</b> zodra je aan het water staat. De app houdt de tijd bij.</li><li>Je vult enkel <b>Wanneer</b>, <b>Locatie en water</b> en <b>Stokken</b> in. Per stok tik je op <b>Klaar met stok</b>, daarna op <b>Alle stokken klaar, verder</b> en <b>Sessie opslaan</b>.</li><li>Viste je hier al eerder? Dan stelt de app je stokken van vorige keer voor.</li></ul><p>Vergeten te starten? Kies <b>Sessie achteraf invoeren</b>.</p>'],
 ['Tijdens het vissen','<ul><li><b>Voeg vangst toe</b>: soort, gewicht, uur, foto, naam van de vis. Met een ingestelde weegzak trekt de app die zelf af.</li><li><b>Verplaats stok</b>: duid meteen de nieuwe plek aan op de stekfoto.</li><li><b>Misser</b>, <b>Bijgevoerd</b> en <b>Aas gewisseld</b> noteer je met één tik.</li><li>Elk onderdeel pas je aan via <b>Bewerk</b>.</li><li><b>Stop sessie</b>: daarna vul je de omstandigheden in (of later).</li></ul>'],
 ['Stek en stokken','<ul><li>Gebruik GPS of plak de coördinaten uit Google Maps: een bekende stek binnen 50 m wordt herkend.</li><li>Neem een stekfoto en duid per stok aan waar hij ligt.</li><li>Verplaats je een stok, dan blijft de vorige plek bewaard (blank in grijs, vangst in groen).</li></ul>'],
-['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht, met een tijdlijn per sessie.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li><li>Per ongeluk iets verwijderd? Tik op <b>Ongedaan maken</b>.</li></ul>'],
+['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht, met een tijdlijn per sessie.</li><li>Tik op een vangst voor de grote foto\'s (veeg voor de volgende) en alle details. Met ★ kies je per vangst de hoofdfoto.</li><li>Tab <b>Weer</b>: 7 dagen vooruit, luchtdruk, wind, maanfase en buienradar.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li><li>Per ongeluk iets verwijderd? Tik op <b>Ongedaan maken</b>.</li></ul>'],
 ['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via <b>Instellingen → Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Kies bij Instellingen → Back-up hoe vaak: na elke sessie, elke dag, elke week of zelf in te stellen. Op dat moment vraagt de app je met één tik om een back-up.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
 ['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (Instellingen → Weergave).</li><li><b>Weegzak</b>: stel het gewicht in bij Instellingen.</li></ul><p>Veel vangst!</p>']];
 var INIMG=['h0_welkom','h1_start','h2_vissen','h3_stek','h4_sessies','h5_backup','h6_extra'];
@@ -798,7 +811,7 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 $('vidX').onclick=function(){var v=$('vidV');try{v.pause()}catch(x){}$('vid').hidden=true};
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.6.0',['Per vangst één foto: in de sessie zie je bij Vangsten een klein fotootje, tik erop voor de grote foto met alle details en de knop Deel.','Nieuw onderdeel Vangsten: vangsten toevoegen en aanpassen doe je nu daar (met keuze van de stok), ook tijdens een lopende sessie. Bij Stokken zie je welke vangsten erop vielen.','Fotocollage: de zwaarste vangsten eerst, één foto per vangst, plus een sfeerfoto.','De terugknop van je telefoon gaat nu een stap terug in plaats van de app te sluiten.']],
+var NEWS=[['0.7.0',['Nieuwe tab Weer: 7 dagen vooruit per gemeente of via je locatie (temperatuur, regen, zon in W/m², wind en windstoten, luchtdruk), de maanfase en de buienradar voor de komende 2 à 3 uur.','Meerdere foto\'s per vangst. Met ★ kies je de hoofdfoto voor de preview en het delen; kies je niets, dan neemt de app de eerste.','Bij Foto\'s toevoegen kies je eerst: sfeerfoto of vangstfoto (en welke vangst).','Vangst openen in een sessie: bovenaan de foto\'s (veeg voor de volgende), onderaan alle details.']],['0.6.0',['Per vangst één foto: in de sessie zie je bij Vangsten een klein fotootje, tik erop voor de grote foto met alle details en de knop Deel.','Nieuw onderdeel Vangsten: vangsten toevoegen en aanpassen doe je nu daar (met keuze van de stok), ook tijdens een lopende sessie. Bij Stokken zie je welke vangsten erop vielen.','Fotocollage: de zwaarste vangsten eerst, één foto per vangst, plus een sfeerfoto.','De terugknop van je telefoon gaat nu een stap terug in plaats van de app te sluiten.']],
 ['0.5.11',['Het uitlegfilmpje zit nu in de app: bij Toon uitleg en bij Instellingen → Over CatchBook.']],
 ['0.5.10',['Back-up naar Google Drive werkt nu: Android laat geen .json-bestanden delen, dus de back-up gaat als .txt. Terugzetten kan met beide.']],
 ['0.5.9',['Bij een back-up of CSV kies je nu zelf waar het bestand komt: Google Drive (of een andere app), een eigen map of Downloads. Daarna zie je waar het staat.']],
@@ -878,11 +891,12 @@ return '<div class="ccard"><div class="cch"><b>Vangst '+(j+1)+'</b><span class="
 +'<div class="g2"><div><label>Soort</label><select data-c="'+j+'" data-ck="sp">'+spOpts(c.sp)+'</select></div><div><label>Stok</label><select data-c="'+j+'" data-ck="rod">'+ro+'</select></div></div>'
 +'<div class="g3c"><div><label>Gewicht (kg)</label><input data-c="'+j+'" data-ck="kg" type="text" inputmode="decimal" data-dec="1" autocomplete="off" value="'+esc(c.kg)+'"></div><div><label>Lengte (cm)</label><input data-c="'+j+'" data-ck="cm" type="number" value="'+esc(c.cm)+'"></div><div><label>Uur</label><input data-c="'+j+'" data-ck="time" type="time" value="'+esc(c.time)+'"></div></div>'
 +'<div class="g2"><div><label>Naam vis</label><input data-c="'+j+'" data-ck="name" data-sug="fnames" autocomplete="off" placeholder="optioneel" value="'+esc(c.name||'')+'"></div><div><label>Kenmerken vis</label><input data-c="'+j+'" data-ck="marks" autocomplete="off" value="'+esc(c.marks||'')+'"></div></div>'
-+(function(){var cp=P.filter(function(p){return p.to===c.cid});return '<div class="cph" style="margin-top:8px">'+cp.map(function(p){return thumb(p.pid,true)}).join('')+'<button type="button" class="ghost phb" data-cph="'+j+'">'+(cp.length?'Andere foto':'Foto')+'</button></div>'})()+'</div>'}).join(''):'<p class="hint">Nog geen vangsten. Tik op + Vangst toevoegen.</p>';fillThumbs($('catchList'))}
++(function(){var cp=P.filter(function(p){return p.to===c.cid}).map(function(p){return p.pid}),m=mainPh(c,cp);return '<div class="cph" style="margin-top:8px">'+cp.map(function(pid){return mainThumb(pid,pid===m,'data-cmain="'+j+'" data-pm')}).join('')+'<button type="button" class="ghost phb" data-cph="'+j+'">+ Foto\'s</button></div>'+(cp.length>1?'<p class="hint">★ = hoofdfoto voor de preview en het delen. Tik op ☆ om een andere te kiezen.</p>':'')})()+'</div>'}).join(''):'<p class="hint">Nog geen vangsten. Tik op + Vangst toevoegen.</p>';fillThumbs($('catchList'))}
 $('catchList').oninput=function(e){var t=e.target,d=t.dataset;if(d.ck==null)return;C[+d.c][d.ck]=d.ck==='rod'?+t.value:t.value;formDirty=true};
 $('catchList').onchange=function(e){var t=e.target,d=t.dataset;if(d.ck==null)return;var c=C[+d.c];c[d.ck]=d.ck==='rod'?+t.value:t.value;var h=t.closest('.ccard').querySelector('.cch .hint');if(h)h.textContent=[c.sp,c.kg?kgs(c.kg)+' kg':'',c.time].filter(Boolean).join(' · ');keepCatches=true;try{drawRods()}finally{keepCatches=false}};
 $('catchList').onclick=function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
-if(d.cph!==undefined){var cc=C[+d.cph].cid;pickPhotos(cc,function(got){if(!got.length)return;var old=P.filter(function(x){return x.to===cc});old.forEach(function(x){x.to='sfeer'});got.forEach(function(pid,k){P.push({pid:pid,to:k?'sfeer':cc});NEWP.push(pid)});formDirty=true;drawRods();if(old.length)toast('Vorige vangstfoto staat nu bij de sfeerfoto\'s.')})}
+if(d.cph!==undefined){pickPhotos(C[+d.cph].cid)}
+else if(d.pm){C[+d.cmain].main=d.pm;formDirty=true;keepCatches=false;drawRods()}
 else if(d.pdel){rmPhoto(d.pdel)}
 else if(d.cdel!==undefined){var ci=+d.cdel,old=C[ci],cd=old.cid,mv=P.filter(function(x){return x.to===cd});C.splice(ci,1);mv.forEach(function(x){x.to='sfeer'});formDirty=true;drawRods();toast('Vangst verwijderd'+(mv.length?' (foto\'s staan nu bij de sfeerfoto\'s)':'')+'.',function(){C.splice(ci,0,old);mv.forEach(function(x){x.to=cd});drawRods()})}};
 $('addCatch').onclick=function(){var lo={};R.forEach(function(r,i){lo[r.no||i+1]=i});var ks=Object.keys(lo),def=ks.length===1?lo[ks[0]]:(C.length?C[C.length-1].rod:lo[ks[0]]);var ql=qLast();
@@ -962,15 +976,18 @@ function uniqRig(){var r={};data.forEach(function(s){rigsOf(s).forEach(function(
 
 /* foto's */
 var P=[],NEWP=[],phTarget=null,phCb=null;
+function mainPh(c,ps){ps=ps||c.photos||[];return ps.indexOf(c.main)>=0?c.main:ps[0]}
+function mainThumb(pid,isMain,attr){return '<div class="th'+(isMain?' mainph':'')+'"><img data-pid="'+pid+'" alt="Foto"><button type="button" class="pdel" data-pdel="'+pid+'" aria-label="Verwijder foto">×</button><button type="button" class="pstar" '+attr+'="'+pid+'" aria-label="Kies als hoofdfoto" title="Hoofdfoto (preview en delen)">'+(isMain?'★':'☆')+'</button></div>'}
 function pickPhotos(to,cb){phTarget=to;phCb=cb||null;pickSrc($('phFile'))}
 $('phFile').onchange=function(){var fs=[].slice.call(this.files);this.value='';if(!fs.length)return;var got=[],n=0;
 fs.forEach(function(f){shrink(f,1600,function(b){if(b){var pid='p'+uid();pPut(pid,b);got.push(pid)}if(++n===fs.length){if(phCb)phCb(got);else{got.forEach(function(pid){P.push({pid:pid,to:phTarget});NEWP.push(pid)});drawRods()}}})})};
 function rmPhoto(pid){var i=-1;P.forEach(function(x,k){if(x.pid===pid)i=k});if(i<0)return;var old=P[i];P.splice(i,1);formDirty=true;drawRods();toast('Foto verwijderd.',function(){P.splice(i,0,old);drawRods()})}
 function drawPics(){var opts=function(sel){return '<option value="sfeer"'+(sel==='sfeer'?' selected':'')+'>Sfeerfoto</option>'+C.map(function(c){return '<option value="'+c.cid+'"'+(sel===c.cid?' selected':'')+'>'+esc(catchLabel(c))+'</option>'}).join('')};
-$('picList').innerHTML=P.length?P.map(function(p){return '<div class="th"><img data-pid="'+p.pid+'" alt="Foto"><button type="button" class="pdel" data-pdel="'+p.pid+'" aria-label="Verwijder foto">×</button><select data-pto="'+p.pid+'" aria-label="Foto hoort bij">'+opts(p.to)+'</select></div>'}).join(''):'<p class="hint" style="grid-column:1/-1">Nog geen foto\'s.</p>';fillThumbs($('picList'))}
+$('picList').innerHTML=P.length?P.map(function(p){var cc=C.filter(function(c){return c.cid===p.to})[0],im=cc&&mainPh(cc,P.filter(function(x){return x.to===cc.cid}).map(function(x){return x.pid}))===p.pid;return '<div class="th'+(im?' mainph':'')+'"><img data-pid="'+p.pid+'" alt="Foto">'+(im?'<span class="pstar on" title="Hoofdfoto">★</span>':'')+'<button type="button" class="pdel" data-pdel="'+p.pid+'" aria-label="Verwijder foto">×</button><select data-pto="'+p.pid+'" aria-label="Foto hoort bij">'+opts(p.to)+'</select></div>'}).join(''):'<p class="hint" style="grid-column:1/-1">Nog geen foto\'s.</p>';fillThumbs($('picList'))}
 $('picList').addEventListener('change',function(e){var s=e.target.dataset.pto;if(!s)return;P.forEach(function(x){if(x.pid===s)x.to=e.target.value});drawRods()});
 $('picList').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.pdel)rmPhoto(b.dataset.pdel)});
-$('picAdd').onclick=function(){pickPhotos('sfeer')};
+$('picAdd').onclick=function(){if(!C.length){pickPhotos('sfeer');return}$('ptS').innerHTML='<option value="sfeer">Sfeerfoto</option>'+C.map(function(c){return '<option value="'+c.cid+'">Vangst: '+esc(catchLabel(c))+'</option>'}).join('');$('ptq').hidden=false};
+$('ptNo').onclick=function(){$('ptq').hidden=true};$('ptOk').onclick=function(){$('ptq').hidden=true;pickPhotos($('ptS').value)};
 document.addEventListener('click',function(e){var i=e.target;if(i.tagName==='IMG'&&i.dataset.pid&&i.src&&!i.dataset.nopv){$('pvI').src=i.src;$('pvC').textContent=i.dataset.cap||'';$('pv').hidden=false}});
 $('pvX').onclick=function(){$('pv').hidden=true};$('pv').addEventListener('click',function(e){if(e.target.id==='pv')$('pv').hidden=true});
 
@@ -982,7 +999,7 @@ var st0=s&&s.stekId?STEKS.filter(function(x){return x.id===s.stekId})[0]:null;st
 $('dS').value=s?s.date:nowD();$('tS').value=s?(s.time||''):(live?nowT():'');$('dE').value=s?(s.dateEnd||''):'';$('tE').value=s?(s.timeEnd||''):'';
 $('murl').value=s?(s.mapUrl||''):'';gpsLL=null;autoW=false;autoA=false;$('autoH').textContent='';autoSel=!s;msg('');$('stek').value='';updMaps();
 R=s&&s.rods.length?JSON.parse(JSON.stringify(s.rods)):[blankRod(1)];R.forEach(function(r){r._c=!!s});
-C=s?s.catches.map(function(c){var k=(parseInt(c.rod,10)||1)-1;return{cid:c.cid||('c'+uid()),sp:c.sp,rod:Math.min(Math.max(k,0),R.length-1),kg:c.kg,cm:c.cm,time:c.time||'',name:c.name||'',marks:c.marks||''}}):[];
+C=s?s.catches.map(function(c){var k=(parseInt(c.rod,10)||1)-1;return{cid:c.cid||('c'+uid()),sp:c.sp,rod:Math.min(Math.max(k,0),R.length-1),kg:c.kg,cm:c.cm,time:c.time||'',name:c.name||'',marks:c.marks||'',main:c.main||''}}):[];
 E=s?(s.events||[]).map(function(e){var x=JSON.parse(JSON.stringify(e));x.rod=e.rod===''||e.rod==null?'':String(Math.min(Math.max((parseInt(e.rod,10)||1)-1,0),R.length-1));return x}):[];
 P=[];if(s){(s.photos||[]).forEach(function(k){P.push({pid:k,to:'sfeer'})});s.catches.forEach(function(c,i){(c.photos||[]).forEach(function(k){P.push({pid:k,to:C[i].cid})})})}NEWP=[];
 maanTouched=!!(s&&s.maan);autoMoon();calcDur();names();stekOptions(s&&s.stekId?s.stekId:'');
@@ -1037,7 +1054,7 @@ forceTimes=false;
 pendingFeats();
 s.rods=R.map(function(r){return{no:r.no,from:r.from||'',bait:r.bait.trim(),baitNote:(r.baitNote||'').trim(),feed:(r.feed||[]).slice(),feedNote:(r.feedNote||'').trim(),rig:r.rig.trim(),depth:r.depth,dist:r.dist,feat:r.feat.slice(),mx:r.mx,my:r.my}});
 var keep=C.filter(function(c){return c.sp||c.kg||c.cm||P.some(function(x){return x.to===c.cid})});
-s.catches=keep.map(function(c){return{cid:c.cid,sp:c.sp,rod:String(c.rod+1),kg:c.kg,cm:c.cm,time:c.time,name:(c.name||'').trim(),marks:(c.marks||'').trim(),photos:P.filter(function(x){return x.to===c.cid}).map(function(x){return x.pid})}});
+s.catches=keep.map(function(c){return{cid:c.cid,sp:c.sp,rod:String(c.rod+1),kg:c.kg,cm:c.cm,time:c.time,name:(c.name||'').trim(),marks:(c.marks||'').trim(),photos:P.filter(function(x){return x.to===c.cid}).map(function(x){return x.pid}),main:P.some(function(x){return x.to===c.cid&&x.pid===c.main})?c.main:''}});
 s.events=E.map(function(e){var x=JSON.parse(JSON.stringify(e));x.rod=e.rod===''?'':String(+e.rod+1);return x});
 s.photos=P.filter(function(x){return x.to==='sfeer'||!keep.some(function(c){return c.cid===x.to})}).map(function(x){return x.pid});NEWP=[];
 s.active=ex?(!!ex.active&&!s.dateEnd):(liveStart&&!s.dateEnd);
@@ -1111,11 +1128,11 @@ var lastOf={};a.rods.forEach(function(r,i){lastOf[r.no||i+1]=i});var ks=Object.k
 $('qRd').innerHTML='<option value="">–</option>'+ks.map(function(no){var i=lastOf[no];return '<option value="'+(i+1)+'">'+esc(rodInfo(a.rods,i).label)+'</option>'}).join('');
 var lc=a.catches[a.catches.length-1],want=null;if(ks.length===1)want=String(lastOf[ks[0]]+1);else if(lc&&lc.rod){var lr=a.rods[(parseInt(lc.rod,10)||1)-1];if(lr&&lastOf[lr.no]!=null)want=String(lastOf[lr.no]+1)}if(want)$('qRd').value=want;
 var sl=slingKg();$('qSlW').hidden=!sl;$('qSl').checked=true;$('qSlL').textContent='Gewogen met weegzak ('+kgs(sl)+' kg wordt afgetrokken)';qNetUpd();
-$('qT').value=nowT();$('qNm').value='';$('qMk').value='';$('qKg').value='';$('qCm').value='';QP=[];drawQP();$('cq').hidden=false};
+$('qT').value=nowT();$('qNm').value='';$('qMk').value='';$('qKg').value='';$('qCm').value='';QP=[];QM='';drawQP();$('cq').hidden=false};
 var QP=[];
-function drawQP(){$('qPh').innerHTML=QP.map(function(pid){return thumb(pid,true)}).join('');fillThumbs($('qPh'));$('qPhB').textContent=QP.length?'Andere foto':'Foto toevoegen'}
-$('qPhB').onclick=function(){pickPhotos(null,function(got){if(!got.length)return;QP.forEach(pDel);got.slice(1).forEach(pDel);QP=[got[0]];drawQP()})};
-$('qPh').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.pdel){pDel(b.dataset.pdel);QP=QP.filter(function(x){return x!==b.dataset.pdel});drawQP()}});
+function drawQP(){if(QP.indexOf(QM)<0)QM=QP[0]||'';$('qPh').innerHTML=QP.map(function(pid){return mainThumb(pid,pid===QM,'data-qm')}).join('')+(QP.length>1?'<p class="hint" style="width:100%">★ = hoofdfoto voor de preview en het delen.</p>':'');fillThumbs($('qPh'));$('qPhB').textContent=QP.length?'+ Nog foto\'s':'Foto\'s toevoegen'}
+var QM='';$('qPhB').onclick=function(){pickPhotos(null,function(got){QP=QP.concat(got);drawQP()})};
+$('qPh').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.qm){QM=b.dataset.qm;drawQP();return}if(b&&b.dataset.pdel){pDel(b.dataset.pdel);QP=QP.filter(function(x){return x!==b.dataset.pdel});drawQP()}});
 function lastPos(a){var o={};a.rods.forEach(function(r,i){o[r.no||i+1]=i});return o}
 $('bMove').onclick=function(){var a=activeSes();if(!a)return;var lo=lastPos(a),ks=Object.keys(lo);
 $('mRd').innerHTML=ks.map(function(no){var i=lo[no];return '<option value="'+i+'">'+esc(rodInfo(a.rods,i).label)+'</option>'}).join('');$('mT').value=nowT();$('mq').hidden=false};
@@ -1128,7 +1145,7 @@ if(!ph){$('liveInfo').textContent=lb+'. Er is nog geen stekfoto om de plek aan t
 pUrl(ph,function(u){if(!u){$('liveInfo').textContent=lb+'.';return}openEdWith(a.rods,ni,u,function(){save();render();$('liveInfo').textContent=lb+(a.rods[ni].mx!=null?', plek aangeduid.':'.')})})};
 $('qNo').onclick=function(){QP.forEach(pDel);QP=[];$('cq').hidden=true};
 $('qYes').onclick=function(){var a=activeSes();$('cq').hidden=true;if(!a)return;
-var nc={cid:'c'+uid(),sp:$('qSp').value,rod:$('qRd').value,kg:qNetKg(),cm:$('qCm').value,time:$('qT').value||nowT(),name:$('qNm').value.trim(),marks:$('qMk').value.trim(),photos:QP.slice()};
+var nc={cid:'c'+uid(),sp:$('qSp').value,rod:$('qRd').value,kg:qNetKg(),cm:$('qCm').value,time:$('qT').value||nowT(),name:$('qNm').value.trim(),marks:$('qMk').value.trim(),photos:QP.slice(),main:QM||''};
 try{localStorage.setItem(KEY+'-q',JSON.stringify({sp:nc.sp}))}catch(e){}a.catches.push(nc);QP=[];save();render();$('liveInfo').textContent='Vangst toegevoegd om '+nc.time+'.';prCheck([nc],a.wname)};
 
 /* ---- logboek: runs, bijvoeren, aaswissels ---- */
@@ -1184,14 +1201,16 @@ var SHF=[['sp','Soort'],['kg','Gewicht'],['cm','Lengte'],['name','Naam vis'],['b
 function shoGet(){var d={sp:1,kg:1,cm:0,name:1,bait:0,date:1,water:0,pr:1,logo:1};try{var o=JSON.parse(localStorage.getItem(KEY+'-sho')||'{}');Object.keys(o).forEach(function(k){if(k in d)d[k]=o[k]})}catch(e){}return d}
 function shoSave(){var o={};SHF.forEach(function(f){o[f[0]]=SH.o[f[0]]});try{localStorage.setItem(KEY+'-sho',JSON.stringify(o))}catch(e){}}
 var CD=null;
-function catchOpen(s,c){CD=[s,c];var k=(parseInt(c.rod,10)||1)-1,ba=c.rod?baitAt(s,k,c.time):null,rc=recap(c,s),mp=(c.photos||[])[0];
-$('cdPh').innerHTML=mp?'<img data-pid="'+esc(mp)+'" alt="Vangstfoto">':'<div class="cthb cthn">🐟</div>';
+function catchOpen(s,c){CD=[s,c];var k=(parseInt(c.rod,10)||1)-1,ba=c.rod?baitAt(s,k,c.time):null,rc=recap(c,s),mp=mainPh(c),ps=(c.photos||[]).filter(function(x){return x!==mp});if(mp)ps.unshift(mp);
+$('cdPh').innerHTML=ps.length?ps.map(function(pid){return '<img data-pid="'+esc(pid)+'" data-nopv="1" alt="Vangstfoto">'}).join(''):'<div class="cthn">🐟</div>';$('cdPh').scrollLeft=0;
+$('cdN').innerHTML=ps.length>1?ps.map(function(x,i){return '<i'+(i?'':' class="on"')+'></i>'}).join(''):'';$('cdN').hidden=ps.length<2;
 var rows=[['Lengte',c.cm?c.cm+' cm':''],['Datum',fmtD(s.date)],['Uur',c.time],['Stok',c.rod?rodInfo(s.rods,k).label:''],['Aas',ba&&(ba.bait||ba.baitNote)?[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''],['Water',s.wname||s.spot||''],['Naam',c.name?'„'+c.name+'”':''],['Kenmerken',c.marks||''],['Herkend',rc]].filter(function(r){return r[1]});
-$('cdB').innerHTML='<p style="margin:0"><b style="font-size:1.2em">'+esc([c.sp,c.kg?kgs(c.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(c)+'</p><dl class="cdg">'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>'}).join('')+'</dl>'+((c.photos||[]).length>1?'<div class="cph">'+c.photos.slice(1).map(function(p){return thumb(p)}).join('')+'</div>':'');
-fillThumbs($('cdq'));$('cdq').hidden=false}
+$('cdB').innerHTML='<p style="margin:0"><b style="font-size:1.2em">'+esc([c.sp,c.kg?kgs(c.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(c)+'</p><dl class="cdg">'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>'}).join('')+'</dl>'+(ps.length>1?'<p class="hint">Veeg over de foto voor de volgende ('+ps.length+' foto\'s). Op ware grootte bekijken doe je bij Foto\'s.</p>':'');
+fillThumbs($('cdq'));$('cdB').scrollTop=0;$('cdq').hidden=false}
+$('cdPh').addEventListener('scroll',function(){var w=this.clientWidth||1,i=Math.round(this.scrollLeft/w);[].forEach.call($('cdN').children,function(d,k){d.className=k===i?'on':''})},{passive:true});
 $('cdX').onclick=function(){$('cdq').hidden=true};
 $('cdSh').onclick=function(){if(CD)shareOpen(CD[0],CD[1])};
-function shareOpen(s,c){var ph=(c.photos||[]).slice();(s.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)});s.catches.forEach(function(x){if(x!==c)(x.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)})});
+function shareOpen(s,c){var ph=(c.photos||[]).slice(),m0=mainPh(c);if(m0){ph=ph.filter(function(k){return k!==m0});ph.unshift(m0)}(s.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)});s.catches.forEach(function(x){if(x!==c)(x.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)})});
 SH={s:s,c:c,blob:null,o:shoGet(),ph:ph,pid:ph[0]||null,z:50,x:50,y:50};shPos();$('shI').removeAttribute('src');shUI();$('shq').hidden=false;shDraw()}
 function shUI(){var c=SH.c,ok={sp:!!c.sp,kg:!!c.kg,cm:!!c.cm,name:!!c.name,bait:!!c.rod,pr:!!prOf(c)};
 $('shO').innerHTML=SHF.filter(function(f){return ok[f[0]]!==false}).map(function(f){return chip(f[1],!!SH.o[f[0]],'data-sho="'+f[0]+'"')}).join('');
@@ -1243,7 +1262,7 @@ h+='<div class="sess dhero"><p class="dwhen">'+esc(fmtSpan(s))+(s.hours?' <span 
 var cs=s.catches.slice().sort(function(a,b){return kgN(b)-kgN(a)});
 h+=acc('','Vangsten',cs.length?cs.length+(cs.length===1?' vangst':' vangsten')+(tot?' · totaal '+kgs(Math.round(tot*10)/10)+' kg':''):'geen vangsten',
 cs.length?cs.map(function(x){var rc=recap(x,s),k=(parseInt(x.rod,10)||1)-1,ba=x.rod?baitAt(s,k,x.time):null;
-var mp=(x.photos||[])[0];return '<div class="cline cl2" data-cdet="'+esc(x.cid)+'">'+(mp?'<img class="cthb" data-pid="'+esc(mp)+'" data-nopv="1" alt="Vangstfoto">':'<div class="cthb cthn">🐟</div>')+'<div class="clb"><div class="clh"><p><b>'+esc([x.sp,x.kg?kgs(x.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(x)+'</p><button type="button" class="ghost sm" data-share="'+esc(x.cid)+'">Deel</button></div>'
+var mp=mainPh(x);return '<div class="cline cl2" data-cdet="'+esc(x.cid)+'">'+(mp?'<img class="cthb" data-pid="'+esc(mp)+'" data-nopv="1" alt="Vangstfoto">':'<div class="cthb cthn">🐟</div>')+'<div class="clb"><div class="clh"><p><b>'+esc([x.sp,x.kg?kgs(x.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(x)+'</p><button type="button" class="ghost sm" data-share="'+esc(x.cid)+'">Deel</button></div>'
 +'<p class="hint">'+esc([x.time||'',x.rod?rl(x):'',x.cm?x.cm+' cm':'',ba&&(ba.bait||ba.baitNote)?'op '+[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''].filter(Boolean).join(' · '))+'</p>'
 +((x.name||x.marks)?'<p class="hint">'+esc([x.name?'„'+x.name+'”':'',x.marks].filter(Boolean).join(' · '))+'</p>':'')+(rc?'<p class="hint">'+esc(rc)+'</p>':'')+'</div><span class="chev">›</span></div>'}).join(''):'<p class="hint">Geen vangsten in deze sessie.</p>');
 /* stokken */
@@ -1399,7 +1418,7 @@ $('list').innerHTML=d.map(function(s){
 var on=sel&&selSet.indexOf(String(s.id))>-1;
 var w=[s.access,s.water,s.spot].filter(Boolean).join(' · ');
 var cs=mc(s).slice().sort(function(a,b){return (parseFloat(b.kg)||0)-(parseFloat(a.kg)||0)}).map(function(x){return esc([x.sp,x.kg?kgs(x.kg)+' kg':''].filter(Boolean).join(' '))+prTag(x)}).join(' · ');
-var cp=[];s.catches.slice().sort(function(a,b){return kgN(b)-kgN(a)}).forEach(function(c){var k=(c.photos||[])[0];if(k&&cp.indexOf(k)<0)cp.push(k)});var sf=(s.photos||[]).filter(function(k){return cp.indexOf(k)<0});var phs=cp.slice(0,sf.length?3:4).concat(sf.slice(0,1));var rest=cp.slice(phs.length-Math.min(sf.length,1)).concat(sf.slice(1));while(phs.length<4&&rest.length){var nx=rest.shift();if(phs.indexOf(nx)<0)phs.push(nx)}if(phs.length<4&&s.stekPhoto&&phs.indexOf(s.stekPhoto)<0)phs.push(s.stekPhoto);
+var cp=[];s.catches.slice().sort(function(a,b){return kgN(b)-kgN(a)}).forEach(function(c){var k=mainPh(c);if(k&&cp.indexOf(k)<0)cp.push(k)});var sf=(s.photos||[]).filter(function(k){return cp.indexOf(k)<0});var phs=cp.slice(0,sf.length?3:4).concat(sf.slice(0,1));var rest=cp.slice(phs.length-Math.min(sf.length,1)).concat(sf.slice(1));while(phs.length<4&&rest.length){var nx=rest.shift();if(phs.indexOf(nx)<0)phs.push(nx)}if(phs.length<4&&s.stekPhoto&&phs.indexOf(s.stekPhoto)<0)phs.push(s.stekPhoto);
 return '<div class="sess'+(on?' on':'')+(phs.length?' ph':'')+'" data-id="'+s.id+'" role="button" tabindex="0">'
 +(phs.length?'<div class="col n'+phs.length+'">'+phs.map(function(k){return '<img data-bgpid="'+k+'" alt="">'}).join('')+'</div>':'')
 +(sel?'<input type="checkbox" class="cb" tabindex="-1" aria-label="Selecteer sessie"'+(on?' checked':'')+'>':'')
@@ -1502,7 +1521,92 @@ $('updChk').onclick=function(){if(isNative())return ask('In de Android-app insta
 swReg.update().then(function(){setTimeout(function(){if(!swWaiting)ask('Je hebt de nieuwste versie ('+APP_VERSION+').','OK')},1500)},function(){ask('Geen verbinding om updates te zoeken.','OK')})};
 
 /* ---- terugknop van de telefoon: stap terug in plaats van afsluiten ---- */
-var NAVQ=[['vid','vidX'],['pv','pvX'],['dlg',null],['svq','svNo'],['srcQ','srcNo'],['shq','shNo'],['evq','evNo'],['cq','qNo'],['cdq','cdX'],['mq','mNo'],['rn','rnNo'],['abq','abNo'],['nw','nwOk'],['intro','inSkip'],['hdrQ','hdrOk'],['ed','edOk']];
+/* ===== Weer (Open-Meteo + Buienradar) ===== */
+var WX={loc:null,d:null,mq:null,day:0,at:0,err:''};
+function wxLocGet(){try{return JSON.parse(localStorage.getItem(KEY+'-wloc')||'null')}catch(e){return null}}
+function wxLocSet(l){WX.loc=l;try{localStorage.setItem(KEY+'-wloc',JSON.stringify(l))}catch(e){}}
+function wxCacheGet(){try{return JSON.parse(localStorage.getItem(KEY+'-wcache')||'null')}catch(e){return null}}
+var WXC={0:['☀️','Helder'],1:['🌤️','Licht bewolkt'],2:['⛅','Half bewolkt'],3:['☁️','Bewolkt'],45:['🌫️','Mist'],48:['🌫️','Rijpmist'],51:['🌦️','Lichte motregen'],53:['🌦️','Motregen'],55:['🌧️','Dichte motregen'],56:['🌧️','Ijzel'],57:['🌧️','Ijzel'],61:['🌧️','Lichte regen'],63:['🌧️','Regen'],65:['🌧️','Zware regen'],66:['🌧️','Ijzel'],67:['🌧️','Ijzel'],71:['🌨️','Lichte sneeuw'],73:['🌨️','Sneeuw'],75:['❄️','Zware sneeuw'],77:['🌨️','Sneeuwkorrels'],80:['🌦️','Lichte buien'],81:['🌧️','Buien'],82:['⛈️','Zware buien'],85:['🌨️','Sneeuwbuien'],86:['🌨️','Sneeuwbuien'],95:['⛈️','Onweer'],96:['⛈️','Onweer met hagel'],99:['⛈️','Onweer met hagel']};
+function wxc(c){return WXC[c]||['🌡️','']}
+function windDir(d){return ['N','NO','O','ZO','Z','ZW','W','NW'][Math.round(((d||0)%360)/45)%8]}
+function windArr(d){return '<span class="warr" style="transform:rotate('+((d||0)+180)+'deg)" title="Wind uit het '+windDir(d)+'">↑</span>'}
+function n1(x){return x==null||isNaN(x)?'–':kgs(Math.round(x*10)/10)}
+function n0(x){return x==null||isNaN(x)?'–':String(Math.round(x))}
+/* maan: lokaal berekend (gemiddelde maancyclus, ± enkele uren) */
+var SYN=29.530588853;
+function moonAge(dt){var jd=dt.getTime()/864e5+2440587.5,f=((jd-2451550.1)/SYN)%1;if(f<0)f+=1;return f}
+function moonInfo(dt){var f=moonAge(dt),ill=Math.round((1-Math.cos(2*Math.PI*f))/2*100),i=f<.0339||f>=.9661?0:f<.2161?1:f<.2839?2:f<.4661?3:f<.5339?4:f<.7161?5:f<.7839?6:7;
+return {f:f,ill:ill,ic:['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'][i],nm:['Nieuwe maan','Wassende sikkel','Eerste kwartier','Wassende maan','Volle maan','Afnemende maan','Laatste kwartier','Afnemende sikkel'][i]}}
+function moonNext(dt,target){var f=moonAge(dt),d=(target-f+1)%1;if(d<.01)d+=1;return new Date(dt.getTime()+d*SYN*864e5)}
+function dShort(dt){return ['zo','ma','di','wo','do','vr','za'][dt.getDay()]+' '+dt.getDate()+'/'+(dt.getMonth()+1)}
+/* ophalen */
+function wxUrl(l){return 'https://api.open-meteo.com/v1/forecast?latitude='+l.lat+'&longitude='+l.lon+'&timezone=Europe%2FBrussels&forecast_days=7&wind_speed_unit=kmh'
++'&current=temperature_2m,precipitation,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl'
++'&hourly=temperature_2m,precipitation,precipitation_probability,shortwave_radiation,wind_speed_10m,wind_gusts_10m,wind_direction_10m,pressure_msl,weather_code'
++'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,sunrise,sunset'}
+function wxLoad(force){var l=WX.loc;if(!l){wxDraw();return}var c=wxCacheGet();
+if(c&&c.key===l.lat+','+l.lon){WX.d=c.d;WX.at=c.at;WX.mq=c.mq||null}else{WX.d=null;WX.mq=null}
+if(!force&&WX.d&&Date.now()-WX.at<30*60e3){wxDraw();return}
+WX.err='';WX.busy=true;wxDraw();
+fetch(wxUrl(l)).then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json()}).then(function(d){WX.d=d;WX.at=Date.now();WX.busy=false;
+return fetch('https://api.open-meteo.com/v1/forecast?latitude='+l.lat+'&longitude='+l.lon+'&timezone=Europe%2FBrussels&minutely_15=precipitation&forecast_minutely_15=12').then(function(r){return r.ok?r.json():null}).catch(function(){return null})}).then(function(m){if(WX.d&&m&&m.minutely_15)WX.mq=m.minutely_15;
+try{localStorage.setItem(KEY+'-wcache',JSON.stringify({key:l.lat+','+l.lon,at:WX.at,d:WX.d,mq:WX.mq}))}catch(e){}wxDraw()})
+.catch(function(){WX.busy=false;WX.err=navigator.onLine===false?'Geen internet.':'Het weer ophalen lukte niet.';wxDraw()})}
+/* tekenen */
+function wxDraw(){var v=$('vWeer'),l=WX.loc,d=WX.d,h='';
+h+='<div class="sess wxloc"><div class="wxlh"><div><p class="at">'+(l?esc(l.name):'Kies een gemeente')+'</p><p class="hint">'+(WX.busy?'Weer ophalen…':WX.err?esc(WX.err)+(d?' Je ziet het weer van '+wxAgo()+'.':''):d?'Bijgewerkt '+wxAgo():'')+'</p></div>'
++'<div class="wxlb">'+(l?'<button type="button" class="ghost sm" id="wxR" aria-label="Vernieuwen">↻</button>':'')+'<button type="button" class="ghost sm" id="wxCh">'+(l?'Wijzig':'Kies')+'</button></div></div>'
++'<div id="wxSearch"'+(l?' hidden':'')+'><div class="g2"><input id="wxQ" placeholder="Gemeente, bv. Ieper" autocomplete="off"><button type="button" class="ghost" id="wxGps">📍 Mijn locatie</button></div><div id="wxRes"></div></div></div>';
+if(d&&d.daily){var dl=d.daily,hr=d.hourly,cu=d.current||{},now=new Date(),mi=moonInfo(now);
+var cc=wxc(cu.weather_code);
+h+='<div class="sess wxnow"><div class="wxbig">'+cc[0]+'</div><div><p class="wxt">'+n1(cu.temperature_2m)+'°</p><p class="meta">'+esc(cc[1])+'</p></div>'
++'<div class="wxnr"><p>'+windArr(cu.wind_direction_10m)+' '+n0(cu.wind_speed_10m)+' km/u <span class="hint">(stoten '+n0(cu.wind_gusts_10m)+')</span></p><p>'+n0(cu.pressure_msl)+' hPa '+wxTrend(hr)+'</p><p>'+n1(cu.precipitation)+' mm · '+mi.ic+' '+mi.ill+'%</p></div></div>';
+h+='<div class="wxdays">'+dl.time.map(function(t,i){var dt=new Date(t+'T12:00:00'),c=wxc(dl.weather_code[i]),m=moonInfo(dt);
+return '<button type="button" class="wxday'+(i===WX.day?' on':'')+'" data-wd="'+i+'"><b>'+(i===0?'Vandaag':dShort(dt))+'</b><span class="wxi">'+c[0]+'</span><span>'+n0(dl.temperature_2m_max[i])+'° <span class="hint">'+n0(dl.temperature_2m_min[i])+'°</span></span><span class="wxr">'+n1(dl.precipitation_sum[i])+' mm</span><span class="hint">'+windArr(dl.wind_direction_10m_dominant[i])+' '+n0(dl.wind_speed_10m_max[i])+'</span><span>'+m.ic+'</span></button>'}).join('')+'</div>';
+var di=WX.day,day=dl.time[di],dt=new Date(day+'T12:00:00'),mo=moonInfo(dt),sr=(dl.sunrise[di]||'').slice(11),ss=(dl.sunset[di]||'').slice(11),rows=[];
+hr.time.forEach(function(t,i){if(t.slice(0,10)===day&&(di>0||+t.slice(11,13)>=now.getHours()))rows.push(i)});
+h+='<div class="sess"><p class="at">'+esc(fmtD(day,true))+'</p><p class="meta">'+wxc(dl.weather_code[di])[1]+' · ☀ '+sr+' – '+ss+' · '+mo.ic+' '+mo.nm+' ('+mo.ill+'%)</p>'
++wxPress(hr,day)
++'<div class="wxtab"><div class="wxrow wxhd"><span>Uur</span><span>°C</span><span>Regen</span><span>W/m²</span><span>Wind km/u</span><span>hPa</span></div>'
++rows.map(function(i){var c=wxc(hr.weather_code[i]),p=hr.precipitation[i];return '<div class="wxrow"><span>'+hr.time[i].slice(11,13)+'u '+c[0]+'</span><span>'+n1(hr.temperature_2m[i])+'</span><span class="'+(p>0?'wxr':'hint')+'">'+n1(p)+(hr.precipitation_probability?'<small> '+n0(hr.precipitation_probability[i])+'%</small>':'')+'</span><span>'+n0(hr.shortwave_radiation[i])+'</span><span>'+windArr(hr.wind_direction_10m[i])+' '+n0(hr.wind_speed_10m[i])+'<small> / '+n0(hr.wind_gusts_10m[i])+'</small></span><span>'+n0(hr.pressure_msl[i])+'</span></div>'}).join('')
++'</div><p class="hint">Wind: gemiddeld / stoten. Het pijltje wijst waar de wind naartoe waait.</p></div>';}
+else if(l&&!WX.busy)h+='<div class="sess"><p class="meta">'+(WX.err||'Nog geen weer opgehaald.')+'</p><button type="button" class="btn" id="wxR2">Opnieuw proberen</button></div>';
+/* maan */
+var nw=new Date(),mi2=moonInfo(nw),nf=moonNext(nw,.5),nn=moonNext(nw,0);
+h+='<div class="sess"><p class="at">Maan</p><div class="wxmoon"><span class="wxbig">'+mi2.ic+'</span><div><p><b>'+mi2.nm+'</b> · '+mi2.ill+'% verlicht</p><p class="hint">Volle maan: '+fmtD(isoD(nf),true)+' · Nieuwe maan: '+fmtD(isoD(nn),true)+'</p></div></div></div>';
+/* radar */
+if(l)h+='<div class="sess"><p class="at">Buienradar</p><p class="hint">Regen nu en de komende 2 à 3 uur.</p>'+wxMinutely()
++'<div class="wxrad"><img id="wxRadI" alt="Buienradar" src="'+wxRadarUrl(0)+'"><p class="hint" id="wxRadE" hidden>De radarkaart kon niet geladen worden (geen internet?).</p></div>'
++'<p class="hint"><a href="https://www.buienradar.be/" target="_blank" rel="noopener">Open Buienradar.be</a></p></div>';
+h+='<p class="hint wxsrc">Weerdata: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0) · Radar: <a href="https://www.buienradar.be/" target="_blank" rel="noopener">Buienradar</a> · Maanfase berekend door de app.</p>';
+v.innerHTML=h;var ri=$('wxRadI');if(ri){ri.dataset.n=0;ri.onerror=function(){var n=+this.dataset.n+1;this.dataset.n=n;var u=wxRadarUrl(n);if(u)this.src=u;else{this.hidden=true;$('wxRadE').hidden=false}}}}
+function isoD(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')}
+function wxAgo(){var m=Math.round((Date.now()-WX.at)/60e3);return m<1?'net nu':m<60?m+' min geleden':m<1440?Math.round(m/60)+' u geleden':new Date(WX.at).toLocaleDateString('nl-BE')}
+function wxRadarUrl(n){return ['https://image.buienradar.nl/2.0/image/animation/RadarMapRainBE?width=500&height=512&renderBackground=True&renderBranding=False&renderText=True&history=0&forecast=24',
+'https://api.buienradar.nl/image/1.0/RadarMapBE?w=500&h=512'][n]||''}
+function wxTrend(hr){if(!hr)return '';var now=new Date(),k=-1;hr.time.forEach(function(t,i){if(new Date(t)<=now)k=i});if(k<3)return '';var dp=hr.pressure_msl[k]-hr.pressure_msl[k-3];
+return '<span class="hint">'+(dp>1?'↗ stijgend':dp<-1?'↘ dalend':'→ stabiel')+'</span>'}
+function wxPress(hr,day){var ix=[];hr.time.forEach(function(t,i){if(t.slice(0,10)===day)ix.push(i)});if(ix.length<2)return '';
+var ps=ix.map(function(i){return hr.pressure_msl[i]}),mn=Math.min.apply(0,ps),mx=Math.max.apply(0,ps),r=Math.max(mx-mn,2),W=300,H=60;
+var pts=ps.map(function(p,j){return (j/(ps.length-1)*W).toFixed(1)+','+(H-6-(p-mn)/r*(H-14)).toFixed(1)}).join(' ');
+return '<div class="wxpr"><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none"><polyline points="'+pts+'" fill="none" stroke="var(--acc)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg><p class="hint">Luchtdruk: '+n0(ps[0])+' → '+n0(ps[ps.length-1])+' hPa (min '+n0(mn)+', max '+n0(mx)+')</p></div>'}
+function wxMinutely(){var m=WX.mq;if(!m||!m.time)return '';var now=Date.now(),ix=[];m.time.forEach(function(t,i){if(new Date(t).getTime()>=now-15*60e3&&ix.length<12)ix.push(i)});if(!ix.length)return '';
+var mx=Math.max(1,Math.max.apply(0,ix.map(function(i){return m.precipitation[i]||0}))),tot=ix.reduce(function(a,i){return a+(m.precipitation[i]||0)},0);
+return '<div class="wxmin">'+ix.map(function(i){var p=m.precipitation[i]||0;return '<div title="'+m.time[i].slice(11)+': '+n1(p)+' mm"><i style="height:'+Math.max(2,p/mx*100)+'%"'+(p>0?' class="r"':'')+'></i><span>'+(m.time[i].slice(14)==='00'?m.time[i].slice(11,13)+'u':'')+'</span></div>'}).join('')+'</div><p class="hint">'+(tot>0?'Verwacht: '+n1(tot)+' mm in de komende 3 uur.':'Komende 3 uur droog verwacht.')+'</p>'}
+function wxOpen(){if(!WX.loc)WX.loc=wxLocGet();wxLoad(false)}
+var wxT=null;
+$('vWeer').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+if(b.id==='wxCh'){$('wxSearch').hidden=!$('wxSearch').hidden;if(!$('wxSearch').hidden)$('wxQ').focus()}
+else if(b.id==='wxR'||b.id==='wxR2')wxLoad(true);
+else if(b.dataset.wd!=null){WX.day=+b.dataset.wd;var sl=$('vWeer').querySelector('.wxdays').scrollLeft;wxDraw();$('vWeer').querySelector('.wxdays').scrollLeft=sl}
+else if(b.dataset.gl){var g=JSON.parse(b.dataset.gl);wxLocSet(g);WX.day=0;wxLoad(true)}
+else if(b.id==='wxGps'){if(!navigator.geolocation){ask('GPS is hier niet beschikbaar.','OK');return}b.textContent='Zoeken…';
+navigator.geolocation.getCurrentPosition(function(p){var la=+p.coords.latitude.toFixed(3),lo=+p.coords.longitude.toFixed(3);wxLocSet({name:'Mijn locatie',lat:la,lon:lo,gps:1});WX.day=0;wxLoad(true);},function(){b.textContent='📍 Mijn locatie';ask('Je locatie kon niet bepaald worden. Kies een gemeente.','OK')},{enableHighAccuracy:false,timeout:15000,maximumAge:600000})}});
+$('vWeer').addEventListener('input',function(e){if(e.target.id!=='wxQ')return;var q=e.target.value.trim();clearTimeout(wxT);if(q.length<2){$('wxRes').innerHTML='';return}
+wxT=setTimeout(function(){fetch('https://geocoding-api.open-meteo.com/v1/search?count=8&language=nl&format=json&name='+encodeURIComponent(q)).then(function(r){return r.json()}).then(function(j){var rs=(j.results||[]).sort(function(a,b){return (b.country_code==='BE')-(a.country_code==='BE')});
+$('wxRes').innerHTML=rs.length?rs.map(function(g){var o={name:g.name,lat:+g.latitude.toFixed(3),lon:+g.longitude.toFixed(3)};return '<button type="button" class="wxg" data-gl=\''+esc(JSON.stringify(o)).replace(/'/g,'&#39;')+'\'><b>'+esc(g.name)+'</b> <span class="hint">'+esc([g.admin2||g.admin1,g.country].filter(Boolean).join(', '))+'</span></button>'}).join(''):'<p class="hint">Niets gevonden.</p>'}).catch(function(){$('wxRes').innerHTML='<p class="hint">Zoeken lukt niet zonder internet.</p>'})},350)});
+
+var NAVQ=[['vid','vidX'],['pv','pvX'],['dlg',null],['svq','svNo'],['srcQ','srcNo'],['shq','shNo'],['evq','evNo'],['ptq','ptNo'],['cq','qNo'],['cdq','cdX'],['mq','mNo'],['rn','rnNo'],['abq','abNo'],['nw','nwOk'],['intro','inSkip'],['hdrQ','hdrOk'],['ed','edOk']];
 var navPushed=false,navSkip=false;
 function navOpen(){for(var i=0;i<NAVQ.length;i++){var e=$(NAVQ[i][0]);if(e&&!e.hidden)return NAVQ[i]}return null}
 function navRoot(){return !navOpen()&&mode==='list'}
