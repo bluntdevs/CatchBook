@@ -185,6 +185,9 @@ button:disabled{opacity:.45;cursor:default}
 .legend span{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
 .rbtns{display:flex;gap:6px}
 .ckl{display:flex;gap:8px;align-items:center;margin-top:12px;font-weight:600}.ckl input{width:auto;margin:0}
+.indots{display:flex;gap:6px;justify-content:center;margin:12px 0 4px}.indots span{width:8px;height:8px;border-radius:50%;background:var(--line)}.indots span.on{background:var(--acc)}
+#inC h3{margin:0 0 8px}#inC p{margin:6px 0}#inC ul{margin:6px 0;padding-left:20px}#inC li{margin:4px 0}
+.lnkb{background:none;border:0;color:var(--mute);text-decoration:underline;width:100%;margin-top:8px;padding:6px;font:inherit;cursor:pointer}
 .prt{display:inline-block;font-size:.72rem;font-weight:700;padding:1px 6px;border-radius:999px;background:#c9a227;color:#1b1400;margin-left:4px;vertical-align:1px;font-family:system-ui,sans-serif}
 .prt.w{background:#d8c27a}
 .crow2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 2px}
@@ -375,7 +378,7 @@ details.rd[open] summary::after{content:'▴'}
 <p class="hint">Nachtstand gebruikt enkel donkerrode kleuren: je ogen blijven aan het donker gewend en je verlicht je stek niet. Snel aan/uit via het maantje bovenaan.</p>
 <label class="ckl"><input type="checkbox" id="wakeCk"> Scherm aan laten tijdens een lopende sessie</label>
 <p class="hint" id="wakeH">Enkel zolang de app open en zichtbaar is. Kost wat meer batterij.</p></div>
-<div class="sess"><h3>Over CatchBook</h3><p class="meta" id="appVer"></p><div class="row"><button class="ghost" id="updChk">Zoek naar update</button></div></div>
+<div class="sess"><h3>Over CatchBook</h3><p class="meta" id="appVer"></p><div class="row"><button class="ghost" id="updChk">Zoek naar update</button><button class="ghost" id="introB">Toon uitleg</button></div></div>
 </div>
 <div id="ed" class="ed" hidden><div class="edh"><b id="edT"></b><button type="button" class="ghost" id="edClr">Wis</button><button type="button" class="btn" id="edOk" style="width:auto">Klaar</button></div><div class="edb"><img id="edI" alt="Stekfoto"><div id="edM"></div></div></div>
 <div id="rn" class="dlg" hidden><div class="dbox"><b id="rnT">Naam wijzigen</b><label for="rnI">Nieuwe naam</label><input id="rnI" autocomplete="off"><p class="hint" id="rnH"></p><div class="pf"><button type="button" class="ghost" id="rnNo">Annuleer</button><button type="button" class="btn" id="rnYes">Wijzig</button></div></div></div>
@@ -385,6 +388,7 @@ details.rd[open] summary::after{content:'▴'}
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
 <input type="file" id="phFile" accept="image/*" multiple hidden>
 <input type="file" id="hdrFile" accept="image/*" hidden>
+<div id="intro" class="dlg" hidden><div class="dbox"><div id="inC"></div><div class="indots" id="inD"></div><div class="pf"><button type="button" class="ghost" id="inPrev">Vorige</button><button type="button" class="btn" id="inNext">Volgende</button></div><button type="button" class="lnkb" id="inSkip">Overslaan</button></div></div>
 <div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" class="rng" hidden><label for="hdrZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="hdrZ" min="0" max="100" step="1" style="width:100%"></div><label for="hdrX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="hdrX" min="0" max="100" step="1" style="width:100%"></div><label for="hdrPos"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div></div><p class="hint" id="hdrNo" hidden></p><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
@@ -441,7 +445,8 @@ function tab(t){tabNow=t;if(t==='bak')drawNames();editId=null;selSet=[];mode='li
 ['vis','ses','ana','bak'].forEach(function(k){$(TB[k]).onclick=function(){leaveForm(function(){discardForm();tab(k)})}});
 
 /* ---- formulier ---- */
-var SPECIES=['Karper','Brasem','Zeelt','Meerval','Steur','Snoek','Snoekbaars','Paling','Witvis'];
+var CARP=['Karper','Spiegelkarper','Schubkarper','Volschubkarper','Rijenkarper','Leerkarper'];
+var SPECIES=['Spiegelkarper','Schubkarper','Volschubkarper','Rijenkarper','Leerkarper','Karper','Graskarper','Brasem','Zeelt','Meerval','Steur','Snoek','Snoekbaars','Paling','Witvis'];
 var OPT={access:['Openbaar','Betaalwater'],water:['Rivier','Kanaal','Meer','Vijver'],weer:['Zon','Half bewolkt','Bewolkt','Regen','Mist','Onweer'],wdir:['N','NO','O','ZO','Z','ZW','W','NW'],maan:['Nieuwe maan','Wassende maan','Volle maan','Afnemende maan']};
 var FIELDS=['wind','temp','press','notes','access','water','wname','weer','wdir','maan'];
 ['access','water'].forEach(function(k){$(k).innerHTML='<option value="" disabled>Kies…</option>'+OPT[k].map(function(o){return '<option>'+o+'</option>'}).join('')});
@@ -577,6 +582,18 @@ function thSet(t){try{if(t!=='night')localStorage.setItem(KEY+'-thday',t);localS
 $('thm').onclick=function(e){var b=e.target.closest('[data-th]');if(b)thSet(b.dataset.th)};
 $('nightB').onclick=function(){if(thGet()==='night'){var d='auto';try{d=localStorage.getItem(KEY+'-thday')||'auto'}catch(e){}thSet(d)}else thSet('night')};
 thApply(thGet());
+/* ---- uitleg bij eerste opstart ---- */
+var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stekken, stokken en vangsten op één plek.</p><p>In een paar stappen zie je hoe het werkt.</p>'],
+['Vissen','<ul><li><b>Start sessie</b> zodra je aan het water staat. De app houdt de tijd bij.</li><li>Tijdens de sessie: <b>Voeg vangst toe</b> en <b>Verplaats stok</b>.</li><li>Elk onderdeel (locatie, stokken, omstandigheden, foto\'s) pas je aan via <b>Bewerk</b>.</li><li>Klaar? <b>Stop sessie</b>.</li></ul><p>Vergeten te starten? Kies <b>Sessie achteraf invoeren</b>.</p>'],
+['Stek en stokken','<ul><li>Gebruik GPS of plak de coördinaten uit Google Maps: een bekende stek binnen 50 m wordt herkend.</li><li>Neem een stekfoto en duid per stok aan waar hij ligt.</li><li>Verplaats je een stok, dan blijft de vorige plek bewaard (blank in grijs, vangst in groen).</li></ul>'],
+['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht.</li><li>Filter en sorteer op water, soort, gewicht, periode…</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li></ul>'],
+['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via het tabblad <b>Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Na 7 dagen zonder back-up krijg je een herinnering.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
+['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (uit te zetten bij Weergave).</li></ul><p>Veel vangst!</p>']];
+var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+INTRO[inI][1];$('inD').innerHTML=INTRO.map(function(x,i){return '<span'+(i===inI?' class="on"':'')+'></span>'}).join('');$('inPrev').style.visibility=inI?'visible':'hidden';$('inNext').textContent=inI===INTRO.length-1?'Aan de slag':'Volgende';$('inSkip').hidden=inI===INTRO.length-1}
+function inOpen(){inI=0;inDraw();$('intro').hidden=false}
+function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
+$('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
+(function(){var seen=null;try{seen=localStorage.getItem(KEY+'-intro')}catch(e){seen='1'}if(!seen)setTimeout(inOpen,300)})();
 var WL=null;function wakeOn(){try{return localStorage.getItem(KEY+'-wake')!=='0'}catch(e){return true}}
 function wakeUpd(){var want=wakeOn()&&!!activeSes()&&document.visibilityState==='visible';
 if(want&&!WL&&navigator.wakeLock){WL='pending';navigator.wakeLock.request('screen').then(function(l){WL=l;l.addEventListener('release',function(){if(WL===l)WL=null})}).catch(function(){WL=null})}
@@ -641,13 +658,18 @@ function thumb(pid,del,cap){return '<div class="th"><img data-pid="'+pid+'" alt=
 function fillThumbs(root){[].forEach.call((root||document).querySelectorAll('img[data-pid]'),function(i){if(i.src)return;pUrl(i.dataset.pid,function(u){if(u)i.src=u})})}
 function kgN(c){var k=parseFloat(String(c&&c.kg||'').replace(',','.'));return isNaN(k)?0:k}
 function eachCatch(fn){data.forEach(function(s){s.catches.forEach(function(c){fn(c,s)})})}
-function maxKg(sp,wn,skip){var m=0;eachCatch(function(c,s){if(c.sp!==sp||(skip&&skip[c.cid]))return;if(wn!=null&&norm(s.wname)!==norm(wn))return;var k=kgN(c);if(k>m)m=k});return m}
-var PRC=null;function prOf(c){if(!PRC){PRC={};var best={},wb={};eachCatch(function(x,s){var k=kgN(x);if(!k||!x.sp)return;var key=x.sp,wk=x.sp+'|'+norm(s.wname),t=s.date+' '+(x.time||'');
-if(!best[key]||k>best[key].k||(k===best[key].k&&t<best[key].t))best[key]={k:k,t:t,c:x.cid};if(!wb[wk]||k>wb[wk].k||(k===wb[wk].k&&t<wb[wk].t))wb[wk]={k:k,t:t,c:x.cid}});
-Object.keys(best).forEach(function(k){PRC[best[k].c]='pr'});Object.keys(wb).forEach(function(k){if(!PRC[wb[k].c])PRC[wb[k].c]='wpr'})}return PRC[c.cid]||''}
-function prTag(c){var p=prOf(c);return p==='pr'?' <span class="prt">PR</span>':p==='wpr'?' <span class="prt w">Water-PR</span>':''}
-function prCheck(list,wn){var skip={};list.forEach(function(c){skip[c.cid]=1});var msg=[];list.forEach(function(c){var k=kgN(c);if(!k||!c.sp)return;var all=maxKg(c.sp,null,skip),w=maxKg(c.sp,wn,skip);
-if(k>all&&all>0)msg.push('Nieuw persoonlijk record '+c.sp.toLowerCase()+': '+kgs(k)+' kg (vorige: '+kgs(all)+' kg).');else if(k>w&&w>0)msg.push('Zwaarste '+c.sp.toLowerCase()+' ooit op '+wn+': '+kgs(k)+' kg (vorige: '+kgs(w)+' kg).')});
+function grpOf(sp){return CARP.indexOf(sp)>-1?'karper':sp}
+function shortSp(sp){return sp.replace(/karper$/,'')}
+function maxKg(test,wn,skip){var m=0;eachCatch(function(c,s){if(!test(c.sp)||(skip&&skip[c.cid]))return;if(wn!=null&&norm(s.wname)!==norm(wn))return;var k=kgN(c);if(k>m)m=k});return m}
+var PRC=null;function prOf(c){if(!PRC){PRC={};var G={},V={},W={};function upd(o,key,x,k,t){if(!o[key]||k>o[key].k||(k===o[key].k&&t<o[key].t))o[key]={k:k,t:t,c:x.cid}}
+eachCatch(function(x,s){var k=kgN(x);if(!k||!x.sp)return;var t=s.date+' '+(x.time||''),g=grpOf(x.sp);upd(G,g,x,k,t);if(g==='karper'&&x.sp!=='Karper')upd(V,x.sp,x,k,t);upd(W,g+'|'+norm(s.wname),x,k,t)});
+Object.keys(G).forEach(function(k){PRC[G[k].c]='pr'});Object.keys(V).forEach(function(k){if(!PRC[V[k].c])PRC[V[k].c]='v:'+k});Object.keys(W).forEach(function(k){if(!PRC[W[k].c])PRC[W[k].c]='wpr'})}return PRC[c.cid]||''}
+function prTag(c){var p=prOf(c);return p==='pr'?' <span class="prt">PR</span>':p.indexOf('v:')===0?' <span class="prt w">PR '+esc(shortSp(p.slice(2)))+'</span>':p==='wpr'?' <span class="prt w">Water-PR</span>':''}
+function prCheck(list,wn){var skip={};list.forEach(function(c){skip[c.cid]=1});var msg=[];list.forEach(function(c){var k=kgN(c);if(!k||!c.sp)return;var g=grpOf(c.sp),inG=function(x){return grpOf(x)===g},sameSp=function(x){return x===c.sp};
+var all=maxKg(inG,null,skip),v=g==='karper'&&c.sp!=='Karper'?maxKg(sameSp,null,skip):0,w=maxKg(inG,wn,skip),nm=g==='karper'&&c.sp!=='Karper'?'karper ('+c.sp.toLowerCase()+')':c.sp.toLowerCase();
+if(k>all&&all>0)msg.push('Nieuw persoonlijk record '+nm+': '+kgs(k)+' kg (vorige: '+kgs(all)+' kg).');
+else if(k>v&&v>0)msg.push('Je zwaarste '+c.sp.toLowerCase()+' ooit: '+kgs(k)+' kg (vorige: '+kgs(v)+' kg).');
+else if(k>w&&w>0)msg.push('Zwaarste '+(g==='karper'?'karper':c.sp.toLowerCase())+' ooit op '+wn+': '+kgs(k)+' kg (vorige: '+kgs(w)+' kg).')});
 if(msg.length)setTimeout(function(){ask('Proficiat! '+msg.join(' '),'Top!')},150)}
 function recap(c,s){if(!c.name)return '';var o=[];eachCatch(function(x,t){if(x.cid!==c.cid&&x.name&&norm(x.name)===norm(c.name))o.push(t.date.split('-').reverse().slice(0,2).join('/')+'/'+t.date.slice(2,4)+(x.kg?' ('+kgs(x.kg)+' kg)':''))});return o.length?'Ook gevangen op '+o.join(', '):''}
 function kgs(v){return String(v).replace('.',',')}
@@ -1013,7 +1035,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.4.1';
+var APP_VERSION='0.4.2';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
