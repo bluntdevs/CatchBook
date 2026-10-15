@@ -160,6 +160,41 @@ button:disabled{opacity:.45;cursor:default}
 .rrow{padding:8px 0;border-bottom:1px solid var(--line)}.rrow:last-child{border-bottom:0}
 .rrow .meta{margin-top:0}
 #autoH{min-height:2.7em}
+.cw{position:relative;display:block}
+.cw>input{padding-right:36px}
+.cx{position:absolute;right:2px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:none;color:var(--mute);font-size:1.35rem;line-height:1;padding:0}
+.cw>input:placeholder-shown+.cx{display:none}
+.addf .cw{flex:1}
+.rmini{position:relative;display:block;width:64px;height:48px;flex:none;border-radius:6px;overflow:hidden;background:var(--line)}
+.rmini img{width:100%;height:100%;object-fit:cover;display:block}
+.rmini .dot{position:absolute;width:10px;height:10px;border-radius:50%;background:#d9382c;border:2px solid #fff;transform:translate(-50%,-50%)}
+.rsum{cursor:pointer}
+.rsum .rl{display:flex;gap:10px;align-items:center;flex:1;min-width:0}
+.rprev{position:relative;margin-top:10px;border-radius:8px;overflow:hidden;cursor:pointer}
+.rprev img{display:block;width:100%;max-height:180px;object-fit:cover}
+.rprev .dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#d9382c;border:2px solid #fff;transform:translate(-50%,-50%)}
+.rprev span.tip{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.55);color:#fff;font-size:.78rem;padding:3px 7px;border-radius:6px}
+.secrow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.secrow:last-child{border-bottom:0}
+.secrow .fss{margin-top:2px}
+.bigstop{width:100%;padding:16px;font-size:1.05rem;margin-top:12px}
+details.rd{border-bottom:1px solid var(--line);padding:8px 0}
+details.rd:last-child{border-bottom:0}
+details.rd summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.rd summary::-webkit-details-marker{display:none}
+details.rd summary::after{content:'▾';color:var(--mute)}
+details.rd[open] summary::after{content:'▴'}
+.tagb{font-size:.82rem;padding:2px 8px;border-radius:999px;background:var(--bg);color:var(--mute);white-space:nowrap}
+.tagb.hit{background:#1f8a4c;color:#fff}
+#list .sess{position:relative;overflow:hidden}
+.col{position:absolute;inset:0;display:grid;gap:2px;z-index:0}
+.col img{width:100%;height:100%;object-fit:cover;display:block}
+.col.n1{grid-template-columns:1fr}.col.n2{grid-template-columns:1fr 1fr}.col.n3{grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr}.col.n3 img:first-child{grid-row:span 2}.col.n4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.col::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.72))}
+.sess.ph{color:#fff;min-height:132px;display:flex;flex-direction:column;justify-content:flex-end}
+.sess.ph>*:not(.col){position:relative;z-index:1}
+.sess.ph .meta{color:rgba(255,255,255,.88)}
+.sess.ph .cb{position:absolute;top:12px;right:12px}
 #upd{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 </style>
 </head>
@@ -193,11 +228,10 @@ button:disabled{opacity:.45;cursor:default}
 <div class="meta" id="runMeta"></div>
 <div class="runtime" id="runT"></div>
 <div class="runstats"><div><b id="runN">0</b><span>vangsten</span></div><div><b id="runB">–</b><span>zwaarste (kg)</span></div><div><b id="runR">0</b><span>stokken</span></div></div>
-<div class="g2" style="margin-top:12px"><button class="btn" id="bCatch">Voeg vangst toe</button><button class="ghost" id="bMove">Verplaats stok</button></div>
-<div class="g2" style="margin-top:8px"><button class="ghost" id="bEdit">Bewerk sessie</button><button class="btn warnb" id="bStop">Stop sessie</button></div>
+<button class="btn warnb bigstop" id="bStop">Stop sessie</button>
+<div class="g2" style="margin-top:8px"><button class="btn" id="bCatch">Voeg vangst toe</button><button class="ghost" id="bMove">Verplaats stok</button></div>
 </div>
-<div class="sess"><h3>Stokken</h3><div id="runRods"></div></div>
-<div class="sess"><h3>Vangsten</h3><div id="runCatch"></div></div>
+<div class="sess"><h3>Sessie</h3><div id="runSecs"></div></div>
 </div>
 <p class="hint" id="liveInfo"></p>
 </div>
@@ -224,12 +258,12 @@ button:disabled{opacity:.45;cursor:default}
 <button type="button" class="btn okb" data-conf="when">Bevestig</button></div></section>
 <section class="fs" data-sec="loc"><div class="fsh"><div><b>Locatie en water</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="loc">Bewerk</button></div><div class="fb">
 <div class="g2"><button type="button" class="ghost" id="gps">Mijn GPS-positie</button><a id="mapsA" class="ghost lnk" href="https://www.google.com/maps" target="_blank" rel="noopener">Open Google Maps</a></div>
-<label for="murl">Coördinaten (uit Google Maps)</label><input id="murl" inputmode="decimal" autocomplete="off" placeholder="bv. 50.8412, 3.2671">
+<label for="murl">Coördinaten (uit Google Maps)</label><span class="cw"><input id="murl" inputmode="decimal" autocomplete="off" placeholder="bv. 50.8412, 3.2671"><button type="button" class="cx" tabindex="-1" aria-label="Wis">×</button></span>
 <p class="hint">Druk in Google Maps lang op je plek. De coördinaten verschijnen bovenaan: kopieer ze en plak ze hier. De app zoekt een bekende stek binnen 50 m en vult de rest in.</p>
 <p class="hint" id="locMsg" role="status"></p>
 <label for="stekSel">Stek</label><select id="stekSel"></select>
-<div id="stekNew" hidden><label for="stek">Naam nieuwe stek</label><input id="stek" placeholder="bv. Rietkant"></div>
-<label for="wname">Naam van het water</label><input id="wname" data-sug="wnames" autocomplete="off" placeholder="bv. IJzer" required>
+<div id="stekNew" hidden><label for="stek">Naam nieuwe stek</label><span class="cw"><input id="stek" placeholder="bv. Rietkant"><button type="button" class="cx" tabindex="-1" aria-label="Wis">×</button></span></div>
+<label for="wname">Naam van het water</label><span class="cw"><input id="wname" data-sug="wnames" autocomplete="off" placeholder="bv. IJzer" required><button type="button" class="cx" tabindex="-1" aria-label="Wis">×</button></span>
 <datalist id="wnames"></datalist>
 <label for="access">Toegang</label><select id="access" required></select>
 <label for="water">Watertype</label><select id="water" required></select>
@@ -237,7 +271,7 @@ button:disabled{opacity:.45;cursor:default}
 <div class="g2 mapr"><button type="button" class="ghost" id="stekPh">Foto van de stek toevoegen</button></div>
 <img id="stekImg" alt="Stekfoto" hidden>
 <p class="hint" id="stekPh2"></p><div id="stekPrev" class="cph"></div>
-<input type="file" id="stekFile" accept="image/*" hidden>
+<input type="file" id="stekFile" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hidden>
 <button type="button" class="btn okb" data-conf="loc">Bevestig</button></div></section>
 <section class="fs" data-sec="rods"><div class="fsh"><div><b>Stokken</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="rods">Bewerk</button></div><div class="fb">
 <div id="rods"></div>
@@ -278,7 +312,7 @@ button:disabled{opacity:.45;cursor:default}
 <div class="row"><button class="ghost" id="json">Back-up (JSON)</button><button class="ghost" id="csv">Exporteer CSV</button></div></div>
 <div class="sess"><h3>Namen opkuisen</h3>
 <p class="meta">Oude of dubbele namen samenvoegen. Tik op Wijzig en kies de juiste naam: alle sessies worden aangepast.</p>
-<select id="nmCat" aria-label="Soort naam"><option value="wname">Naam van het water</option><option value="rig">Montage</option><option value="bait">Haakaas</option><option value="feed">Voeraas</option><option value="feat">Kenmerken</option></select>
+<select id="nmCat" aria-label="Soort naam"><option value="wname">Naam van het water</option><option value="rig">Montage</option><option value="bait">Haakaas</option><option value="feed">Voer</option><option value="feat">Kenmerken</option></select>
 <div id="nmList"></div>
 </div>
 <div class="sess"><h3>Alles wissen</h3><p class="meta">Wist alle sessies, stekken en foto's op dit toestel. Maak eerst een back-up als je iets wilt bewaren.</p><div class="row"><button class="ghost" id="wipe" style="color:var(--warn)">Alle gegevens wissen</button></div></div>
@@ -293,7 +327,7 @@ button:disabled{opacity:.45;cursor:default}
 <div id="cq" class="dlg" hidden><div class="dbox"><b>Vangst toevoegen</b><label for="qSp">Soort</label><select id="qSp"></select><label for="qRd">Stok</label><select id="qRd"></select><div class="g2"><div><label for="qKg">Gewicht (kg)</label><input id="qKg" type="text" inputmode="decimal" data-dec="1" autocomplete="off"></div><div><label for="qCm">Lengte (cm)</label><input id="qCm" type="number"></div></div><div class="cph" id="qPh" style="margin-top:10px"></div><button type="button" class="ghost" id="qPhB" style="width:100%">Foto toevoegen</button><div class="pf"><button type="button" class="ghost" id="qNo">Annuleer</button><button type="button" class="btn" id="qYes">Opslaan</button></div></div></div>
 <div id="sug" role="listbox" hidden></div>
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
-<input type="file" id="phFile" accept="image/*" multiple hidden>
+<input type="file" id="phFile" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple hidden>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
 <input type="file" id="file" accept=".json" hidden>
@@ -304,10 +338,10 @@ var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
 data.forEach(function(s){
 if(!s.rods){s.rods=(s.bait||s.rig)?[{bait:s.bait||'',rig:s.rig||''}]:[];delete s.bait;delete s.rig}
-s.rods.forEach(function(r,i){r.no=r.no||i+1;r.from=r.from||'';r.bait=r.bait||'';r.feed=r.feed||'';r.rig=r.rig||'';r.depth=r.depth||'';r.dist=r.dist||'';r.feat=r.feat||[];if(r.mx==null){r.mx=null;r.my=null}});
+s.rods.forEach(function(r,i){r.no=r.no||i+1;r.from=r.from||'';r.bait=r.bait||'';r.feed=Array.isArray(r.feed)?r.feed:(r.feed?[r.feed]:[]);r.baitNote=r.baitNote||'';r.feedNote=r.feedNote||'';r.rig=r.rig||'';r.depth=r.depth||'';r.dist=r.dist||'';r.feat=r.feat||[];if(r.mx==null){r.mx=null;r.my=null}});
 s.catches=s.catches||[];s.photos=s.photos||[];s.catches.forEach(function(c){c.photos=c.photos||[];c.cid=c.cid||('c'+uid())});s.stekId=s.stekId||'';s.time=s.time||'';s.dateEnd=s.dateEnd||'';s.timeEnd=s.timeEnd||'';
 if(!s.locId&&!s.mapUrl&&s.spot){var o=oldL[[s.wname,s.spot].map(function(x){return String(x||'').trim().toLowerCase()}).join('|')];if(o&&o.url)s.mapUrl=o.url}
-if(!s.rods.length&&s.catches.length)s.rods=[{bait:'',feed:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null}]});
+if(!s.rods.length&&s.catches.length)s.rods=[{bait:'',feed:[],baitNote:'',feedNote:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null}]});
 STEKS.forEach(function(t){if(t.locId){var l=LOCS.filter(function(x){return x.id===t.locId})[0];t.wname=l?l.wname:(t.wname||'');delete t.locId}t.wname=t.wname||'';delete t.spot});
 data.forEach(function(s){if(s.locId){var l=LOCS.filter(function(x){return x.id===s.locId})[0];if(l&&!s.mapUrl)s.mapUrl=l.url||''}delete s.locId;s.mapUrl=s.mapUrl||'';
 s.rods.forEach(function(r,i){});if(s.rods.length)s.catches.forEach(function(c){if(!(parseInt(c.rod,10)>=1&&parseInt(c.rod,10)<=s.rods.length))c.rod='1'})});
@@ -444,14 +478,14 @@ function drawStekPrev(){var c=curStek(),l=c?stekPhotosOf(c.id):[];$('stekPrev').
 $('stekPh2').textContent=c&&l.length&&!stekPicked?'Voorgesteld: de laatste foto van deze stek. Kies hieronder een andere of voeg een nieuwe toe.':(l.length>1?'Eerdere foto\'s van deze stek:':'')}
 function photoChanged(){if(R.some(function(r){return r.mx!=null}))ask('De stekfoto is veranderd. De aanduidingen van je stokken passen misschien niet meer. Wissen?','Wis aanduidingen',function(){R.forEach(function(r){r.mx=null;r.my=null});drawRods()});showStek();updMk();drawStekPrev()}
 $('stekPrev').addEventListener('click',function(e){var i=e.target.closest('img[data-sp]');if(!i)return;e.stopPropagation();stekPid=i.dataset.sp;stekBlob=null;stekPicked=true;photoChanged()},true);
-function showStek(){stekUrl(function(u){var i=$('stekImg');if(u){i.src=u;i.hidden=false}else{i.removeAttribute('src');i.hidden=true}$('stekPh').textContent=u?'Nieuwe stekfoto':'Foto van de stek toevoegen'})}
+function showStek(){stekUrl(function(u){var ch=STEKU!==u;STEKU=u||null;if(ch&&$('rods').children.length)setTimeout(drawRods,0);var i=$('stekImg');if(u){i.src=u;i.hidden=false}else{i.removeAttribute('src');i.hidden=true}$('stekPh').textContent=u?'Nieuwe stekfoto':'Foto van de stek toevoegen'})}
 function stekList(){stekOptions()}
 $('stekPh').onclick=function(){$('stekFile').click()};
 $('stekFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}stekBlob=b;stekPicked=true;if(stekObj){URL.revokeObjectURL(stekObj);stekObj=null}photoChanged()})};
 
 /* stokken en vangsten per stok */
 var C=[];
-function blankRod(no){return{no:no||1,from:'',bait:'',feed:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null,_c:false}}
+function blankRod(no){return{no:no||1,from:'',bait:'',baitNote:'',feed:[],feedNote:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null,_c:false}}
 function rodInfo(list,i){var r=list[i]||{},no=r.no||i+1,same=0,pos=0;list.forEach(function(x,k){if((x.no||k+1)===no){same++;if(k<=i)pos=same}});
 return{no:no,pos:pos,multi:same>1,label:'Stok '+no+(same>1?' · positie '+pos:''),tag:no+(pos>1?'.'+pos:''),from:r.from||''}}
 /* tijd: posities en vangsten op datum plaatsen (ook over middernacht) */
@@ -479,23 +513,31 @@ return (v===''?'<option value="">–</option>':'')+l.map(function(o){return '<op
 function rodSum(r,n){var b=[r.rig,r.bait].filter(Boolean).join(' · ');return (b||'geen info')+' · '+n+(n===1?' vangst':' vangsten')}
 function drawRods(){var ph=hasStekPhoto();$('rods').innerHTML=R.map(function(r,i){var d='data-i="'+i+'"',mine=C.map(function(c,j){return [c,j]}).filter(function(x){return x[0].rod===i});
 var ri=rodInfo(R,i),head=esc(ri.label)+' <span class="hint">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'nu',$('dS').value,$('dE').value))+'</span>';
-if(r._c)return '<div class="rod"><div class="rsum"><div><b>'+head+'</b><br><span>'+esc(rodSum(r,mine.length))+(r.mx!=null?' · aangeduid':'')+'</span></div><div class="rbtns"><button type="button" class="ghost" data-mv="'+i+'">Verplaats</button><button type="button" class="ghost" data-open="'+i+'">Bewerk</button></div></div></div>';
+if(r._c)return '<div class="rod"><div class="rsum" data-open="'+i+'"><div class="rl">'+rodMini(r,i)+'<div><b>'+head+'</b><br><span class="hint">'+(mine.length?mine.length+(mine.length===1?' vangst':' vangsten'):'blank')+'</span></div></div><button type="button" class="ghost" data-mv="'+i+'">Verplaats</button></div></div>';
 return '<div class="rod"><div class="rh"><b>'+head+'</b><button type="button" class="x" data-rm="'+i+'" aria-label="Verwijder '+esc(ri.label)+'">×</button></div>'
 +'<div class="g2"><div><label>Vanaf (uur)</label><input '+d+' data-k="from" type="time" value="'+esc(r.from)+'"></div><div><label>Tot (uur)</label><p class="hint" style="margin-top:10px">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'einde sessie',$('dS').value,$('dE').value).split('–')[1])+'</p></div></div>'+(ri.pos===1?'<p class="hint">Leeg = start van de sessie. Het einde is de volgende positie of het einde van de sessie.</p>':'')
-+'<div class="g2"><div><label>Montage</label><input '+d+' data-k="rig" data-sug="rigs" autocomplete="off" value="'+esc(r.rig)+'"></div><div><label>Haakaas</label><input '+d+' data-k="bait" data-sug="baits" autocomplete="off" value="'+esc(r.bait)+'"></div></div>'
-+'<div class="g2"><div><label>Voeraas</label><input '+d+' data-k="feed" data-sug="feeds" autocomplete="off" value="'+esc(r.feed)+'"></div><div><label>Diepte (m)</label><input '+d+' data-k="depth" type="text" inputmode="decimal" data-dec="1" autocomplete="off" value="'+esc(r.depth)+'"></div></div>'
-+'<div class="g2"><div><label>Afstand (m)</label><input '+d+' data-k="dist" type="number" min="0" value="'+esc(r.dist)+'"></div></div>'
-+'<label>Kenmerken</label><div class="chips">'+r.feat.map(function(f,j){return chip(f+' ×',true,'data-df="'+i+'|'+j+'"')}).join('')+'</div>'
-+'<div class="addf"><input '+d+' data-f="1" data-sug="feats" autocomplete="off" placeholder="bv. rietkraag, onder boom"><button type="button" class="ghost" data-af="'+i+'">Toevoegen</button></div>'
++'<label>Montage</label>'+cw('<input '+d+' data-k="rig" data-sug="rigs" autocomplete="off" placeholder="kies of typ" value="'+esc(r.rig)+'">')
++'<div class="g2"><div><label>Haakaas</label>'+cw('<input '+d+' data-k="bait" data-sug="baits" autocomplete="off" placeholder="kies of typ" value="'+esc(r.bait)+'">')+'</div><div><label>Specificatie haakaas</label>'+cw('<input '+d+' data-k="baitNote" autocomplete="off" placeholder="bv. merk, 15 mm, + fakecorn" value="'+esc(r.baitNote)+'">')+'</div></div>'
++'<label>Voer</label><div class="chips">'+(r.feed||[]).map(function(f,j){return chip(f+' ×',true,'data-dl="'+i+'|feed|'+j+'"')}).join('')+'</div>'
++'<div class="addf">'+cw('<input '+d+' data-lf="feed" data-sug="feeds" autocomplete="off" placeholder="bv. boilies, partikels">')+'<button type="button" class="ghost" data-al="'+i+'|feed">Toevoegen</button></div>'
++'<label>Specificatie voer</label>'+cw('<input '+d+' data-k="feedNote" autocomplete="off" placeholder="bv. 2 kg boilies, 1 kg hennep" value="'+esc(r.feedNote)+'">')
++'<div class="g2"><div><label>Diepte (m)</label><input '+d+' data-k="depth" type="text" inputmode="decimal" data-dec="1" autocomplete="off" value="'+esc(r.depth)+'"></div><div><label>Afstand (m)</label><input '+d+' data-k="dist" type="number" min="0" value="'+esc(r.dist)+'"></div></div>'
++'<label>Kenmerken</label><div class="chips">'+r.feat.map(function(f,j){return chip(f+' ×',true,'data-dl="'+i+'|feat|'+j+'"')}).join('')+'</div>'
++'<div class="addf">'+cw('<input '+d+' data-lf="feat" data-sug="feats" autocomplete="off" placeholder="bv. rietkraag, onder boom">')+'<button type="button" class="ghost" data-al="'+i+'|feat">Toevoegen</button></div>'
++rodPrev(r,i)
 +'<button type="button" class="ghost mkb" data-mk="'+i+'"'+(ph?'':' disabled')+'>'+(r.mx!=null?'Locatie aangeduid ✓ (wijzig)':'Locatie aanduiden op stekfoto')+'</button>'
 +'<p class="hint mkh"'+(ph?' hidden':'')+'>Voeg eerst een stekfoto toe om je stok aan te duiden.</p>'
 +'<div class="rcat"><label>Vangsten '+esc(ri.label.replace('Stok','stok'))+' (soort, kg, cm, uur)</label>'+mine.map(function(x){var c=x[0],j=x[1];return '<div class="crow"><select data-c="'+j+'" data-ck="sp" aria-label="Soort">'+spOpts(c.sp)+'</select><input data-c="'+j+'" data-ck="kg" type="text" inputmode="decimal" data-dec="1" autocomplete="off" placeholder="kg" value="'+esc(c.kg)+'"><input data-c="'+j+'" data-ck="cm" type="number" placeholder="cm" value="'+esc(c.cm)+'"><input data-c="'+j+'" data-ck="time" type="time" aria-label="Uur" value="'+esc(c.time)+'"><button type="button" data-cdel="'+j+'" aria-label="Verwijder vangst">×</button></div><div class="cph">'+P.filter(function(p){return p.to===c.cid}).map(function(p){return thumb(p.pid,true)}).join('')+'<button type="button" class="ghost phb" data-cph="'+j+'">Foto</button></div>'}).join('')
 +'<button type="button" class="ghost" data-cadd="'+i+'">Vangst toevoegen</button></div>'
 +'<button type="button" class="ghost" data-mv="'+i+'" style="width:100%;margin-top:10px">Stok verplaatsen</button><p class="hint">Verplaats je deze stok, maak dan een nieuwe positie aan. Zo blijven ook blanke plekken bewaard.</p>'+'<button type="button" class="btn okb" data-ok="'+i+'">Bevestig '+esc(ri.label.replace('Stok','stok'))+'</button></div>'}).join('');fillThumbs($('rods'));drawPics()}
+function rodMini(r,i){var u=stekCur();if(!u)return '';return '<span class="rmini"><img src="'+u+'" alt="">'+(r.mx!=null?'<span class="dot" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%"></span>':'')+'</span>'}
+function rodPrev(r,i){var u=stekCur();if(!u||r.mx==null)return '';return '<div class="rprev" data-mkp="'+i+'"><img src="'+u+'" alt="Stekfoto met deze stok"><span class="dot" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%"></span><span class="tip">Tik om te wijzigen</span></div>'}
+var STEKU=null;function stekCur(){return STEKU}
 function updMk(){var ph=hasStekPhoto();[].forEach.call($('rods').querySelectorAll('button[data-mk]'),function(b){b.disabled=!ph});[].forEach.call($('rods').querySelectorAll('.mkh'),function(h){h.hidden=ph})}
 function thumb(pid,del,cap){return '<div class="th"><img data-pid="'+pid+'" alt="Foto">'+(del?'<button type="button" class="pdel" data-pdel="'+pid+'" aria-label="Verwijder foto">×</button>':'')+(cap?'<div class="cap">'+esc(cap)+'</div>':'')+'</div>'}
 function fillThumbs(root){[].forEach.call((root||document).querySelectorAll('img[data-pid]'),function(i){if(i.src)return;pUrl(i.dataset.pid,function(u){if(u)i.src=u})})}
-function catchLabel(c){return [rodInfo(R,c.rod).label,c.sp,c.kg?c.kg+' kg':'',c.time||''].filter(Boolean).join(' · ')}
+function kgs(v){return String(v).replace('.',',')}
+function catchLabel(c){return [rodInfo(R,c.rod).label,c.sp,c.kg?kgs(c.kg)+' kg':'',c.time||''].filter(Boolean).join(' · ')}
 var DEF={rig:['Hair rig','D-rig','Wafter D-rig','Ronnie rig (spinner rig)','360 rig','Chod rig','Naked chod','Hinged stiff rig','Multi rig','KD rig','Blowback rig','Combi rig','Snowman rig','Zig rig','Mini zig','Solid PVA bag rig','Method feeder','Helicopter rig','Inline lood','Lood op clip (safety clip)'],
 bait:['Boilie','Pop-up','Wafter','Snowman (boilie + pop-up)','Maïs','Kunstmaïs','Tijgernoot','Pellet','Partikels','Worm','Brood'],
 feed:['Boilies','Gebroken boilies','Pellets','Hennep','Maïs','Tijgernoten','Partikelmix','Method mix','Spodmix','Stickmix','Groundbait'],
@@ -503,20 +545,22 @@ feat:['Rietkraag','Onder boom','Overhangende takken','Waterplanten','Lelieveld',
 function tidyKey(x){return norm(x).replace(/[\s\-_.()+]/g,'')}
 function tidy(v,src){v=String(v||'').replace(/\s+/g,' ').trim();if(!v)return v;var k=tidyKey(v),opts=[].map.call($(src).options,function(o){return o.value});
 var hit=opts.filter(function(o){return tidyKey(o)===k||tidyKey(o)===k+'rig'})[0];if(hit)return hit;hit=opts.filter(function(o){var m=/^(.*?)\s*\((.*)\)$/.exec(o);return m&&(tidyKey(m[1])===k||tidyKey(m[2])===k)})[0];if(hit)return hit;return v.charAt(0).toUpperCase()+v.slice(1)}
-function addFeat(i){var inp=$('rods').querySelector('input[data-f][data-i="'+i+'"]'),v=inp?tidy(inp.value,'feats'):'';if(!v)return;if(R[i].feat.indexOf(v)<0)R[i].feat.push(v);drawRods()}
-function pendingFeats(i){[].forEach.call($('rods').querySelectorAll('input[data-f]'+(i==null?'':'[data-i="'+i+'"]')),function(inp){var v=tidy(inp.value,'feats'),k=+inp.dataset.i;if(v&&R[k].feat.indexOf(v)<0)R[k].feat.push(v)})}
+var LSRC={feat:'feats',feed:'feeds'};
+function addList(i,k){var inp=$('rods').querySelector('input[data-lf="'+k+'"][data-i="'+i+'"]'),v=inp?tidy(inp.value,LSRC[k]):'';if(!v)return;R[i][k]=R[i][k]||[];if(R[i][k].indexOf(v)<0)R[i][k].push(v);drawRods()}
+function addFeat(i){addList(i,'feat')}
+function pendingFeats(i){[].forEach.call($('rods').querySelectorAll('input[data-lf]'+(i==null?'':'[data-i="'+i+'"]')),function(inp){var f=inp.dataset.lf,v=tidy(inp.value,LSRC[f]),k=+inp.dataset.i;R[k][f]=R[k][f]||[];if(v&&R[k][f].indexOf(v)<0)R[k][f].push(v)})}
 function rmRod(i){var n=C.filter(function(c){return c.rod===i}).length;
 function go(){C.forEach(function(c){if(c.rod===i)P.forEach(function(x){if(x.to===c.cid)x.to='sfeer'})});C=C.filter(function(c){return c.rod!==i});C.forEach(function(c){if(c.rod>i)c.rod--});var no=R[i].no;R.splice(i,1);if(!R.some(function(x){return x.no===no}))R.forEach(function(x){if(x.no>no)x.no--});if(!R.length)R.push(blankRod(1));drawRods()}
 var lb=rodInfo(R,i).label;if(n)ask(lb+' heeft '+n+(n===1?' vangst':' vangsten')+'. Verwijderen samen met de vangsten?','Verwijder',go);else go()}
 function moveRod(i){pendingFeats();var src=R[i],last=-1;R.forEach(function(x,k){if(x.no===src.no)last=k});
-var nr={no:src.no,from:nowT(),bait:src.bait,feed:src.feed,rig:src.rig,depth:'',dist:'',feat:src.feat.slice(),mx:null,my:null,_c:false};
+var nr={no:src.no,from:nowT(),bait:src.bait,baitNote:src.baitNote||'',feed:(src.feed||[]).slice(),feedNote:src.feedNote||'',rig:src.rig,depth:'',dist:'',feat:src.feat.slice(),mx:null,my:null,_c:false};
 R.forEach(function(x){x._c=true});R.splice(last+1,0,nr);C.forEach(function(c){if(c.rod>last)c.rod++});drawRods()}
 $('addRod').onclick=function(){pendingFeats();R.forEach(function(r){r._c=true});var mx=0;R.forEach(function(x){if(x.no>mx)mx=x.no});R.push(blankRod(mx+1));drawRods()};
 $('rods').oninput=function(e){var t=e.target,d=t.dataset;if(d.k)R[d.i][d.k]=t.value;if(d.ck)C[+d.c][d.ck]=t.value};
-$('rods').onchange=function(e){var t=e.target,d=t.dataset,src={rig:'rigs',bait:'baits',feed:'feeds'}[d.k];if(src){t.value=tidy(t.value,src)}$('rods').oninput(e)};
-$('rods').onclick=function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
-if(d.af!==undefined)addFeat(+d.af);
-else if(d.df){var p=d.df.split('|');R[+p[0]].feat.splice(+p[1],1);drawRods()}
+$('rods').onchange=function(e){var t=e.target,d=t.dataset,src={rig:'rigs',bait:'baits'}[d.k];if(src){t.value=tidy(t.value,src)}$('rods').oninput(e)};
+$('rods').onclick=function(e){var pv=e.target.closest('[data-mkp]');if(pv){openEd(+pv.dataset.mkp);return}var b=e.target.closest('button');var rs=e.target.closest('.rsum[data-open]');if(!b&&rs){R[+rs.dataset.open]._c=false;drawRods();return}if(!b)return;var d=b.dataset;
+if(d.al){var q=d.al.split('|');addList(+q[0],q[1])}
+else if(d.dl){var p=d.dl.split('|');R[+p[0]][p[1]].splice(+p[2],1);drawRods()}
 else if(d.rm!==undefined)rmRod(+d.rm);
 else if(d.mk!==undefined&&!b.disabled)openEd(+d.mk);
 else if(d.ok!==undefined){pendingFeats(+d.ok);R[+d.ok]._c=true;drawRods()}
@@ -526,13 +570,14 @@ else if(d.cadd!==undefined){C.push({cid:'c'+uid(),sp:'Karper',rod:+d.cadd,kg:'',
 else if(d.cph!==undefined){pickPhotos(C[+d.cph].cid)}
 else if(d.pdel){rmPhoto(d.pdel)}
 else if(d.cdel!==undefined){var cd=C[+d.cdel].cid,n=P.filter(function(x){return x.to===cd}).length;C.splice(+d.cdel,1);P.forEach(function(x){if(x.to===cd)x.to='sfeer'});drawRods();if(n)ask(n===1?'De foto van deze vangst staat nu bij de sfeerfoto\'s.':'De '+n+' foto\'s van deze vangst staan nu bij de sfeerfoto\'s.','OK')}};
-$('rods').onkeydown=function(e){if(e.key==='Enter'&&e.target.dataset.f){e.preventDefault();addFeat(+e.target.dataset.i)}};
-var edI=null;
-function edMarks(){$('edM').innerHTML=R.map(function(r,k){return r.mx!=null?'<span class="mk'+(k===edI?' cur':'')+'" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%">'+rodInfo(R,k).tag+'</span>':''}).join('')}
-function openEd(i){edI=i;stekUrl(function(u){if(!u)return;$('edT').textContent=rodInfo(R,i).label+': tik waar je ligt';$('edI').src=u;$('ed').hidden=false;edMarks()})}
-$('edI').onclick=function(e){var b=this.getBoundingClientRect();R[edI].mx=Math.min(1,Math.max(0,(e.clientX-b.left)/b.width));R[edI].my=Math.min(1,Math.max(0,(e.clientY-b.top)/b.height));edMarks()};
-$('edClr').onclick=function(){R[edI].mx=null;R[edI].my=null;edMarks()};
-$('edOk').onclick=function(){$('ed').hidden=true;drawRods()};
+$('rods').onkeydown=function(e){if(e.key==='Enter'&&e.target.dataset.lf){e.preventDefault();addList(+e.target.dataset.i,e.target.dataset.lf)}};
+var edI=null,EDL=null,edDone=null;
+function edMarks(){$('edM').innerHTML=EDL.map(function(r,k){return r.mx!=null?'<span class="mk'+(k===edI?' cur':'')+'" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%">'+rodInfo(EDL,k).tag+'</span>':''}).join('')}
+function openEdWith(list,i,u,done){if(!u)return;EDL=list;edI=i;edDone=done;$('edT').textContent=rodInfo(list,i).label+': tik waar je ligt';$('edI').src=u;$('ed').hidden=false;edMarks()}
+function openEd(i){pendingFeats();stekUrl(function(u){openEdWith(R,i,u,function(){formDirty=true;drawRods()})})}
+$('edI').onclick=function(e){var b=this.getBoundingClientRect();EDL[edI].mx=Math.min(1,Math.max(0,(e.clientX-b.left)/b.width));EDL[edI].my=Math.min(1,Math.max(0,(e.clientY-b.top)/b.height));edMarks()};
+$('edClr').onclick=function(){EDL[edI].mx=null;EDL[edI].my=null;edMarks()};
+$('edOk').onclick=function(){$('ed').hidden=true;var f=edDone;edDone=null;if(f)f()};
 function rigsOf(s){return s.rods.map(function(r){return r.rig}).filter(Boolean)}
 function uniqRig(){var r={};data.forEach(function(s){rigsOf(s).forEach(function(x){r[x]=1})});return Object.keys(r).sort()}
 function bl(s){var b={},r={};s.rods.forEach(function(x){if(x.bait)b[x.bait]=1;if(x.rig)r[x.rig]=1});return [Object.keys(b).join(', '),Object.keys(r).join(', ')].filter(Boolean).join(' / ')}
@@ -609,7 +654,7 @@ if(ti.err.length){show('rods');ask(ti.err.join(' '),'OK');return}
 if(ti.warn.length&&!forceTimes){ask('Controleer even: '+ti.warn.join(' '),'Toch opslaan',function(){forceTimes=true;$('f').requestSubmit()});return}
 forceTimes=false;
 pendingFeats();
-s.rods=R.map(function(r){return{no:r.no,from:r.from||'',bait:r.bait.trim(),feed:r.feed.trim(),rig:r.rig.trim(),depth:r.depth,dist:r.dist,feat:r.feat.slice(),mx:r.mx,my:r.my}});
+s.rods=R.map(function(r){return{no:r.no,from:r.from||'',bait:r.bait.trim(),baitNote:(r.baitNote||'').trim(),feed:(r.feed||[]).slice(),feedNote:(r.feedNote||'').trim(),rig:r.rig.trim(),depth:r.depth,dist:r.dist,feat:r.feat.slice(),mx:r.mx,my:r.my}});
 var keep=C.filter(function(c){return c.sp||c.kg||c.cm||P.some(function(x){return x.to===c.cid})});
 s.catches=keep.map(function(c){return{cid:c.cid,sp:c.sp,rod:String(c.rod+1),kg:c.kg,cm:c.cm,time:c.time,photos:P.filter(function(x){return x.to===c.cid}).map(function(x){return x.pid})}});
 s.photos=P.filter(function(x){return x.to==='sfeer'||!keep.some(function(c){return c.cid===x.to})}).map(function(x){return x.pid});NEWP=[];
@@ -627,6 +672,10 @@ $('phFile').addEventListener('change',function(){if(mode==='form')formDirty=true
 $('f').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT')e.preventDefault()});
 function leaveForm(go){if(mode!=='form'||!formDirty)return go();ask('Je wijzigingen zijn nog niet opgeslagen. Weggooien?','Weggooien',function(){discardForm();go()})}
 function discardForm(){editId=null;stekBlob=null;NEWP.forEach(pDel);NEWP=[];formDirty=false;$('ed').hidden=true;hideSug()}
+
+function cw(inp){return '<span class="cw">'+inp+'<button type="button" class="cx" tabindex="-1" aria-label="Wis">×</button></span>'}
+document.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('.cx'))e.preventDefault()},true);
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.cx');if(!b)return;var i=b.previousElementSibling;if(!i)return;i.value='';i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}));i.focus()});
 
 /* suggestielijst */
 var sugIn=null;
@@ -646,7 +695,7 @@ window.addEventListener('resize',function(){if(sugIn&&!$('sug').hidden)showSug(s
 $('sug').addEventListener('pointerdown',function(e){e.preventDefault()});
 $('sug').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!sugIn)return;var i=sugIn;i.value=b.dataset.v;hideSug();
 i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}));
-if(i.dataset.f)addFeat(+i.dataset.i)});
+if(i.dataset.lf)addList(+i.dataset.i,i.dataset.lf)});
 
 /* start, stop en snelle vangst */
 function activeSes(){return data.filter(function(s){return s.active})[0]}
@@ -654,12 +703,16 @@ function updLive(){drawLive()}
 function drawLive(){var a=activeSes();$('visIdle').hidden=!!a;$('visRun').hidden=!a;if(!a)return;
 $('runW').textContent=a.wname||'Sessie';$('runMeta').textContent=[a.spot,a.water,a.access].filter(Boolean).join(' · ');
 var ms=Date.now()-new Date(a.date+'T'+(a.time||'00:00')),m=Math.max(0,Math.floor(ms/6e4));$('runT').textContent=Math.floor(m/60)+' u '+(m%60<10?'0':'')+(m%60)+' min';
-var b=0;a.catches.forEach(function(c){var k=parseFloat(c.kg);if(k>b)b=k});$('runN').textContent=a.catches.length;$('runB').textContent=b||'–';$('runR').textContent=rodCount(a.rods);
-var lo=lastPos(a);$('runRods').innerHTML=Object.keys(lo).map(function(no){var i=lo[no],r=a.rods[i],ri=rodInfo(a.rods,i),n=a.catches.filter(function(c){var k=(parseInt(c.rod,10)||1)-1;return (a.rods[k]&&(a.rods[k].no||k+1))==no}).length;
-return '<div class="rrow"><b>'+esc(ri.label)+'</b> <span class="hint">'+esc(rodSpan(a.rods,i,a.time,'nu',a.date,''))+'</span><div class="meta">'+esc([r.rig,r.bait].filter(Boolean).join(' · ')||'geen info')+' · '+(n?n+(n===1?' vangst':' vangsten'):'nog niets')+'</div></div>'}).join('')||'<p class="hint">Nog geen stokken.</p>';
-$('runCatch').innerHTML=a.catches.length?a.catches.slice().sort(function(x,y){return (y.time||'')<(x.time||'')?-1:1}).map(function(c){var k=(parseInt(c.rod,10)||1)-1;return '<div class="rrow"><b>'+esc([c.time,c.sp,c.kg?c.kg+' kg':''].filter(Boolean).join(' · '))+'</b><div class="meta">'+esc(c.rod?rodInfo(a.rods,k).label:'geen stok')+((c.photos||[]).length?' · '+c.photos.length+' foto'+(c.photos.length>1?'\'s':''):'')+'</div></div>'}).join(''):'<p class="hint">Nog geen vangsten. Succes!</p>'}
+var b=0;a.catches.forEach(function(c){var k=parseFloat(c.kg);if(k>b)b=k});$('runN').textContent=a.catches.length;$('runB').textContent=b?kgs(b):'–';$('runR').textContent=rodCount(a.rods);
+var SN={when:'Wanneer',loc:'Locatie en water',rods:'Stokken',cond:'Omstandigheden',pics:"Foto's"};
+$('runSecs').innerHTML=SECS.map(function(k){return '<div class="secrow"><div><b>'+SN[k]+'</b><div class="fss">'+esc(sesSum(a,k))+'</div></div><button type="button" class="ghost" data-rs="'+k+'">Bewerk</button></div>'}).join('')}
+function sesSum(s,k){if(k==='when')return s.date+' '+(s.time||'')+(s.dateEnd?' tot '+s.dateEnd+' '+s.timeEnd:' · bezig');
+if(k==='loc')return [s.spot,s.wname,s.water,s.access].filter(Boolean).join(' · ');
+if(k==='rods'){var rc=rodCount(s.rods);return rc+(rc===1?' stok':' stokken')+(s.rods.length>rc?' ('+s.rods.length+' posities)':'')+' · '+s.catches.length+(s.catches.length===1?' vangst':' vangsten')}
+if(k==='cond')return [s.weer,s.wdir,s.wind,s.temp?s.temp+' °C':'',s.press?s.press+' hPa':''].filter(Boolean).join(' · ')||'niets ingevuld';
+var v=0;s.catches.forEach(function(c){v+=(c.photos||[]).length});var f=(s.photos||[]).length;return (v+f)?v+' vangstfoto'+(v===1?'':"'s")+' · '+f+' sfeerfoto'+(f===1?'':"'s"):"geen foto's"}
+$('runSecs').addEventListener('click',function(e){var b=e.target.closest('[data-rs]');if(!b)return;var a=activeSes();if(!a)return;openForm(a);show(b.dataset.rs)});
 setInterval(function(){if(tabNow==='vis'&&mode==='list')drawLive()},30000);
-$('bEdit').onclick=function(){var a=activeSes();if(a)openForm(a)};
 $('bStart').onclick=function(){openForm(null,true)};
 $('bStop').onclick=function(){var a=activeSes();if(!a)return;
 ask('Sessie stoppen? Het einde wordt op dit moment gezet.','Stop',function(){a.dateEnd=nowD();a.timeEnd=nowT();var ms=new Date(a.dateEnd+'T'+a.timeEnd)-new Date(a.date+'T'+(a.time||'00:00'));a.hours=ms>0?String(Math.round(ms/36e4)/10):'';a.active=false;save();render();$('liveInfo').textContent='Sessie gestopt. Je vindt ze terug bij Sessies.'})};
@@ -676,8 +729,11 @@ $('bMove').onclick=function(){var a=activeSes();if(!a)return;var lo=lastPos(a),k
 $('mRd').innerHTML=ks.map(function(no){var i=lo[no];return '<option value="'+i+'">'+esc(rodInfo(a.rods,i).label)+'</option>'}).join('');$('mT').value=nowT();$('mq').hidden=false};
 $('mNo').onclick=function(){$('mq').hidden=true};
 $('mYes').onclick=function(){var a=activeSes();$('mq').hidden=true;if(!a)return;var i=+$('mRd').value,src=a.rods[i];if(!src)return;var last=-1;a.rods.forEach(function(x,k){if((x.no||k+1)===(src.no||i+1))last=k});
-a.rods.splice(last+1,0,{no:src.no||i+1,from:$('mT').value||nowT(),bait:src.bait,feed:src.feed,rig:src.rig,depth:'',dist:'',feat:(src.feat||[]).slice(),mx:null,my:null});
-a.catches.forEach(function(c){var r=parseInt(c.rod,10);if(r>last+1)c.rod=String(r+1)});save();render();$('liveInfo').textContent=rodInfo(a.rods,last+1).label+' vanaf '+(a.rods[last+1].from)+'. Duid de nieuwe plek aan via Bewerk sessie, Stokken.'};
+a.rods.splice(last+1,0,{no:src.no||i+1,from:$('mT').value||nowT(),bait:src.bait,baitNote:src.baitNote||'',feed:(src.feed||[]).slice(),feedNote:src.feedNote||'',rig:src.rig,depth:'',dist:'',feat:(src.feat||[]).slice(),mx:null,my:null});
+a.catches.forEach(function(c){var r=parseInt(c.rod,10);if(r>last+1)c.rod=String(r+1)});save();render();var ni=last+1,lb=rodInfo(a.rods,ni).label+' vanaf '+a.rods[ni].from;
+var st=STEKS.filter(function(x){return x.id===a.stekId})[0],ph=a.stekPhoto||(st&&st.photo);
+if(!ph){$('liveInfo').textContent=lb+'. Er is nog geen stekfoto om de plek aan te duiden.';return}
+pUrl(ph,function(u){if(!u){$('liveInfo').textContent=lb+'.';return}openEdWith(a.rods,ni,u,function(){save();render();$('liveInfo').textContent=lb+(a.rods[ni].mx!=null?', plek aangeduid.':'.')})})};
 $('qNo').onclick=function(){QP.forEach(pDel);QP=[];$('cq').hidden=true};
 $('qYes').onclick=function(){var a=activeSes();$('cq').hidden=true;if(!a)return;
 a.catches.push({cid:'c'+uid(),sp:$('qSp').value,rod:$('qRd').value,kg:$('qKg').value,cm:$('qCm').value,time:nowT(),photos:QP.slice()});QP=[];save();render();$('liveInfo').textContent='Vangst toegevoegd om '+nowT()+'.'};
@@ -692,10 +748,11 @@ $('det').innerHTML='<div class="dbar"><button class="ib" id="dBack" aria-label="
 +'<div class="sess"><dl>'+rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>'}).join('')+'</dl>'+(okUrl(s.mapUrl)?'<a class="ghost lnk" style="margin-top:10px" href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Open in Google Maps</a>':'')+'</div>'
 +(hasPh?'<div class="sess"><h3>Stekfoto</h3><div class="mkwrap" style="margin-top:8px"><img id="dImg" alt="Stekfoto">'+s.rods.map(function(r,k){var n=nC(k);return r.mx!=null?'<span class="mk '+(n?'hit':'blank')+'" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%">'+rodInfo(s.rods,k).tag+'</span>':''}).join('')+'</div>'
 +(s.rods.some(function(r){return r.mx!=null})?'<div class="legend"><span style="background:#1f8a4c"></span>vangst <span style="background:#8a8f8c;margin-left:10px"></span>blank</div>':'')+'</div>':'')
-+(s.rods.length?'<div class="sess"><h3>Stokken</h3>'+s.rods.map(function(r,i){var bits=[r.rig?'montage '+r.rig:'',r.bait?'haakaas '+r.bait:'',r.feed?'voeraas '+r.feed:'',r.depth?'diepte '+r.depth+' m':'',r.dist?'afstand '+r.dist+' m':'',(r.feat&&r.feat.length)?r.feat.join(', '):''].filter(Boolean);var ri=rodInfo(s.rods,i),n=nC(i);return '<p><b>'+esc(ri.label)+'</b> ('+esc(rodSpan(s.rods,i,s.time,s.timeEnd||(s.active?'bezig':''),s.date,s.dateEnd))+'): '+esc(bits.join(' · ')||'geen info')+' · '+(n?n+(n===1?' vangst':' vangsten'):'blank')+'</p>'}).join('')+'</div>':'')
-+'<div class="sess"><h3>Vangsten</h3>'+(s.catches.length?s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).map(function(x){return '<p>'+esc([x.rod?rl(x):'',x.sp,x.kg?x.kg+' kg':'',x.cm?x.cm+' cm':'',x.time||''].filter(Boolean).join(', '))+'</p>'}).join(''):'<p>Geen vangsten</p>')+(tot?'<div class="meta">Totaal '+tot.toFixed(1)+' kg</div>':'')+'</div>'
++(s.rods.length?'<div class="sess"><h3>Stokken</h3>'+s.rods.map(function(r,i){var ri=rodInfo(s.rods,i),n=nC(i),rows=[['Tijd',rodSpan(s.rods,i,s.time,s.timeEnd||(s.active?'bezig':''),s.date,s.dateEnd)],['Montage',r.rig],['Haakaas',[r.bait,r.baitNote].filter(Boolean).join(' – ')],['Voer',[(r.feed||[]).join(', '),r.feedNote].filter(Boolean).join(' – ')],['Diepte',r.depth?r.depth+' m':''],['Afstand',r.dist?r.dist+' m':''],['Kenmerken',(r.feat||[]).join(', ')]].filter(function(x){return x[1]});
+return '<details class="rd"><summary><b>'+esc(ri.label)+'</b><span class="tagb'+(n?' hit':'')+'">'+(n?n+(n===1?' vangst':' vangsten'):'blank')+'</span></summary><dl style="margin-top:8px">'+rows.map(function(x){return '<dt>'+x[0]+'</dt><dd>'+esc(x[1])+'</dd>'}).join('')+'</dl></details>'}).join('')+'</div>':'')
++'<div class="sess"><h3>Vangsten</h3>'+(s.catches.length?s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).map(function(x){return '<p>'+esc([x.rod?rl(x):'',x.sp,x.kg?kgs(x.kg)+' kg':'',x.cm?x.cm+' cm':'',x.time||''].filter(Boolean).join(', '))+'</p>'}).join(''):'<p>Geen vangsten</p>')+(tot?'<div class="meta">Totaal '+kgs(tot.toFixed(1))+' kg</div>':'')+'</div>'
 +(s.notes?'<div class="sess"><h3>Notities</h3><p>'+esc(s.notes)+'</p></div>':'')
-+(function(){var it=[];s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).forEach(function(c){(c.photos||[]).forEach(function(k){it.push([k,[c.rod?rl(c):'',c.sp,c.kg?c.kg+' kg':'',c.time||''].filter(Boolean).join(' · ')])})});(s.photos||[]).forEach(function(k){it.push([k,'Sfeerfoto'])});
++(function(){var it=[];s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).forEach(function(c){(c.photos||[]).forEach(function(k){it.push([k,[c.rod?rl(c):'',c.sp,c.kg?kgs(c.kg)+' kg':'',c.time||''].filter(Boolean).join(' · ')])})});(s.photos||[]).forEach(function(k){it.push([k,'Sfeerfoto'])});
 return it.length?'<div class="sess" id="dPics"><h3>Foto\'s ('+it.length+')</h3><div class="thumbs">'+it.map(function(x){return '<div class="th"><img data-pid="'+x[0]+'" data-cap="'+esc(x[1])+'" alt="'+esc(x[1])+'"><div class="cap">'+esc(x[1])+'</div></div>'}).join('')+'</div></div>':''})();
 fillThumbs($('det'));
 if(hasPh)pUrl(sPh,function(u){var i=$('dImg');if(u&&i)i.src=u});
@@ -809,8 +866,8 @@ ask(selSet.length+(selSet.length===1?' sessie':' sessies')+' verwijderen? Dit ka
 /* ---- lijst ---- */
 function render(){updBar();updLive();var d=view(),n=d.length,c=0,b=0,sel=mode==='select';
 d.forEach(function(s){mc(s).forEach(function(x){c++;var k=parseFloat(x.kg);if(k>b)b=k})});
-$('sN').textContent=n;$('sC').textContent=c;$('sB').textContent=b?b:'–';
-var sp={},rg={},bt={},fd={},ft={};DEF.rig.forEach(function(x){rg[x]=1});DEF.bait.forEach(function(x){bt[x]=1});DEF.feed.forEach(function(x){fd[x]=1});DEF.feat.forEach(function(x){ft[x]=1});data.forEach(function(s){if(s.spot)sp[s.spot]=1;s.rods.forEach(function(r){if(r.rig)rg[r.rig]=1;if(r.bait)bt[r.bait]=1;if(r.feed)fd[r.feed]=1;(r.feat||[]).forEach(function(f){ft[f]=1})})});
+$('sN').textContent=n;$('sC').textContent=c;$('sB').textContent=b?kgs(b):'–';
+var sp={},rg={},bt={},fd={},ft={};DEF.rig.forEach(function(x){rg[x]=1});DEF.bait.forEach(function(x){bt[x]=1});DEF.feed.forEach(function(x){fd[x]=1});DEF.feat.forEach(function(x){ft[x]=1});data.forEach(function(s){if(s.spot)sp[s.spot]=1;s.rods.forEach(function(r){if(r.rig)rg[r.rig]=1;if(r.bait)bt[r.bait]=1;(r.feed||[]).forEach(function(f){fd[f]=1});(r.feat||[]).forEach(function(f){ft[f]=1})})});
 $('spots').innerHTML=Object.keys(sp).map(function(k){return '<option value="'+esc(k)+'">'}).join('');
 $('rigs').innerHTML=Object.keys(rg).sort(function(a,b){return a.localeCompare(b,'nl')}).map(function(k){return '<option value="'+esc(k)+'">'}).join('');
 $('baits').innerHTML=Object.keys(bt).sort().map(function(k){return '<option value="'+esc(k)+'">'}).join('');
@@ -821,22 +878,22 @@ names();
 if(!n){$('list').innerHTML='<div class="empty">'+(data.length?'Geen sessies met deze filters.':'Nog geen sessies. Tik op "Nieuwe sessie" om te beginnen.')+'</div>';return}
 $('list').innerHTML=d.map(function(s){
 var on=sel&&selSet.indexOf(String(s.id))>-1;
-var m=[s.wdir,s.wind,s.temp!==''?s.temp+'°C':'',s.press?s.press+' hPa':'',s.hours?s.hours+' u':''].filter(Boolean).join(', ');
-var w=[s.access,s.water,s.spot,s.weer,s.maan].filter(Boolean).join(', ');
-var cs=mc(s).map(function(x){return esc([x.sp,x.kg?x.kg+' kg':'',x.cm?x.cm+' cm':''].filter(Boolean).join(' '))}).join('; ');
-return '<div class="sess'+(on?' on':'')+'" data-id="'+s.id+'" role="button" tabindex="0">'
+var w=[s.access,s.water,s.spot].filter(Boolean).join(' · ');
+var cs=mc(s).map(function(x){return esc([x.sp,x.kg?kgs(x.kg)+' kg':''].filter(Boolean).join(' '))}).join(' · ');
+var phs=[];s.catches.forEach(function(c){(c.photos||[]).forEach(function(k){phs.push(k)})});(s.photos||[]).forEach(function(k){phs.push(k)});if(s.stekPhoto)phs.push(s.stekPhoto);phs=phs.filter(function(x,i,a){return a.indexOf(x)===i}).slice(0,4);
+return '<div class="sess'+(on?' on':'')+(phs.length?' ph':'')+'" data-id="'+s.id+'" role="button" tabindex="0">'
++(phs.length?'<div class="col n'+phs.length+'">'+phs.map(function(k){return '<img data-bgpid="'+k+'" alt="">'}).join('')+'</div>':'')
 +(sel?'<input type="checkbox" class="cb" tabindex="-1" aria-label="Selecteer sessie"'+(on?' checked':'')+'>':'')
 +'<h3>'+esc(s.wname||s.spot)+' – '+esc(s.date+(s.time?' '+s.time:''))+(s.active?' · bezig':'')+'</h3>'
-+'<div class="meta">'+esc(bl(s))+'</div>'
-+(m?'<div class="meta">'+esc(m)+'</div>':'')
 +(w?'<div class="meta">'+esc(w)+'</div>':'')
-+'<p>'+(cs?'Vangsten: '+cs:'Geen vangsten')+'</p></div>'}).join('')}
++'<p>'+(cs||'Geen vangsten')+'</p></div>'}).join('');
+[].forEach.call($('list').querySelectorAll('img[data-bgpid]'),function(i){pUrl(i.dataset.bgpid,function(u){if(u)i.src=u})})}
 $('list').onclick=function(e){var c=e.target.closest('.sess');if(!c)return;var id=c.dataset.id;
 if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.1.0';
+var APP_VERSION='0.2.0';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
@@ -849,10 +906,10 @@ function bakDue(){if(!data.length)return false;var l=bakGet();return !l||Date.no
 function bakShow(){var l=bakGet(),txt=l?'Laatste back-up: '+new Date(l).toLocaleDateString('nl-BE',{day:'numeric',month:'long',year:'numeric'}):'Nog geen back-up gemaakt.';$('bakInfo').textContent=txt;
 $('bakWarnT').textContent=l?'Je laatste back-up is meer dan 14 dagen oud.':'Je hebt nog geen back-up gemaakt.'}
 $('bakGo').onclick=function(){tab('bak')};
-function csvOf(list){var h=['start datum','start uur','eind datum','eind uur','uren','toegang','watertype','naam water','locatie','maps-link','stek','stok','positie vanaf','montage','haakaas','voeraas','diepte m','afstand m','kenmerken','weer','windrichting','windkracht','temp','luchtdruk','maan','soort','kg','cm','tijd vangst','notities'];
+function csvOf(list){var h=['start datum','start uur','eind datum','eind uur','uren','toegang','watertype','naam water','locatie','maps-link','stek','stok','positie vanaf','montage','haakaas','voer','diepte m','afstand m','kenmerken','weer','windrichting','windkracht','temp','luchtdruk','maan','soort','kg','cm','tijd vangst','notities'];
 var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'};var rows=[h.join(',')];
 list.forEach(function(s){var st=STEKS.filter(function(t){return t.id===s.stekId})[0],cs=s.catches.length?s.catches:[{}];cs.forEach(function(x){var r=s.rods[(parseInt(x.rod,10)||0)-1]||{};
-rows.push([s.date,s.time,s.dateEnd,s.timeEnd,s.hours,s.access,s.water,s.wname,s.spot,s.mapUrl,st?st.name:'',x.rod?rodInfo(s.rods,(parseInt(x.rod,10)||1)-1).tag:'',r.from||'',r.rig,r.bait,r.feed,r.depth,r.dist,(r.feat||[]).join('; '),s.weer,s.wdir,s.wind,s.temp,s.press,s.maan,x.sp,x.kg,x.cm,x.time,s.notes].map(q).join(','))})});
+rows.push([s.date,s.time,s.dateEnd,s.timeEnd,s.hours,s.access,s.water,s.wname,s.spot,s.mapUrl,st?st.name:'',x.rod?rodInfo(s.rods,(parseInt(x.rod,10)||1)-1).tag:'',r.from||'',r.rig,[r.bait,r.baitNote].filter(Boolean).join(' – '),[(r.feed||[]).join(' + '),r.feedNote].filter(Boolean).join(' – '),r.depth,r.dist,(r.feat||[]).join('; '),s.weer,s.wdir,s.wind,s.temp,s.press,s.maan,x.sp,x.kg,x.cm,x.time,s.notes].map(q).join(','))})});
 return rows.join('\n')}
 $('csv').onclick=function(){dl('catchbook-sessies.csv',csvOf(data),'text/csv')};
 $('json').onclick=function(){pAll(function(all){var ks=Object.keys(all),out={},n=0;
@@ -866,7 +923,7 @@ if(this.files[0])r.readAsText(this.files[0])};
 
 /* ---- namen opkuisen ---- */
 var NMSRC={wname:'wnames',rig:'rigs',bait:'baits',feed:'feeds',feat:'feats'};
-function eachName(cat,fn){data.forEach(function(s){if(cat==='wname'){if(s.wname)s.wname=fn(s.wname)}else s.rods.forEach(function(r){if(cat==='feat'){r.feat=(r.feat||[]).map(fn).filter(function(x,i,a){return x&&a.indexOf(x)===i})}else if(r[cat])r[cat]=fn(r[cat])})});
+function eachName(cat,fn){data.forEach(function(s){if(cat==='wname'){if(s.wname)s.wname=fn(s.wname)}else s.rods.forEach(function(r){if(cat==='feat'||cat==='feed'){r[cat]=(r[cat]||[]).map(fn).filter(function(x,i,a){return x&&a.indexOf(x)===i})}else if(r[cat])r[cat]=fn(r[cat])})});
 if(cat==='wname')STEKS.forEach(function(st){if(st.wname)st.wname=fn(st.wname)})}
 function countNames(cat){var c={};eachName(cat,function(v){c[v]=(c[v]||0)+1;return v});return c}
 function canonOf(cat,v,counts){var base=String(v).replace(/\s+/g,' ').trim(),strip=base.replace(/[\s\d]+$/,'');
