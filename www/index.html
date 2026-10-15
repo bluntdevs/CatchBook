@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CatchBook</title>
+<meta name="theme-color" content="#1f6f5c">
+<meta name="description" content="CatchBook: je vislogboek voor sessies, stekken en vangsten.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="CatchBook">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>
+:root{--bg:#eef2ee;--card:#fff;--ink:#16302b;--mute:#5d726c;--line:#cfdad5;--acc:#1f6f5c;--accink:#fff;--warn:#a33a2c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b18;--card:#172622;--ink:#e3eee9;--mute:#8fa8a0;--line:#2a3f39;--acc:#5fc4a8;--accink:#0f1b18;--warn:#e58a7c}}
+:root[data-theme="dark"]{--bg:#0f1b18;--card:#172622;--ink:#e3eee9;--mute:#8fa8a0;--line:#2a3f39;--acc:#5fc4a8;--accink:#0f1b18;--warn:#e58a7c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 Georgia,"Iowan Old Style",serif;max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:1.7rem;margin:4px 0 2px;letter-spacing:-.01em}
+.stats{display:flex;gap:8px;margin-bottom:14px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stat b{display:block;font-size:1.3rem}
+.stat span{color:var(--mute);font-size:.8rem}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.btn{background:var(--acc);color:var(--accink);border:0;border-radius:10px;padding:12px 16px;font-weight:600;width:100%}
+.warnb{background:var(--warn)}
+.ghost{background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--ink)}
+.row{display:flex;gap:8px;margin-top:10px}
+.row .ghost{flex:1}
+form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+label{display:block;font-size:.85rem;color:var(--mute);margin:10px 0 3px}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.catches{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.crow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--line)}.crow .rm{justify-self:end}
+.crow button{border:0;background:none;color:var(--warn);font-size:1.2rem}
+.sess{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+#list .sess{cursor:pointer}
+.sess.on{border-color:var(--acc);outline:2px solid var(--acc)}
+.sess h3{margin:0;font-size:1.05rem}
+.meta{color:var(--mute);font-size:.88rem;margin-top:2px}
+.sess p{margin:6px 0 0;font-size:.95rem}
+.cb{float:right;width:22px;height:22px;padding:0;accent-color:var(--acc)}
+.empty{color:var(--mute);text-align:center;padding:28px 10px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:-16px -16px 14px;padding:12px 16px 0;border-bottom:1px solid var(--line)}
+.top h1{margin:0 0 6px}
+.tabs{display:flex;gap:4px}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:0;border-bottom:3px solid transparent;padding:8px 2px;color:var(--mute);font-weight:600;font-size:.8rem;line-height:1.15}
+.tab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-selected="true"]{color:var(--acc);border-bottom-color:var(--acc)}
+.fbar{display:flex;gap:8px;margin:8px 0 10px}
+.fbar .ghost{flex:1 1 0;min-width:0;padding:8px 4px;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel{padding:4px 0 12px}
+#pFb,#pSb{max-height:55vh;overflow-y:auto}
+.panel .sub{margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:10px}.panel label{margin:8px 0 4px}.panel .sub label{color:var(--ink);font-weight:600}.panel .sub label:first-child{margin-top:0}.lv .lv{margin-top:8px;margin-left:8px;padding-left:10px;border-left:2px solid var(--acc)}
+.ph{display:flex;justify-content:space-between;align-items:center;margin:4px 0 8px}
+.x{border:0;background:none;font-size:1.7rem;line-height:1;color:var(--mute);padding:2px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+.chip.open{outline:2px solid var(--acc);outline-offset:1px}
+.pf{display:flex;gap:8px;margin-top:10px}.pf .ghost{flex:1}.pf .btn{flex:2;width:auto}
+input[type=range]{padding:0;border:0;background:none;accent-color:var(--acc)}
+.hint{color:var(--mute);font-size:.82rem;margin:4px 0 0}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)}
+.srow .chip{min-width:52px;font-size:1.1rem}
+.dbar{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.dbar h2{flex:1;margin:0;font-size:1.25rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ib{width:42px;height:42px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:0}
+#dDel{color:var(--warn)}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+dt{color:var(--mute);font-size:.88rem}
+dd{margin:0}
+.dlg{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:20px}
+.dbox{background:var(--card);border-radius:14px;padding:18px;max-width:340px;width:100%}
+.dbox p{margin:0 0 4px}
+.fh{margin:18px 0 2px;padding-top:12px;border-top:1px solid var(--line);font-size:1rem;font-weight:700}
+.fh:first-child{border:0;margin-top:0;padding-top:0}
+.rod{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
+a.lnk{display:block;text-align:center;text-decoration:none;color:var(--ink)}
+.mapr{margin-top:8px}
+button:disabled{opacity:.45;cursor:default}
+#live{margin-bottom:12px}
+.rh{display:flex;justify-content:space-between;align-items:center}
+.addf{display:flex;gap:6px;margin-top:6px}.addf input{flex:1}
+.mkb{width:100%;margin-top:10px}
+#stekImg{display:block;max-width:100%;max-height:200px;border-radius:8px;margin-top:8px}
+.mkwrap,.edb{position:relative;display:inline-block;max-width:100%}
+.mkwrap img,.edb img{display:block;max-width:100%;height:auto}
+#edM{position:absolute;inset:0;pointer-events:none}
+.mk{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#1f6f5c;color:#fff;border:2px solid #fff;display:grid;place-items:center;font:700 .8rem system-ui}
+.mk.cur{background:#d9382c}
+.ed{position:fixed;inset:0;z-index:30;background:var(--bg);padding:calc(12px + env(safe-area-inset-top,0px)) 12px 12px;overflow:auto}
+.edh{display:flex;gap:8px;align-items:center;margin-bottom:10px}.edh b{flex:1}
+.dbox{max-height:90vh;overflow:auto}
+.rsum{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rsum span{color:var(--mute);font-size:.88rem}
+.rcat{margin-top:10px;border-top:1px dashed var(--line);padding-top:6px}
+.rcat .crow{grid-template-columns:1.3fr 1fr 1fr 1.2fr auto;border:0;padding:0;margin-bottom:6px}
+.rcat .crow button{border:0;background:none;color:var(--warn);font-size:1.2rem}
+.okb{width:100%;margin-top:10px}
+#locMsg{color:var(--acc);font-weight:600}
+#locMsg.warn{color:var(--warn)}
+.fs{border-top:1px solid var(--line);padding:12px 0 6px}
+.fs:first-child{border-top:0;padding-top:0}
+.fsh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fsh b{font-size:1rem}
+.fss{color:var(--mute);font-size:.88rem}
+.fs:not(.closed) .fss,.fs:not(.closed) .fse{display:none}
+.fs.closed .fb{display:none}
+.fs.gone{display:none}
+.fs.gone+.fs{border-top:0}
+#sug{position:absolute;z-index:40;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.18);max-height:216px;overflow-y:auto;padding:4px 0}
+#sug button{display:block;width:100%;text-align:left;background:none;border:0;padding:9px 12px;color:var(--ink);font-size:.95rem}
+#sug button:hover,#sug button:focus{background:var(--bg)}
+#sug b{font-weight:700}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.th{position:relative}
+.th img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--line);cursor:pointer}
+.th .pdel{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:1.1rem;line-height:1;padding:0}
+.th select{margin-top:4px;padding:5px;font-size:.8rem}
+.th .cap{font-size:.78rem;color:var(--mute);margin-top:3px;line-height:1.25}
+.cph{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:-2px 0 10px}
+.cph .th{width:56px}
+.cph .th .pdel{width:22px;height:22px;font-size:.9rem;top:2px;right:2px}
+.phb{padding:6px 10px;font-size:.85rem}
+#pv{position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:16px}
+#pv img{max-width:100%;max-height:85vh;border-radius:6px}
+#pv p{color:#fff;text-align:center;margin:10px 0 0;font-size:.9rem}
+#pv button{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;background:none;border:0;color:#fff;font-size:2rem}
+.mk.hit{background:#1f8a4c}
+.mk.blank{background:#8a8f8c}
+.mk{width:auto;min-width:26px;padding:0 4px;border-radius:13px}
+.legend{margin-top:8px;font-size:.88rem}
+.legend span{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.rbtns{display:flex;gap:6px}
+.warnbox{display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--warn);border-left:4px solid var(--warn);border-radius:10px;padding:8px 10px;margin-bottom:10px;font-size:.9rem}
+.warnbox .ghost{flex:none;padding:6px 10px}
+#stekPrev .th img{outline:3px solid transparent}
+#stekPrev .th.on img{outline-color:var(--acc)}
+.nmr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.nmr span{color:var(--mute);font-size:.85rem}
+.nmr .ghost{padding:5px 10px;flex:none}
+.runcard{border-color:var(--acc)}
+.runtop{display:flex;align-items:center;gap:6px}
+.live-dot{width:10px;height:10px;border-radius:50%;background:#d9382c;box-shadow:0 0 0 0 rgba(217,56,44,.5);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(217,56,44,0)}100%{box-shadow:0 0 0 0 rgba(217,56,44,0)}}
+@media(prefers-reduced-motion:reduce){.live-dot{animation:none}}
+.runcard h3{font-size:1.35rem;margin-top:4px}
+.runtime{font-size:2rem;font-weight:700;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.runstats{display:flex;gap:8px}.runstats div{flex:1;background:var(--bg);border-radius:8px;padding:6px 8px}.runstats b{display:block;font-size:1.15rem}.runstats span{color:var(--mute);font-size:.78rem}
+.rrow{padding:8px 0;border-bottom:1px solid var(--line)}.rrow:last-child{border-bottom:0}
+.rrow .meta{margin-top:0}
+#autoH{min-height:2.7em}
+#upd{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--acc);color:var(--accink);border:0;border-radius:12px;padding:14px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+</style>
+</head>
+<body>
+<header class="top">
+<h1>CatchBook</h1>
+<nav class="tabs" role="tablist">
+<button class="tab" role="tab" id="tVis" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M2 12c3-5 9-6.5 14-2l5-3v10l-5-3c-5 4.5-11 3-14-2z"/><circle cx="7" cy="11" r=".6"/></svg>Vissen</button>
+<button class="tab" role="tab" id="tSes" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Sessies</button>
+<button class="tab" role="tab" id="tAna" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Analyse</button>
+<button class="tab" role="tab" id="tBak" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Back-up</button>
+</nav>
+</header>
+<datalist id="spots"></datalist>
+<datalist id="rigs"></datalist>
+<datalist id="baits"></datalist>
+<datalist id="feeds"></datalist>
+<datalist id="feats"></datalist>
+
+<div id="vVis" hidden>
+<div id="visIdle" class="sess">
+<h3>Geen sessie bezig</h3>
+<p class="meta">Start een sessie op de oever, of voer er achteraf een in.</p>
+<button class="btn" id="bStart" style="margin-top:12px">Start sessie</button>
+<button class="ghost" id="add" style="width:100%;margin-top:8px">Sessie achteraf invoeren</button>
+</div>
+<div id="visRun" hidden>
+<div class="sess runcard">
+<div class="runtop"><span class="live-dot"></span><span class="meta">Sessie bezig</span></div>
+<h3 id="runW"></h3>
+<div class="meta" id="runMeta"></div>
+<div class="runtime" id="runT"></div>
+<div class="runstats"><div><b id="runN">0</b><span>vangsten</span></div><div><b id="runB">–</b><span>zwaarste (kg)</span></div><div><b id="runR">0</b><span>stokken</span></div></div>
+<div class="g2" style="margin-top:12px"><button class="btn" id="bCatch">Voeg vangst toe</button><button class="ghost" id="bMove">Verplaats stok</button></div>
+<div class="g2" style="margin-top:8px"><button class="ghost" id="bEdit">Bewerk sessie</button><button class="btn warnb" id="bStop">Stop sessie</button></div>
+</div>
+<div class="sess"><h3>Stokken</h3><div id="runRods"></div></div>
+<div class="sess"><h3>Vangsten</h3><div id="runCatch"></div></div>
+</div>
+<p class="hint" id="liveInfo"></p>
+</div>
+<div id="vSes">
+<div id="bakWarn" class="warnbox" hidden><span id="bakWarnT"></span><button type="button" class="ghost" id="bakGo">Naar back-up</button></div>
+<div class="stats" id="sStats">
+<div class="stat"><b id="sN">0</b><span>sessies</span></div>
+<div class="stat"><b id="sC">0</b><span>vangsten</span></div>
+<div class="stat"><b id="sB">–</b><span>zwaarste (kg)</span></div>
+</div>
+<div class="fbar" id="fbar"><button class="ghost" id="bF">Filters: Alles</button><button class="ghost" id="bS">Sorteer</button><button class="ghost" id="bSel">Selecteer</button></div>
+<div id="pF" class="panel" hidden><div class="ph"><b>Filters</b><button type="button" class="x" id="fX" aria-label="Sluiten zonder opslaan">×</button></div><div id="pFb"></div><div class="pf"><button type="button" class="ghost" id="fClr">Wis alles</button><button type="button" class="btn" id="fOk">OK</button></div></div>
+<div id="pS" class="panel" hidden><div class="ph"><b>Sorteer</b><button type="button" class="x" id="sX" aria-label="Sluiten">×</button></div><div id="pSb"></div></div>
+<div id="pSel" class="panel" hidden><div class="ph"><b>Selecteer</b><button type="button" class="x" id="selX" aria-label="Sluiten">×</button></div><div class="pf"><button type="button" class="ghost" id="selAll">Alles</button><button type="button" class="ghost" id="selCsv">CSV (0)</button><button type="button" class="btn warnb" id="selDel">Verwijder (0)</button><button type="button" class="ghost" id="selDone">Klaar</button></div></div>
+
+<div id="list"></div>
+</div>
+
+<form id="f" hidden novalidate>
+<section class="fs" data-sec="when"><div class="fsh"><div><b>Wanneer</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="when">Bewerk</button></div><div class="fb">
+<div class="g2"><div><label for="dS">Startdatum</label><input type="date" id="dS" required></div><div><label for="tS">Startuur</label><input type="time" id="tS" required></div></div>
+<div class="g2"><div><label for="dE">Einddatum</label><input type="date" id="dE"></div><div><label for="tE">Einduur</label><input type="time" id="tE"></div></div>
+<p class="hint" id="durH"></p>
+<button type="button" class="btn okb" data-conf="when">Bevestig</button></div></section>
+<section class="fs" data-sec="loc"><div class="fsh"><div><b>Locatie en water</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="loc">Bewerk</button></div><div class="fb">
+<div class="g2"><button type="button" class="ghost" id="gps">Mijn GPS-positie</button><a id="mapsA" class="ghost lnk" href="https://www.google.com/maps" target="_blank" rel="noopener">Open Google Maps</a></div>
+<label for="murl">Coördinaten (uit Google Maps)</label><input id="murl" inputmode="decimal" autocomplete="off" placeholder="bv. 50.8412, 3.2671">
+<p class="hint">Druk in Google Maps lang op je plek. De coördinaten verschijnen bovenaan: kopieer ze en plak ze hier. De app zoekt een bekende stek binnen 50 m en vult de rest in.</p>
+<p class="hint" id="locMsg" role="status"></p>
+<label for="stekSel">Stek</label><select id="stekSel"></select>
+<div id="stekNew" hidden><label for="stek">Naam nieuwe stek</label><input id="stek" placeholder="bv. Rietkant"></div>
+<label for="wname">Naam van het water</label><input id="wname" data-sug="wnames" autocomplete="off" placeholder="bv. IJzer" required>
+<datalist id="wnames"></datalist>
+<label for="access">Toegang</label><select id="access" required></select>
+<label for="water">Watertype</label><select id="water" required></select>
+<p class="hint" id="autoH"></p>
+<div class="g2 mapr"><button type="button" class="ghost" id="stekPh">Foto van de stek toevoegen</button></div>
+<img id="stekImg" alt="Stekfoto" hidden>
+<p class="hint" id="stekPh2"></p><div id="stekPrev" class="cph"></div>
+<input type="file" id="stekFile" accept="image/*" hidden>
+<button type="button" class="btn okb" data-conf="loc">Bevestig</button></div></section>
+<section class="fs" data-sec="rods"><div class="fsh"><div><b>Stokken</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="rods">Bewerk</button></div><div class="fb">
+<div id="rods"></div>
+<button type="button" class="ghost" id="addRod" style="width:100%;margin-top:10px">Stok toevoegen</button>
+<button type="button" class="btn okb" data-conf="rods">Bevestig</button></div></section>
+<section class="fs" data-sec="cond"><div class="fsh"><div><b>Omstandigheden</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="cond">Bewerk</button></div><div class="fb">
+<div class="g2">
+<div><label for="wind">Windkracht</label><input id="wind" placeholder="bv. 3 Bft"></div>
+<div><label for="temp">Temperatuur (°C)</label><input type="text" inputmode="decimal" data-dec="1" autocomplete="off" id="temp"></div>
+</div>
+<div class="g2">
+<div><label for="press">Luchtdruk (hPa)</label><input type="number" id="press"></div>
+<div><label for="wdir">Windrichting</label><select id="wdir"></select></div>
+</div>
+<div class="g2">
+<div><label for="weer">Weer</label><select id="weer"></select></div>
+<div><label for="maan">Maanfase (automatisch)</label><select id="maan"></select></div>
+</div>
+<label for="notes">Notities</label><textarea id="notes" rows="3"></textarea>
+<button type="button" class="btn okb" data-conf="cond">Bevestig</button></div></section>
+<section class="fs" data-sec="pics"><div class="fsh"><div><b>Foto's</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="pics">Bewerk</button></div><div class="fb">
+<p class="hint">Vangstfoto's en sfeerfoto's van deze sessie. Kies onder een foto bij welke vangst hij hoort, of maak er een sfeerfoto van.</p>
+<div id="picList" class="thumbs"></div>
+<button type="button" class="ghost" id="picAdd" style="width:100%;margin-top:10px">Foto toevoegen</button>
+<button type="button" class="btn okb" data-conf="pics">Bevestig</button></div></section>
+<div class="row" id="saveRow"><button type="button" class="ghost" id="cancel">Annuleren</button><button class="btn" id="saveBtn" style="flex:1">Sessie opslaan</button></div>
+</form>
+
+<div id="det" hidden></div>
+<div id="vAna" hidden>
+<div class="empty">Analyse komt in de volgende stap: per locatie zien wanneer en onder welke condities je het best vangt.</div>
+</div>
+
+<div id="vBak" hidden>
+<div class="sess"><h3>Back-up maken</h3>
+<p class="meta" id="bakInfo"></p>
+<p class="meta">Je gegevens staan alleen op dit toestel. Maak regelmatig een back-up. De back-up bevat ook je stekfoto's en kan daardoor groot worden.</p>
+<div class="row"><button class="ghost" id="json">Back-up (JSON)</button><button class="ghost" id="csv">Exporteer CSV</button></div></div>
+<div class="sess"><h3>Namen opkuisen</h3>
+<p class="meta">Oude of dubbele namen samenvoegen. Tik op Wijzig en kies de juiste naam: alle sessies worden aangepast.</p>
+<select id="nmCat" aria-label="Soort naam"><option value="wname">Naam van het water</option><option value="rig">Montage</option><option value="bait">Haakaas</option><option value="feed">Voeraas</option><option value="feat">Kenmerken</option></select>
+<div id="nmList"></div>
+</div>
+<div class="sess"><h3>Alles wissen</h3><p class="meta">Wist alle sessies, stekken en foto's op dit toestel. Maak eerst een back-up als je iets wilt bewaren.</p><div class="row"><button class="ghost" id="wipe" style="color:var(--warn)">Alle gegevens wissen</button></div></div>
+<div class="sess"><h3>Terugzetten</h3>
+<p class="meta">Kies een eerder gemaakte JSON-back-up. Dit vervangt je huidige gegevens.</p>
+<div class="row"><button class="ghost" id="imp">Importeer back-up</button></div></div>
+<div class="sess"><h3>Over CatchBook</h3><p class="meta" id="appVer"></p><div class="row"><button class="ghost" id="updChk">Zoek naar update</button></div></div>
+</div>
+<div id="ed" class="ed" hidden><div class="edh"><b id="edT"></b><button type="button" class="ghost" id="edClr">Wis</button><button type="button" class="btn" id="edOk" style="width:auto">Klaar</button></div><div class="edb"><img id="edI" alt="Stekfoto"><div id="edM"></div></div></div>
+<div id="rn" class="dlg" hidden><div class="dbox"><b id="rnT">Naam wijzigen</b><label for="rnI">Nieuwe naam</label><input id="rnI" autocomplete="off"><p class="hint" id="rnH"></p><div class="pf"><button type="button" class="ghost" id="rnNo">Annuleer</button><button type="button" class="btn" id="rnYes">Wijzig</button></div></div></div>
+<div id="mq" class="dlg" hidden><div class="dbox"><b>Stok verplaatsen</b><label for="mRd">Stok</label><select id="mRd"></select><label for="mT">Vanaf (uur)</label><input id="mT" type="time"><p class="hint">Montage en aas worden overgenomen. Diepte, afstand en de plek op de stekfoto vul je aan via Bewerk.</p><div class="pf"><button type="button" class="ghost" id="mNo">Annuleer</button><button type="button" class="btn" id="mYes">Verplaats</button></div></div></div>
+<div id="cq" class="dlg" hidden><div class="dbox"><b>Vangst toevoegen</b><label for="qSp">Soort</label><select id="qSp"></select><label for="qRd">Stok</label><select id="qRd"></select><div class="g2"><div><label for="qKg">Gewicht (kg)</label><input id="qKg" type="text" inputmode="decimal" data-dec="1" autocomplete="off"></div><div><label for="qCm">Lengte (cm)</label><input id="qCm" type="number"></div></div><div class="cph" id="qPh" style="margin-top:10px"></div><button type="button" class="ghost" id="qPhB" style="width:100%">Foto toevoegen</button><div class="pf"><button type="button" class="ghost" id="qNo">Annuleer</button><button type="button" class="btn" id="qYes">Opslaan</button></div></div></div>
+<div id="sug" role="listbox" hidden></div>
+<button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
+<input type="file" id="phFile" accept="image/*" multiple hidden>
+<div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
+<div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
+<input type="file" id="file" accept=".json" hidden>
+
+<script>
+var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
+var $=function(i){return document.getElementById(i)};
+function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
+data.forEach(function(s){
+if(!s.rods){s.rods=(s.bait||s.rig)?[{bait:s.bait||'',rig:s.rig||''}]:[];delete s.bait;delete s.rig}
+s.rods.forEach(function(r,i){r.no=r.no||i+1;r.from=r.from||'';r.bait=r.bait||'';r.feed=r.feed||'';r.rig=r.rig||'';r.depth=r.depth||'';r.dist=r.dist||'';r.feat=r.feat||[];if(r.mx==null){r.mx=null;r.my=null}});
+s.catches=s.catches||[];s.photos=s.photos||[];s.catches.forEach(function(c){c.photos=c.photos||[];c.cid=c.cid||('c'+uid())});s.stekId=s.stekId||'';s.time=s.time||'';s.dateEnd=s.dateEnd||'';s.timeEnd=s.timeEnd||'';
+if(!s.locId&&!s.mapUrl&&s.spot){var o=oldL[[s.wname,s.spot].map(function(x){return String(x||'').trim().toLowerCase()}).join('|')];if(o&&o.url)s.mapUrl=o.url}
+if(!s.rods.length&&s.catches.length)s.rods=[{bait:'',feed:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null}]});
+STEKS.forEach(function(t){if(t.locId){var l=LOCS.filter(function(x){return x.id===t.locId})[0];t.wname=l?l.wname:(t.wname||'');delete t.locId}t.wname=t.wname||'';delete t.spot});
+data.forEach(function(s){if(s.locId){var l=LOCS.filter(function(x){return x.id===s.locId})[0];if(l&&!s.mapUrl)s.mapUrl=l.url||''}delete s.locId;s.mapUrl=s.mapUrl||'';
+s.rods.forEach(function(r,i){});if(s.rods.length)s.catches.forEach(function(c){if(!(parseInt(c.rod,10)>=1&&parseInt(c.rod,10)<=s.rods.length))c.rod='1'})});
+STEKS.forEach(function(t){if(t.lat==null){var s=data.filter(function(x){return x.stekId===t.id&&coordsOf(x.mapUrl)})[0];if(s){var c=coordsOf(s.mapUrl);t.lat=c[0];t.lng=c[1];t.url=t.url||s.mapUrl}}t.url=t.url||''});
+data.forEach(function(s){if(s.stekId)return;var c=coordsOf(s.mapUrl);if(!c&&!s.mapUrl)return;var n=c?nearSteks(c)[0]:null,st=n?n.st:null;
+if(!st){st={id:'k'+uid(),wname:s.wname||'',name:s.spot||labelFrom(s.mapUrl),photo:'',lat:c?c[0]:null,lng:c?c[1]:null,url:s.mapUrl};STEKS.push(st)}s.stekId=st.id});
+data.forEach(function(s){var st=STEKS.filter(function(t){return t.id===s.stekId})[0];if(st){s.spot=st.name;if(s.stekPhoto==null)s.stekPhoto=st.photo||''}});
+LOCS=[]}
+function coordsOf(x){x=String(x||'');var c=/@(-?\d+\.\d+),\s*(-?\d+\.\d+)/.exec(x)||/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/.exec(x)||/[?&](?:q|query|ll|center|destination)=(-?\d+\.\d+)(?:,|%2C)\s*(-?\d+\.\d+)/i.exec(x)||/^\s*\(?(-?\d{1,2}\.\d+)\s*[,; ]\s*(-?\d{1,3}\.\d+)\)?\s*$/.exec(x);
+if(!c)return null;var a=+c[1],b=+c[2];return (Math.abs(a)<=90&&Math.abs(b)<=180)?[a,b]:null}
+function meters(a,b){var R6=6371000,r=Math.PI/180,dl=(b[0]-a[0])*r,dg=(b[1]-a[1])*r,h=Math.sin(dl/2)*Math.sin(dl/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dg/2)*Math.sin(dg/2);return 2*R6*Math.asin(Math.sqrt(h))}
+function nearSteks(ll,max){max=max||50;return STEKS.filter(function(t){return t.lat!=null}).map(function(t){return{st:t,d:meters(ll,[t.lat,t.lng])}}).filter(function(x){return x.d<=max}).sort(function(a,b){return a.d-b.d})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function findLoc(w,l){var a=String(w||'').trim().toLowerCase(),b=String(l||'').trim().toLowerCase();return LOCS.filter(function(x){return String(x.wname||'').trim().toLowerCase()===a&&String(x.label||'').trim().toLowerCase()===b})[0]}
+function load(){try{data=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){data=[]}
+try{STEKS=JSON.parse(localStorage.getItem(KEY+'-steks')||'[]')}catch(e){STEKS=[]}
+try{LOCS=JSON.parse(localStorage.getItem(KEY+'-locs')||'[]')}catch(e){LOCS=[]}
+migrate()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(KEY+'-steks',JSON.stringify(STEKS));localStorage.setItem(KEY+'-locs',JSON.stringify(LOCS))}catch(e){ask("Opslaan lukt niet. Maak een back-up (JSON).",'OK')}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function ic(p){return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+p+'"/></svg>'}
+var ICON={back:ic('M19 12H5M12 19l-7-7 7-7'),edit:ic('M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z'),del:ic('M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6')};
+
+var dlgCb=null;
+function ask(msg,yes,cb){$('dmsg').textContent=msg;$('dYes').textContent=yes;$('dYes').className='btn'+(cb?' warnb':'');$('dNo').hidden=!cb;dlgCb=cb;$('dlg').hidden=false}
+$('dNo').onclick=function(){$('dlg').hidden=true;dlgCb=null};
+$('dYes').onclick=function(){var f=dlgCb;$('dlg').hidden=true;dlgCb=null;if(f)f()};
+/* ---- weergave per modus ---- */
+function setMode(m){mode=m;layout()}
+function layout(){var ses=tabNow==='ses',ana=tabNow==='ana',vis=tabNow==='vis',L=mode==='list',S=mode==='select',showL=ses&&(L||S),FD=mode==='form'||mode==='detail';
+$('vSes').hidden=!ses||FD;$('sStats').hidden=!showL;$('list').hidden=!showL;$('vVis').hidden=!(vis&&L);
+$('f').hidden=mode!=='form';$('det').hidden=mode!=='detail';
+$('vAna').hidden=!(ana&&L);$('vBak').hidden=tabNow!=='bak'||FD;
+$('fbar').hidden=!(ses&&L);$('bakWarn').hidden=!(ses&&L&&bakDue());
+$('pF').hidden=mode!=='filter';$('pS').hidden=mode!=='sort';$('pSel').hidden=!(ses&&S)}
+var TB={vis:'tVis',ses:'tSes',ana:'tAna',bak:'tBak'};
+function tab(t){tabNow=t;if(t==='bak')drawNames();editId=null;selSet=[];mode='list';Object.keys(TB).forEach(function(k){$(TB[k]).setAttribute('aria-selected',k===t)});render();layout();window.scrollTo(0,0)}
+['vis','ses','ana','bak'].forEach(function(k){$(TB[k]).onclick=function(){leaveForm(function(){discardForm();tab(k)})}});
+
+/* ---- formulier ---- */
+var SPECIES=['Karper','Brasem','Zeelt','Meerval','Steur','Snoek','Snoekbaars','Paling','Witvis'];
+var OPT={access:['Openbaar','Betaalwater'],water:['Rivier','Kanaal','Meer','Vijver'],weer:['Zon','Half bewolkt','Bewolkt','Regen','Mist','Onweer'],wdir:['N','NO','O','ZO','Z','ZW','W','NW'],maan:['Nieuwe maan','Wassende maan','Volle maan','Afnemende maan']};
+var FIELDS=['wind','temp','press','notes','access','water','wname','weer','wdir','maan'];
+['access','water'].forEach(function(k){$(k).innerHTML='<option value="" disabled>Kies…</option>'+OPT[k].map(function(o){return '<option>'+o+'</option>'}).join('')});
+['weer','wdir','maan'].forEach(function(k){$(k).innerHTML='<option value="">–</option>'+OPT[k].map(function(o){return '<option>'+o+'</option>'}).join('')});
+
+/* foto-opslag (IndexedDB) */
+var idbP=null;
+function dbOpen(cb){if(!idbP)idbP=new Promise(function(res){try{var q=indexedDB.open('vislogboek',1);q.onupgradeneeded=function(){q.result.createObjectStore('p')};q.onsuccess=function(){res(q.result)};q.onerror=function(){res(null)}}catch(e){res(null)}});idbP.then(cb)}
+function pPut(id,blob){dbOpen(function(d){if(d)d.transaction('p','readwrite').objectStore('p').put(blob,id)})}
+function pGet(id,cb){dbOpen(function(d){if(!d)return cb(null);var r=d.transaction('p').objectStore('p').get(id);r.onsuccess=function(){cb(r.result||null)};r.onerror=function(){cb(null)}})}
+function pDel(id){dbOpen(function(d){if(d)d.transaction('p','readwrite').objectStore('p').delete(id)})}
+function pAll(cb){dbOpen(function(d){if(!d)return cb({});var o={},q=d.transaction('p').objectStore('p').openCursor();q.onsuccess=function(){var c=q.result;if(c){o[c.key]=c.value;c.continue()}else cb(o)};q.onerror=function(){cb(o)}})}
+function pKeys(cb){dbOpen(function(d){if(!d)return cb([]);var r=d.transaction('p').objectStore('p').getAllKeys();r.onsuccess=function(){cb(r.result)};r.onerror=function(){cb([])}})}
+var PU={};
+function pUrl(id,cb){if(PU[id])return cb(PU[id]);pGet(id,function(b){if(!b)return cb(null);PU[id]=URL.createObjectURL(b);cb(PU[id])})}
+function gcPhotos(){var used={};STEKS.forEach(function(t){if(t.photo)used[t.photo]=1});data.forEach(function(s){if(s.stekPhoto)used[s.stekPhoto]=1;(s.photos||[]).forEach(function(k){used[k]=1});(s.catches||[]).forEach(function(c){(c.photos||[]).forEach(function(k){used[k]=1})})});pKeys(function(ks){ks.forEach(function(k){if(!used[k])pDel(k)})})}
+function shrink(file,max,cb){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var r=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){cb(b)},'image/jpeg',.82)};img.onerror=function(){cb(null)};img.src=u}
+function d2b(u){var p=u.split(','),m=/:(.*?);/.exec(p[0])[1],b=atob(p[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m})}
+
+/* datum en tijd */
+function pad(n){return (n<10?'0':'')+n}
+function nowD(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function nowT(){var d=new Date();return pad(d.getHours())+':'+pad(d.getMinutes())}
+var maanTouched=false;
+function moon(d){var L=29.530588853,p=(((new Date(d+'T12:00:00Z')-Date.UTC(2000,0,6,18,14))/864e5)%L+L)%L/L;return p<.06||p>.94?'Nieuwe maan':p<.44?'Wassende maan':p<.56?'Volle maan':'Afnemende maan'}
+function autoMoon(){if(!maanTouched&&$('dS').value)$('maan').value=moon($('dS').value)}
+function calcDur(){var a=$('dS').value,b=$('tS').value,c=$('dE').value,d=$('tE').value,h='',msg='',bad=false;
+if(a&&b&&c&&d){var ms=new Date(c+'T'+d)-new Date(a+'T'+b);if(ms<0){bad=true;msg='Het einde ligt voor het begin.'}else{var m=Math.round(ms/6e4);h=String(Math.round(ms/36e4)/10);msg='Duur: '+Math.floor(m/60)+' u '+(m%60)+' min'}}
+$('durH').textContent=msg;$('tE').setCustomValidity(bad?'Het einde ligt voor het begin.':'');return h}
+['dS','tS','dE','tE'].forEach(function(k){$(k).addEventListener('change',calcDur)});
+$('dS').addEventListener('change',autoMoon);$('maan').onchange=function(){maanTouched=true};
+
+/* water, locatie, stek */
+var WDB=[["Maas (Meuse)", "Rivier"], ["Schelde (Escaut)", "Rivier"], ["Leie (Lys)", "Rivier"], ["IJzer (Yser)", "Rivier"], ["Dender (Dendre)", "Rivier"], ["Dijle (Dyle)", "Rivier"], ["Demer", "Rivier"], ["Zenne (Senne)", "Rivier"], ["Durme", "Rivier"], ["Rupel", "Rivier"], ["Nete", "Rivier"], ["Grote Nete", "Rivier"], ["Kleine Nete", "Rivier"], ["Molse Nete", "Rivier"], ["Aa", "Rivier"], ["Wamp", "Rivier"], ["Wimp", "Rivier"], ["Laak", "Rivier"], ["Gete", "Rivier"], ["Grote Gete", "Rivier"], ["Kleine Gete", "Rivier"], ["Herk", "Rivier"], ["Velp", "Rivier"], ["Mark", "Rivier"], ["Dommel", "Rivier"], ["Jeker (Geer)", "Rivier"], ["Voer (Fouron)", "Rivier"], ["Berwijn (Berwinne)", "Rivier"], ["Geul (Gueule)", "Rivier"], ["Roer (Rur)", "Rivier"], ["Zwalm", "Rivier"], ["Rone", "Rivier"], ["Mandel", "Rivier"], ["IJse", "Rivier"], ["Laan", "Rivier"], ["Nethen", "Rivier"], ["Woluwe", "Rivier"], ["Maalbeek", "Rivier"], ["Molenbeek", "Rivier"], ["Zuun", "Rivier"], ["Linkebeek", "Rivier"], ["Thyle", "Rivier"], ["Orne", "Rivier"], ["Hain", "Rivier"], ["Samme", "Rivier"], ["Senette", "Rivier"], ["Ourthe", "Rivier"], ["Amblève (Amel)", "Rivier"], ["Vesdre (Vesder)", "Rivier"], ["Hoëgne", "Rivier"], ["Warche", "Rivier"], ["Salm", "Rivier"], ["Aisne", "Rivier"], ["Hoyoux", "Rivier"], ["Mehaigne", "Rivier"], ["Sambre", "Rivier"], ["Eau d'Heure", "Rivier"], ["Bocq", "Rivier"], ["Molignée", "Rivier"], ["Lesse", "Rivier"], ["Lomme", "Rivier"], ["Viroin", "Rivier"], ["Eau Blanche", "Rivier"], ["Eau Noire", "Rivier"], ["Semois", "Rivier"], ["Our", "Rivier"], ["Sûre (Sauer)", "Rivier"], ["Attert", "Rivier"], ["Haine", "Rivier"], ["Hogneau", "Rivier"], ["Honnelle", "Rivier"], ["Trouille", "Rivier"], ["Marcq", "Rivier"], ["Albertkanaal", "Kanaal"], ["Boudewijnkanaal", "Kanaal"], ["Kanaal Blankenberge", "Kanaal"], ["Canal Blaton-Ath", "Kanaal"], ["Kanaal Bocholt-Herentals", "Kanaal"], ["Kanaal Bossuit-Kortrijk", "Kanaal"], ["Kanaal Briegden-Neerharen", "Kanaal"], ["Kanaal Brugge-Oostende", "Kanaal"], ["Kanaal Gent-Brugge", "Kanaal"], ["Kanaal Gent-Oostende", "Kanaal"], ["Damse Vaart", "Kanaal"], ["Kanaal Brussel-Charleroi (Canal Charleroi-Bruxelles)", "Kanaal"], ["Zeekanaal Brussel-Schelde", "Kanaal"], ["Canal du Centre", "Kanaal"], ["Kanaal naar Beverlo", "Kanaal"], ["Kanaal Dessel-Kwaadmechelen", "Kanaal"], ["Kanaal Dessel-Turnhout-Schoten", "Kanaal"], ["Kanaal van Eeklo", "Kanaal"], ["Kanaal Gent-Terneuzen", "Kanaal"], ["Canal Haccourt-Visé", "Kanaal"], ["Canal de Lanaye", "Kanaal"], ["Leopoldkanaal", "Kanaal"], ["Kanaal Leuven-Dijle", "Kanaal"], ["Schipdonkkanaal (Afleidingskanaal van de Leie)", "Kanaal"], ["Lieve", "Kanaal"], ["Moervaart", "Kanaal"], ["Canal Mons-Condé", "Kanaal"], ["Canal de Monsin", "Kanaal"], ["Netekanaal", "Kanaal"], ["Kanaal Nieuwpoort-Duinkerke", "Kanaal"], ["Kanaal Plassendale-Nieuwpoort", "Kanaal"], ["Kanaal Veurne-Sint-Winoksbergen", "Kanaal"], ["Canal Nimy-Blaton-Péronnes", "Kanaal"], ["Canal de l'Ourthe", "Kanaal"], ["Canal Pommerœul-Antoing", "Kanaal"], ["Canal Pommerœul-Condé", "Kanaal"], ["Ringvaart Gent", "Kanaal"], ["Ringvaart Brugge", "Kanaal"], ["Kanaal Roeselare-Leie", "Kanaal"], ["Schelde-Rijnkanaal", "Kanaal"], ["Zuid-Willemsvaart", "Kanaal"], ["Spierekanaal", "Kanaal"], ["Kanaal Ieper-Komen", "Kanaal"], ["Kanaal Ieper-IJzer (Ieperlee)", "Kanaal"], ["Isabellakanaal", "Kanaal"], ["Lekevaart", "Kanaal"], ["Vladslovaart", "Kanaal"], ["Grote Beverdijkvaart", "Kanaal"], ["Proosdijkvaart", "Kanaal"], ["Koolhofvaart", "Kanaal"], ["Moerdijkvaart", "Kanaal"], ["Oude A-vaart", "Kanaal"], ["Zuidervaart", "Kanaal"], ["Zwinnevaart", "Kanaal"], ["Lissewegevaart", "Kanaal"], ["Visserijvaart", "Kanaal"], ["Nieuwe Watergang", "Kanaal"], ["Garingatevliet", "Kanaal"], ["Reigersvliet", "Kanaal"], ["Ketelvest", "Kanaal"], ["Langeleed", "Kanaal"], ["Grootgeleed", "Kanaal"], ["Hoge Watergang", "Kanaal"], ["Steengracht", "Kanaal"], ["Noord-Ede", "Kanaal"], ["Reep", "Kanaal"], ["Donkmeer", "Meer"], ["Grand Large", "Meer"], ["Hazewinkel", "Meer"], ["Meer van Bütgenbach", "Meer"], ["Meren van de Eau d'Heure", "Meer"], ["Meer van Eupen", "Meer"], ["Meer van Genval", "Meer"], ["Meer van de Gileppe", "Meer"], ["Meer van Neufchâteau", "Meer"], ["Meer van Nisramont", "Meer"], ["Meer van Robertville", "Meer"], ["Meer van Ry de Rome", "Meer"], ["Schulensmeer", "Meer"], ["Meer van Virelles", "Meer"], ["Meer van Warfaaz", "Meer"], ["Blaarmeersen", "Meer"], ["De Gavers (Harelbeke)", "Meer"], ["Zilvermeer (Mol)", "Meer"], ["Hofstade", "Meer"], ["Galgenweel", "Meer"], ["Nekker", "Meer"], ["De Ster (Sint-Niklaas)", "Meer"], ["Vijvers van Elsene", "Vijver"], ["Kraenepoel", "Vijver"], ["Dikkebusvijver", "Vijver"], ["Zillebekevijver", "Vijver"], ["Blankaartvijver", "Vijver"]];
+function names(){var a=$('access').value,w=$('water').value,r={},seen={};
+WDB.forEach(function(x){r[x[0]]=1});
+data.forEach(function(s){if(s.wname)r[s.wname]=1});
+$('wnames').innerHTML=Object.keys(r).filter(function(k){var q=tidyKey(k);if(seen[q])return false;seen[q]=1;return true}).sort(function(x,y){return x.localeCompare(y,'nl')}).map(function(k){return '<option value="'+esc(k)+'">'}).join('')}
+function wKeys(n){var s=String(n||''),m=/^(.*?)\s*\((.*)\)\s*$/.exec(s),o=[s];if(m){o.push(m[1],m[2])}return o.map(function(x){return norm(x).trim()}).filter(Boolean)}
+function dbFind(n){var k=norm(n).trim();if(!k)return null;return WDB.filter(function(x){return wKeys(x[0]).indexOf(k)>-1})[0]||null}
+function ownFind(n){var k=norm(n).trim();return data.filter(function(x){return x.wname&&wKeys(x.wname).indexOf(k)>-1}).sort(function(a,b){return a.date<b.date?1:-1})[0]||null}
+function typeOf(n){var m=ownFind(n);if(m&&m.water)return m.water;var d=dbFind(n);return d?d[1]:''}
+$('access').addEventListener('change',names);$('water').addEventListener('change',names);
+$('wname').addEventListener('change',fillWater);
+var gpsLL=null,autoSel=true;
+function okUrl(u){return /^https?:\/\//i.test(u||'')}
+function updMaps(){var u=$('murl').value.trim(),c=coordsOf(u);$('mapsA').href=okUrl(u)?u:c?'https://www.google.com/maps/search/?api=1&query='+c[0]+','+c[1]:gpsLL?'https://www.google.com/maps/search/?api=1&query='+gpsLL[0]+','+gpsLL[1]:'https://www.google.com/maps'}
+function labelFrom(url){var m=/\/place\/([^\/@?]+)/.exec(url||'');
+if(m){try{var n=decodeURIComponent(m[1].replace(/\+/g,' '));if(n&&!/^-?\d+\.\d+,/.test(n))return n}catch(e){}}
+var c=coordsOf(url);return c?c[0].toFixed(4)+', '+c[1].toFixed(4):'Stek'}
+function curLL(){return coordsOf($('murl').value)||(gpsLL?[+gpsLL[0],+gpsLL[1]]:null)}
+function stekOptions(keep){var w=$('wname').value.trim().toLowerCase(),cur=keep!=null?keep:$('stekSel').value,list=STEKS.filter(function(t){return !w||String(t.wname).toLowerCase()===w||t.id===cur}),ll=curLL();
+$('stekSel').innerHTML='<option value="" disabled>Kies stek…</option>'+list.map(function(t){var d=ll&&t.lat!=null?Math.round(meters(ll,[t.lat,t.lng])):null;return '<option value="'+t.id+'">'+esc(t.name+(w?'':' ('+t.wname+')')+(d!=null&&d<5000?' · '+(d<1000?d+' m':(d/1000).toFixed(1)+' km'):''))+'</option>'}).join('')+'<option value="new">+ Nieuwe stek</option>';
+$('stekSel').value=[].some.call($('stekSel').options,function(o){return o.value===cur})?cur:'';stekSelChanged()}
+function stekSelChanged(){$('stekNew').hidden=$('stekSel').value!=='new';$('stek').required=$('stekSel').value==='new';if(!stekPicked&&!stekBlob){var c=curStek();stekPid=c?(stekPhotosOf(c.id)[0]||null):null}showStek();updMk();drawStekPrev()}
+function msg(txt,warn){$('locMsg').textContent=txt||'';$('locMsg').className='hint'+(warn?' warn':'')}
+function locMatch(){updMaps();var raw=$('murl').value.trim(),ll=curLL();
+if(!raw&&!gpsLL){msg('');return}
+if(!ll){msg('Dit herken ik niet als coördinaten. Plak ze zoals Google Maps ze toont, bv. 50.8412, 3.2671, of kies de stek zelf.',true);return}
+var n=nearSteks(ll);
+if(!autoSel&&$('stekSel').value&&$('stekSel').value!=='new'){stekOptions();msg(n.length?'Bekende stek in de buurt: '+n[0].st.name+' ('+Math.round(n[0].d)+' m).':'');return}
+if(n.length){var st=n[0].st;fillFromStek(st)
+stekOptions(st.id);msg('Bekende stek gevonden: '+st.name+' ('+Math.round(n[0].d)+' m)'+(n.length>1?'. Er liggen er nog '+(n.length-1)+' binnen 50 m.':'.'))}
+else{stekOptions('new');msg('Geen stek binnen 50 m: dit wordt een nieuwe stek. Geef hem een naam.')}}
+function fillFromStek(st){if(!st)return;var last=data.filter(function(x){return x.stekId===st.id}).sort(function(a,b){return a.date<b.date?1:-1})[0];
+var w=(last&&last.wname)||st.wname;if(w){$('wname').value=w}
+if(last){if(last.water){$('water').value=last.water;autoW=true}if(last.access){$('access').value=last.access;autoA=true}}
+fillWater();$('autoH').textContent='Automatisch ingevuld vanuit stek '+st.name+'. Pas aan indien nodig.'}
+var autoW=false,autoA=false;
+function fillWater(){var n=$('wname').value.trim(),own=ownFind(n),d=dbFind(n),how=[];
+if(own){if(own.wname!==n)$('wname').value=own.wname}else if(d&&d[0]!==n)$('wname').value=d[0];
+var ty=own&&own.water||(d&&d[1])||'';
+if(ty&&(!$('water').value||autoW)){if($('water').value!==ty)how.push('watertype');$('water').value=ty;autoW=true}
+var ac=own&&own.access?own.access:(/^(Rivier|Kanaal)$/.test($('water').value)?'Openbaar':'');
+if(!$('access').value||autoA){if(ac){if($('access').value!==ac)how.push('toegang');$('access').value=ac;autoA=true}else if(autoA){$('access').value='';autoA=false}}
+$('autoH').textContent=how.length?'Automatisch ingevuld: '+how.join(', ')+'. Pas aan indien nodig.':'';names();if(sugIn===$('wname'))hideSug()}
+$('water').addEventListener('change',function(){autoW=false;if((!$('access').value||autoA)&&/^(Rivier|Kanaal)$/.test($('water').value)){$('access').value='Openbaar';autoA=true;$('autoH').textContent='Toegang automatisch op Openbaar gezet. Pas aan indien nodig.'}});
+$('access').addEventListener('change',function(){autoA=false});
+$('wname').addEventListener('change',function(){stekOptions()});
+$('murl').addEventListener('input',function(){autoSel=autoSel||!$('stekSel').value||$('stekSel').value==='new';locMatch()});
+$('stekSel').addEventListener('change',function(){autoSel=false;stekSelChanged();var st=curStek();if(st){fillFromStek(st);if(st.lat!=null){$('murl').value=(+st.lat).toFixed(6)+', '+(+st.lng).toFixed(6);updMaps();msg('Coördinaten van stek '+st.name+' ingevuld. Tik op Open Google Maps om te controleren.')}else msg('Deze stek heeft nog geen coördinaten. Plak ze hierboven om ze te bewaren.',true)}});
+$('gps').onclick=function(){if(!navigator.geolocation){ask('GPS is hier niet beschikbaar.','OK');return}
+$('gps').disabled=true;$('gps').textContent='GPS zoeken…';
+navigator.geolocation.getCurrentPosition(function(p){gpsDone();gpsLL=[p.coords.latitude.toFixed(6),p.coords.longitude.toFixed(6)];$('murl').value=gpsLL[0]+', '+gpsLL[1];autoSel=true;locMatch()},function(e){gpsDone();ask(e&&e.code===1?'CatchBook mag je locatie niet gebruiken. Sta locatie toe in de instellingen van je telefoon of browser, of plak de coördinaten uit Google Maps.':'Je positie kon niet bepaald worden. Staat locatie aan op je telefoon? Probeer opnieuw of plak de coördinaten uit Google Maps.','OK')},{enableHighAccuracy:true,timeout:20000,maximumAge:30000})};
+function gpsDone(){$('gps').disabled=false;$('gps').textContent='Mijn GPS-positie'}
+var stekBlob=null,stekObj=null;
+function curStek(){var v=$('stekSel').value;return v&&v!=='new'?STEKS.filter(function(t){return t.id===v})[0]||null:null}
+var stekPid=null,stekPicked=false;
+function hasStekPhoto(){return !!stekBlob||!!stekPid}
+function stekUrl(cb){if(stekBlob){if(!stekObj)stekObj=URL.createObjectURL(stekBlob);return cb(stekObj)}if(stekPid)pUrl(stekPid,cb);else cb(null)}
+function stekPhotosOf(id){var o=[];data.filter(function(s){return s.stekId===id&&s.stekPhoto&&s.id!==editId}).sort(function(a,b){return (a.date+(a.time||''))<(b.date+(b.time||''))?1:-1}).forEach(function(s){if(o.indexOf(s.stekPhoto)<0)o.push(s.stekPhoto)});var st=STEKS.filter(function(x){return x.id===id})[0];if(st&&st.photo&&o.indexOf(st.photo)<0)o.push(st.photo);if(editId){var me=data.filter(function(s){return s.id===editId})[0];if(me&&me.stekPhoto&&o.indexOf(me.stekPhoto)<0)o.unshift(me.stekPhoto)}return o}
+function drawStekPrev(){var c=curStek(),l=c?stekPhotosOf(c.id):[];$('stekPrev').innerHTML=l.length>1||(l.length&&stekBlob)?l.map(function(pid){return '<div class="th'+(pid===stekPid&&!stekBlob?' on':'')+'"><img data-sp="'+pid+'" data-pid="'+pid+'" alt="Eerdere stekfoto"></div>'}).join(''):'';fillThumbs($('stekPrev'));
+$('stekPh2').textContent=c&&l.length&&!stekPicked?'Voorgesteld: de laatste foto van deze stek. Kies hieronder een andere of voeg een nieuwe toe.':(l.length>1?'Eerdere foto\'s van deze stek:':'')}
+function photoChanged(){if(R.some(function(r){return r.mx!=null}))ask('De stekfoto is veranderd. De aanduidingen van je stokken passen misschien niet meer. Wissen?','Wis aanduidingen',function(){R.forEach(function(r){r.mx=null;r.my=null});drawRods()});showStek();updMk();drawStekPrev()}
+$('stekPrev').addEventListener('click',function(e){var i=e.target.closest('img[data-sp]');if(!i)return;e.stopPropagation();stekPid=i.dataset.sp;stekBlob=null;stekPicked=true;photoChanged()},true);
+function showStek(){stekUrl(function(u){var i=$('stekImg');if(u){i.src=u;i.hidden=false}else{i.removeAttribute('src');i.hidden=true}$('stekPh').textContent=u?'Nieuwe stekfoto':'Foto van de stek toevoegen'})}
+function stekList(){stekOptions()}
+$('stekPh').onclick=function(){$('stekFile').click()};
+$('stekFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}stekBlob=b;stekPicked=true;if(stekObj){URL.revokeObjectURL(stekObj);stekObj=null}photoChanged()})};
+
+/* stokken en vangsten per stok */
+var C=[];
+function blankRod(no){return{no:no||1,from:'',bait:'',feed:'',rig:'',depth:'',dist:'',feat:[],mx:null,my:null,_c:false}}
+function rodInfo(list,i){var r=list[i]||{},no=r.no||i+1,same=0,pos=0;list.forEach(function(x,k){if((x.no||k+1)===no){same++;if(k<=i)pos=same}});
+return{no:no,pos:pos,multi:same>1,label:'Stok '+no+(same>1?' · positie '+pos:''),tag:no+(pos>1?'.'+pos:''),from:r.from||''}}
+/* tijd: posities en vangsten op datum plaatsen (ook over middernacht) */
+function absT(d,t){return d&&t?new Date(d+'T'+t):null}
+function hm(x){return pad(x.getHours())+':'+pad(x.getMinutes())}
+function atAfter(base,tm,upper){if(!base||!tm)return null;var c=new Date(base),p=tm.split(':');c.setHours(+p[0],+p[1],0,0);if(c>=base)return{d:c,bad:upper?c>upper:false};
+var c1=new Date(c);c1.setDate(c1.getDate()+1);if(!upper||c1<=upper)return{d:c1,bad:false};return{d:c,bad:true}}
+function posTimes(list,s0,up){var out=[],last={};list.forEach(function(r,i){var no=r.no||i+1,base=last[no]?last[no]:s0,x=r.from?atAfter(base,r.from,up):{d:base,bad:false};if(!x)x={d:base,bad:false};out.push({s:x.d,bad:x.bad,e:null});if(x.d)last[no]=x.d});
+list.forEach(function(r,i){var no=r.no||i+1;for(var k=i+1;k<list.length;k++){if((list[k].no||k+1)===no){out[i].e=out[k].s;out[i].nx=true;break}}if(!out[i].nx)out[i].e=null});return out}
+function dayTag(x,s0){if(!x||!s0)return '';var a=new Date(s0);a.setHours(0,0,0,0);var b=new Date(x);b.setHours(0,0,0,0);var n=Math.round((b-a)/864e5);return n>0?' (+'+n+')':''}
+function rodSpan(list,i,st,en,d0,dE){var r=list[i]||{},no=r.no||i+1,a=r.from||st||'',b=en||'';
+if(d0&&st){var s0=absT(d0,st),pt=posTimes(list,s0,null)[i],end=pt.nx?pt.e:(dE&&/^\d\d:\d\d$/.test(en)?absT(dE,en):null);
+return (pt.s?hm(pt.s)+dayTag(pt.s,s0):'?')+'–'+(pt.nx?hm(end)+dayTag(end,s0):end?hm(end)+dayTag(end,s0):(en||'…'))}
+for(var k=i+1;k<list.length;k++){if((list[k].no||k+1)===no){b=list[k].from||b;break}}return (a||'?')+'–'+(b||'…')}
+function timeIssues(list,cs,d0,t0,dE,tE,live){var s0=absT(d0,t0);if(!s0)return{err:[],warn:[]};var up=absT(dE,tE)||(live||!dE?new Date():null),pt=posTimes(list,s0,up),err=[],warn=[];
+list.forEach(function(r,i){var ri=rodInfo(list,i);if(ri.pos>1&&!r.from)warn.push(ri.label+' heeft geen startuur.');if(pt[i].bad)err.push(ri.label+': het startuur '+r.from+' valt buiten de sessie.')});
+cs.forEach(function(c){if(!c.time||c.rod==null||c.rod==='')return;var k=typeof c.rod==='number'?c.rod:(parseInt(c.rod,10)||1)-1,x=atAfter(s0,c.time,up),nm=c.time+(c.sp?' ('+c.sp+')':'');if(!x)return;
+if(x.bad){warn.push('Vangst '+nm+' valt buiten de sessie.');return}var w=pt[k];if(!w)return;var end=w.e||up;
+if(x.d<w.s||(end&&x.d>end)){var r=list[k],ok=null;list.forEach(function(q,j){if((q.no||j+1)===(r.no||k+1)&&j!==k){var e2=pt[j].e||up;if(x.d>=pt[j].s&&(!e2||x.d<=e2))ok=rodInfo(list,j).label}});
+warn.push('Vangst '+nm+' valt buiten de tijd van '+rodInfo(list,k).label+' ('+hm(w.s)+'–'+(end?hm(end):'…')+').'+(ok?' Hoort ze bij '+ok+'?':''))}});
+return{err:err,warn:warn}}
+function rodCount(list){var u={};list.forEach(function(r,k){u[r.no||k+1]=1});return Object.keys(u).length}
+function spOpts(v){var l=SPECIES.slice();if(v&&l.indexOf(v)<0)l.push(v);
+return (v===''?'<option value="">–</option>':'')+l.map(function(o){return '<option'+(o===v?' selected':'')+'>'+esc(o)+'</option>'}).join('')}
+function rodSum(r,n){var b=[r.rig,r.bait].filter(Boolean).join(' · ');return (b||'geen info')+' · '+n+(n===1?' vangst':' vangsten')}
+function drawRods(){var ph=hasStekPhoto();$('rods').innerHTML=R.map(function(r,i){var d='data-i="'+i+'"',mine=C.map(function(c,j){return [c,j]}).filter(function(x){return x[0].rod===i});
+var ri=rodInfo(R,i),head=esc(ri.label)+' <span class="hint">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'nu',$('dS').value,$('dE').value))+'</span>';
+if(r._c)return '<div class="rod"><div class="rsum"><div><b>'+head+'</b><br><span>'+esc(rodSum(r,mine.length))+(r.mx!=null?' · aangeduid':'')+'</span></div><div class="rbtns"><button type="button" class="ghost" data-mv="'+i+'">Verplaats</button><button type="button" class="ghost" data-open="'+i+'">Bewerk</button></div></div></div>';
+return '<div class="rod"><div class="rh"><b>'+head+'</b><button type="button" class="x" data-rm="'+i+'" aria-label="Verwijder '+esc(ri.label)+'">×</button></div>'
++'<div class="g2"><div><label>Vanaf (uur)</label><input '+d+' data-k="from" type="time" value="'+esc(r.from)+'"></div><div><label>Tot (uur)</label><p class="hint" style="margin-top:10px">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'einde sessie',$('dS').value,$('dE').value).split('–')[1])+'</p></div></div>'+(ri.pos===1?'<p class="hint">Leeg = start van de sessie. Het einde is de volgende positie of het einde van de sessie.</p>':'')
++'<div class="g2"><div><label>Montage</label><input '+d+' data-k="rig" data-sug="rigs" autocomplete="off" value="'+esc(r.rig)+'"></div><div><label>Haakaas</label><input '+d+' data-k="bait" data-sug="baits" autocomplete="off" value="'+esc(r.bait)+'"></div></div>'
++'<div class="g2"><div><label>Voeraas</label><input '+d+' data-k="feed" data-sug="feeds" autocomplete="off" value="'+esc(r.feed)+'"></div><div><label>Diepte (m)</label><input '+d+' data-k="depth" type="text" inputmode="decimal" data-dec="1" autocomplete="off" value="'+esc(r.depth)+'"></div></div>'
++'<div class="g2"><div><label>Afstand (m)</label><input '+d+' data-k="dist" type="number" min="0" value="'+esc(r.dist)+'"></div></div>'
++'<label>Kenmerken</label><div class="chips">'+r.feat.map(function(f,j){return chip(f+' ×',true,'data-df="'+i+'|'+j+'"')}).join('')+'</div>'
++'<div class="addf"><input '+d+' data-f="1" data-sug="feats" autocomplete="off" placeholder="bv. rietkraag, onder boom"><button type="button" class="ghost" data-af="'+i+'">Toevoegen</button></div>'
++'<button type="button" class="ghost mkb" data-mk="'+i+'"'+(ph?'':' disabled')+'>'+(r.mx!=null?'Locatie aangeduid ✓ (wijzig)':'Locatie aanduiden op stekfoto')+'</button>'
++'<p class="hint mkh"'+(ph?' hidden':'')+'>Voeg eerst een stekfoto toe om je stok aan te duiden.</p>'
++'<div class="rcat"><label>Vangsten '+esc(ri.label.replace('Stok','stok'))+' (soort, kg, cm, uur)</label>'+mine.map(function(x){var c=x[0],j=x[1];return '<div class="crow"><select data-c="'+j+'" data-ck="sp" aria-label="Soort">'+spOpts(c.sp)+'</select><input data-c="'+j+'" data-ck="kg" type="text" inputmode="decimal" data-dec="1" autocomplete="off" placeholder="kg" value="'+esc(c.kg)+'"><input data-c="'+j+'" data-ck="cm" type="number" placeholder="cm" value="'+esc(c.cm)+'"><input data-c="'+j+'" data-ck="time" type="time" aria-label="Uur" value="'+esc(c.time)+'"><button type="button" data-cdel="'+j+'" aria-label="Verwijder vangst">×</button></div><div class="cph">'+P.filter(function(p){return p.to===c.cid}).map(function(p){return thumb(p.pid,true)}).join('')+'<button type="button" class="ghost phb" data-cph="'+j+'">Foto</button></div>'}).join('')
++'<button type="button" class="ghost" data-cadd="'+i+'">Vangst toevoegen</button></div>'
++'<button type="button" class="ghost" data-mv="'+i+'" style="width:100%;margin-top:10px">Stok verplaatsen</button><p class="hint">Verplaats je deze stok, maak dan een nieuwe positie aan. Zo blijven ook blanke plekken bewaard.</p>'+'<button type="button" class="btn okb" data-ok="'+i+'">Bevestig '+esc(ri.label.replace('Stok','stok'))+'</button></div>'}).join('');fillThumbs($('rods'));drawPics()}
+function updMk(){var ph=hasStekPhoto();[].forEach.call($('rods').querySelectorAll('button[data-mk]'),function(b){b.disabled=!ph});[].forEach.call($('rods').querySelectorAll('.mkh'),function(h){h.hidden=ph})}
+function thumb(pid,del,cap){return '<div class="th"><img data-pid="'+pid+'" alt="Foto">'+(del?'<button type="button" class="pdel" data-pdel="'+pid+'" aria-label="Verwijder foto">×</button>':'')+(cap?'<div class="cap">'+esc(cap)+'</div>':'')+'</div>'}
+function fillThumbs(root){[].forEach.call((root||document).querySelectorAll('img[data-pid]'),function(i){if(i.src)return;pUrl(i.dataset.pid,function(u){if(u)i.src=u})})}
+function catchLabel(c){return [rodInfo(R,c.rod).label,c.sp,c.kg?c.kg+' kg':'',c.time||''].filter(Boolean).join(' · ')}
+var DEF={rig:['Hair rig','D-rig','Wafter D-rig','Ronnie rig (spinner rig)','360 rig','Chod rig','Naked chod','Hinged stiff rig','Multi rig','KD rig','Blowback rig','Combi rig','Snowman rig','Zig rig','Mini zig','Solid PVA bag rig','Method feeder','Helicopter rig','Inline lood','Lood op clip (safety clip)'],
+bait:['Boilie','Pop-up','Wafter','Snowman (boilie + pop-up)','Maïs','Kunstmaïs','Tijgernoot','Pellet','Partikels','Worm','Brood'],
+feed:['Boilies','Gebroken boilies','Pellets','Hennep','Maïs','Tijgernoten','Partikelmix','Method mix','Spodmix','Stickmix','Groundbait'],
+feat:['Rietkraag','Onder boom','Overhangende takken','Waterplanten','Lelieveld','Talud','Diepe geul','Ondiepte','Plateau','Harde bodem','Zachte bodem','Grind','Mosselbank','Inlaat','Brug','Steiger','Boot','Stroming']};
+function tidyKey(x){return norm(x).replace(/[\s\-_.()+]/g,'')}
+function tidy(v,src){v=String(v||'').replace(/\s+/g,' ').trim();if(!v)return v;var k=tidyKey(v),opts=[].map.call($(src).options,function(o){return o.value});
+var hit=opts.filter(function(o){return tidyKey(o)===k||tidyKey(o)===k+'rig'})[0];if(hit)return hit;hit=opts.filter(function(o){var m=/^(.*?)\s*\((.*)\)$/.exec(o);return m&&(tidyKey(m[1])===k||tidyKey(m[2])===k)})[0];if(hit)return hit;return v.charAt(0).toUpperCase()+v.slice(1)}
+function addFeat(i){var inp=$('rods').querySelector('input[data-f][data-i="'+i+'"]'),v=inp?tidy(inp.value,'feats'):'';if(!v)return;if(R[i].feat.indexOf(v)<0)R[i].feat.push(v);drawRods()}
+function pendingFeats(i){[].forEach.call($('rods').querySelectorAll('input[data-f]'+(i==null?'':'[data-i="'+i+'"]')),function(inp){var v=tidy(inp.value,'feats'),k=+inp.dataset.i;if(v&&R[k].feat.indexOf(v)<0)R[k].feat.push(v)})}
+function rmRod(i){var n=C.filter(function(c){return c.rod===i}).length;
+function go(){C.forEach(function(c){if(c.rod===i)P.forEach(function(x){if(x.to===c.cid)x.to='sfeer'})});C=C.filter(function(c){return c.rod!==i});C.forEach(function(c){if(c.rod>i)c.rod--});var no=R[i].no;R.splice(i,1);if(!R.some(function(x){return x.no===no}))R.forEach(function(x){if(x.no>no)x.no--});if(!R.length)R.push(blankRod(1));drawRods()}
+var lb=rodInfo(R,i).label;if(n)ask(lb+' heeft '+n+(n===1?' vangst':' vangsten')+'. Verwijderen samen met de vangsten?','Verwijder',go);else go()}
+function moveRod(i){pendingFeats();var src=R[i],last=-1;R.forEach(function(x,k){if(x.no===src.no)last=k});
+var nr={no:src.no,from:nowT(),bait:src.bait,feed:src.feed,rig:src.rig,depth:'',dist:'',feat:src.feat.slice(),mx:null,my:null,_c:false};
+R.forEach(function(x){x._c=true});R.splice(last+1,0,nr);C.forEach(function(c){if(c.rod>last)c.rod++});drawRods()}
+$('addRod').onclick=function(){pendingFeats();R.forEach(function(r){r._c=true});var mx=0;R.forEach(function(x){if(x.no>mx)mx=x.no});R.push(blankRod(mx+1));drawRods()};
+$('rods').oninput=function(e){var t=e.target,d=t.dataset;if(d.k)R[d.i][d.k]=t.value;if(d.ck)C[+d.c][d.ck]=t.value};
+$('rods').onchange=function(e){var t=e.target,d=t.dataset,src={rig:'rigs',bait:'baits',feed:'feeds'}[d.k];if(src){t.value=tidy(t.value,src)}$('rods').oninput(e)};
+$('rods').onclick=function(e){var b=e.target.closest('button');if(!b)return;var d=b.dataset;
+if(d.af!==undefined)addFeat(+d.af);
+else if(d.df){var p=d.df.split('|');R[+p[0]].feat.splice(+p[1],1);drawRods()}
+else if(d.rm!==undefined)rmRod(+d.rm);
+else if(d.mk!==undefined&&!b.disabled)openEd(+d.mk);
+else if(d.ok!==undefined){pendingFeats(+d.ok);R[+d.ok]._c=true;drawRods()}
+else if(d.open!==undefined){R[+d.open]._c=false;drawRods()}
+else if(d.mv!==undefined){moveRod(+d.mv)}
+else if(d.cadd!==undefined){C.push({cid:'c'+uid(),sp:'Karper',rod:+d.cadd,kg:'',cm:'',time:nowT()});drawRods()}
+else if(d.cph!==undefined){pickPhotos(C[+d.cph].cid)}
+else if(d.pdel){rmPhoto(d.pdel)}
+else if(d.cdel!==undefined){var cd=C[+d.cdel].cid,n=P.filter(function(x){return x.to===cd}).length;C.splice(+d.cdel,1);P.forEach(function(x){if(x.to===cd)x.to='sfeer'});drawRods();if(n)ask(n===1?'De foto van deze vangst staat nu bij de sfeerfoto\'s.':'De '+n+' foto\'s van deze vangst staan nu bij de sfeerfoto\'s.','OK')}};
+$('rods').onkeydown=function(e){if(e.key==='Enter'&&e.target.dataset.f){e.preventDefault();addFeat(+e.target.dataset.i)}};
+var edI=null;
+function edMarks(){$('edM').innerHTML=R.map(function(r,k){return r.mx!=null?'<span class="mk'+(k===edI?' cur':'')+'" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%">'+rodInfo(R,k).tag+'</span>':''}).join('')}
+function openEd(i){edI=i;stekUrl(function(u){if(!u)return;$('edT').textContent=rodInfo(R,i).label+': tik waar je ligt';$('edI').src=u;$('ed').hidden=false;edMarks()})}
+$('edI').onclick=function(e){var b=this.getBoundingClientRect();R[edI].mx=Math.min(1,Math.max(0,(e.clientX-b.left)/b.width));R[edI].my=Math.min(1,Math.max(0,(e.clientY-b.top)/b.height));edMarks()};
+$('edClr').onclick=function(){R[edI].mx=null;R[edI].my=null;edMarks()};
+$('edOk').onclick=function(){$('ed').hidden=true;drawRods()};
+function rigsOf(s){return s.rods.map(function(r){return r.rig}).filter(Boolean)}
+function uniqRig(){var r={};data.forEach(function(s){rigsOf(s).forEach(function(x){r[x]=1})});return Object.keys(r).sort()}
+function bl(s){var b={},r={};s.rods.forEach(function(x){if(x.bait)b[x.bait]=1;if(x.rig)r[x.rig]=1});return [Object.keys(b).join(', '),Object.keys(r).join(', ')].filter(Boolean).join(' / ')}
+
+/* foto's */
+var P=[],NEWP=[],phTarget=null,phCb=null;
+function pickPhotos(to,cb){phTarget=to;phCb=cb||null;$('phFile').click()}
+$('phFile').onchange=function(){var fs=[].slice.call(this.files);this.value='';if(!fs.length)return;var got=[],n=0;
+fs.forEach(function(f){shrink(f,1600,function(b){if(b){var pid='p'+uid();pPut(pid,b);got.push(pid)}if(++n===fs.length){if(phCb)phCb(got);else{got.forEach(function(pid){P.push({pid:pid,to:phTarget});NEWP.push(pid)});drawRods()}}})})};
+function rmPhoto(pid){ask('Deze foto verwijderen?','Verwijder',function(){P=P.filter(function(x){return x.pid!==pid});drawRods()})}
+function drawPics(){var opts=function(sel){return '<option value="sfeer"'+(sel==='sfeer'?' selected':'')+'>Sfeerfoto</option>'+C.map(function(c){return '<option value="'+c.cid+'"'+(sel===c.cid?' selected':'')+'>'+esc(catchLabel(c))+'</option>'}).join('')};
+$('picList').innerHTML=P.length?P.map(function(p){return '<div class="th"><img data-pid="'+p.pid+'" alt="Foto"><button type="button" class="pdel" data-pdel="'+p.pid+'" aria-label="Verwijder foto">×</button><select data-pto="'+p.pid+'" aria-label="Foto hoort bij">'+opts(p.to)+'</select></div>'}).join(''):'<p class="hint" style="grid-column:1/-1">Nog geen foto\'s.</p>';fillThumbs($('picList'))}
+$('picList').addEventListener('change',function(e){var s=e.target.dataset.pto;if(!s)return;P.forEach(function(x){if(x.pid===s)x.to=e.target.value});drawRods()});
+$('picList').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.pdel)rmPhoto(b.dataset.pdel)});
+$('picAdd').onclick=function(){pickPhotos('sfeer')};
+document.addEventListener('click',function(e){var i=e.target;if(i.tagName==='IMG'&&i.dataset.pid&&i.src){$('pvI').src=i.src;$('pvC').textContent=i.dataset.cap||'';$('pv').hidden=false}});
+$('pvX').onclick=function(){$('pv').hidden=true};$('pv').addEventListener('click',function(e){if(e.target.id==='pv')$('pv').hidden=true});
+
+/* formulier openen en opslaan */
+var liveStart=false;
+function openForm(s,live){liveStart=!!live;editId=s?s.id:null;stekBlob=null;stekObj=null;
+FIELDS.forEach(function(k){$(k).value=s?(s[k]==null?'':s[k]):''});
+var st0=s&&s.stekId?STEKS.filter(function(x){return x.id===s.stekId})[0]:null;stekPid=s?(s.stekPhoto||(st0&&st0.photo)||null):null;stekPicked=!!s;
+$('dS').value=s?s.date:nowD();$('tS').value=s?(s.time||''):(live?nowT():'');$('dE').value=s?(s.dateEnd||''):'';$('tE').value=s?(s.timeEnd||''):'';
+$('murl').value=s?(s.mapUrl||''):'';gpsLL=null;autoW=false;autoA=false;$('autoH').textContent='';autoSel=!s;msg('');$('stek').value='';updMaps();
+R=s&&s.rods.length?JSON.parse(JSON.stringify(s.rods)):[blankRod(1)];R.forEach(function(r){r._c=!!s});
+C=s?s.catches.map(function(c){var k=(parseInt(c.rod,10)||1)-1;return{cid:c.cid||('c'+uid()),sp:c.sp,rod:Math.min(Math.max(k,0),R.length-1),kg:c.kg,cm:c.cm,time:c.time||''}}):[];
+P=[];if(s){(s.photos||[]).forEach(function(k){P.push({pid:k,to:'sfeer'})});s.catches.forEach(function(c,i){(c.photos||[]).forEach(function(k){P.push({pid:k,to:C[i].cid})})})}NEWP=[];
+maanTouched=!!(s&&s.maan);autoMoon();calcDur();names();stekOptions(s&&s.stekId?s.stekId:'');
+formDirty=false;drawRods();setMode('form');DONE={};if(s)SECS.forEach(function(k){DONE[k]=1});show(s?null:'when');window.scrollTo(0,0)}
+$('add').onclick=function(){openForm()};
+$('cancel').onclick=function(){var id=editId;leaveForm(function(){discardForm();if(id&&tabNow!=='vis')showDetail(id);else setMode('list')})};
+var SECS=['when','loc','rods','cond','pics'];
+function secEl(k){return $('f').querySelector('[data-sec="'+k+'"]')}
+function secSum(k){
+if(k==='when'){var a=$('dS').value+(($('tS').value)?' '+$('tS').value:''),e=$('dE').value?' tot '+$('dE').value+' '+$('tE').value:'',h=calcDur();return a+e+(h?' ('+h+' u)':'')}
+if(k==='loc'){var st=curStek(),n=$('stekSel').value==='new'?($('stek').value.trim()||'nieuwe stek')+' (nieuw)':(st?st.name:'');return [n,$('wname').value.trim(),$('water').value,$('access').value].filter(Boolean).join(' · ')}
+if(k==='pics'){var v=P.filter(function(x){return x.to!=='sfeer'}).length,f=P.length-v;return P.length?(v+(v===1?' vangstfoto':' vangstfoto\'s')+' · '+f+(f===1?' sfeerfoto':' sfeerfoto\'s')):'geen foto\'s'}
+if(k==='rods'){var rc=rodCount(R);return rc+(rc===1?' stok':' stokken')+(R.length>rc?' ('+R.length+' posities)':'')+' · '+C.length+(C.length===1?' vangst':' vangsten')}
+var x=[$('weer').value,$('wdir').value,$('wind').value,$('temp').value?$('temp').value+' °C':'',$('press').value?$('press').value+' hPa':''].filter(Boolean).join(' · ');return x||'niets ingevuld'}
+var DONE={},CUR=null;
+function secOpen(k,open){var e=secEl(k);e.classList.toggle('closed',!open);e.querySelector('.fss').textContent=open?'':secSum(k)}
+function show(k){CUR=k||null;SECS.forEach(function(x){secOpen(x,x===k);secEl(x).classList.toggle('gone',!!k&&x!==k)});$('saveBtn').hidden=!!k;hideSug();
+var tg=k?secEl(k):$('f');setTimeout(function(){window.scrollTo(0,Math.max(0,tg.getBoundingClientRect().top+window.scrollY-$('fbar').parentNode.offsetHeight-8))},0)}
+function secCheck(k){var e=secEl(k);if(CUR!==k)show(k);
+if(k==='loc'&&!$('stekSel').value){$('stekSel').focus();ask('Plak de coördinaten of kies een stek.','OK');return false}
+if(k==='rods'){pendingFeats();R.forEach(function(r){r._c=true});drawRods()}
+var bad=[].filter.call(e.querySelectorAll('input,select,textarea'),function(i){return !i.checkValidity()})[0];
+if(bad){bad.reportValidity();return false}return true}
+$('f').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+if(b.dataset.conf){var k=b.dataset.conf;if(!secCheck(k))return;DONE[k]=1;show(SECS.filter(function(x){return !DONE[x]})[0])}
+else if(b.dataset.edit){show(b.dataset.edit)}});
+function secValidQuiet(k){var e=secEl(k);if(k==='loc'&&!$('stekSel').value)return false;return [].every.call(e.querySelectorAll('input,select,textarea'),function(i){return i.checkValidity()})}
+var forceNoLL=false,forceTimes=false;
+$('f').onsubmit=function(e){e.preventDefault();for(var q=0;q<SECS.length;q++){if(!secValidQuiet(SECS[q])){secCheck(SECS[q]);return}}
+var was=editId,ex=was?data.filter(function(x){return x.id===was})[0]:null,s={id:was||Date.now()};
+FIELDS.forEach(function(k){s[k]=$(k).value});s.wname=s.wname.trim();
+s.date=$('dS').value;s.time=$('tS').value;s.dateEnd=$('dE').value;s.timeEnd=$('tE').value;s.hours=calcDur();
+if(!!s.dateEnd!==!!s.timeEnd){ask('Vul zowel einddatum als einduur in, of laat beide leeg.','OK');return}
+var u=$('murl').value.trim(),sel=$('stekSel').value,sn=$('stek').value.trim(),ll=curLL(),st=null;
+if(!sel){ask('Plak de coördinaten of kies een stek.','OK');return}
+if(sel==='new'){if(!sn){ask('Geef de nieuwe stek een naam.','OK');return}
+if(!ll&&!forceNoLL){ask('Deze stek heeft geen coördinaten, dus de app kan hem later niet automatisch herkennen. Toch opslaan?','Opslaan',function(){forceNoLL=true;$('f').requestSubmit()});return}
+st=STEKS.filter(function(x){return String(x.wname).toLowerCase()===s.wname.toLowerCase()&&x.name.trim().toLowerCase()===sn.toLowerCase()})[0];
+if(!st){st={id:'k'+uid(),wname:s.wname,name:sn,photo:'',lat:ll?ll[0]:null,lng:ll?ll[1]:null,url:okUrl(u)?u:(ll?'https://www.google.com/maps/search/?api=1&query='+ll[0]+','+ll[1]:'')};STEKS.push(st)}}
+else st=STEKS.filter(function(x){return x.id===sel})[0];
+forceNoLL=false;
+if(!st){ask('Kies een stek.','OK');return}
+if(st.lat==null&&ll){st.lat=ll[0];st.lng=ll[1]}if(!st.url&&okUrl(u))st.url=u;if(!st.wname)st.wname=s.wname;
+if(stekBlob){var pid='p'+uid();pPut(pid,stekBlob);st.photo=pid;stekPid=pid;stekBlob=null}
+s.stekPhoto=stekPid||'';s.stekId=st.id;s.spot=st.name;s.mapUrl=okUrl(u)?u:(coordsOf(u)?'https://www.google.com/maps/search/?api=1&query='+coordsOf(u)[0]+','+coordsOf(u)[1]:(st.url||''));
+var ti=timeIssues(R,C,s.date,s.time,s.dateEnd,s.timeEnd,ex?!!ex.active:liveStart);
+if(ti.err.length){show('rods');ask(ti.err.join(' '),'OK');return}
+if(ti.warn.length&&!forceTimes){ask('Controleer even: '+ti.warn.join(' '),'Toch opslaan',function(){forceTimes=true;$('f').requestSubmit()});return}
+forceTimes=false;
+pendingFeats();
+s.rods=R.map(function(r){return{no:r.no,from:r.from||'',bait:r.bait.trim(),feed:r.feed.trim(),rig:r.rig.trim(),depth:r.depth,dist:r.dist,feat:r.feat.slice(),mx:r.mx,my:r.my}});
+var keep=C.filter(function(c){return c.sp||c.kg||c.cm||P.some(function(x){return x.to===c.cid})});
+s.catches=keep.map(function(c){return{cid:c.cid,sp:c.sp,rod:String(c.rod+1),kg:c.kg,cm:c.cm,time:c.time,photos:P.filter(function(x){return x.to===c.cid}).map(function(x){return x.pid})}});
+s.photos=P.filter(function(x){return x.to==='sfeer'||!keep.some(function(c){return c.cid===x.to})}).map(function(x){return x.pid});NEWP=[];
+s.active=ex?(!!ex.active&&!s.dateEnd):(liveStart&&!s.dateEnd);
+if(was)data=data.map(function(x){return x.id===was?s:x});else data.unshift(s);
+data.sort(function(a,b){var x=a.date+' '+(a.time||''),y=b.date+' '+(b.time||'');return y<x?-1:y>x?1:0});
+formDirty=false;save();editId=null;render();if(was&&tabNow!=='vis')showDetail(s.id);else setMode('list')};
+
+/* invoer: komma, Enter, niet-opgeslagen wijzigingen */
+document.addEventListener('input',function(e){var i=e.target;if(i.dataset&&i.dataset.dec&&i.value.indexOf(',')>-1){var p=i.selectionStart;i.value=i.value.replace(/,/g,'.');try{i.setSelectionRange(p,p)}catch(x){}}},true);
+var formDirty=false;
+$('f').addEventListener('input',function(){formDirty=true});$('f').addEventListener('change',function(){formDirty=true});
+$('f').addEventListener('click',function(e){if(e.target.closest('#rods button,#addRod,#picAdd,#picList button,#stekPh,#stekPrev,#gps'))formDirty=true});
+$('phFile').addEventListener('change',function(){if(mode==='form')formDirty=true});$('stekFile').addEventListener('change',function(){formDirty=true});
+$('f').addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.tagName==='INPUT')e.preventDefault()});
+function leaveForm(go){if(mode!=='form'||!formDirty)return go();ask('Je wijzigingen zijn nog niet opgeslagen. Weggooien?','Weggooien',function(){discardForm();go()})}
+function discardForm(){editId=null;stekBlob=null;NEWP.forEach(pDel);NEWP=[];formDirty=false;$('ed').hidden=true;hideSug()}
+
+/* suggestielijst */
+var sugIn=null;
+function norm(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+function hideSug(){$('sug').hidden=true;sugIn=null}
+function showSug(inp){var src=$(inp.dataset.sug);if(!src)return hideSug();var q=norm(inp.value.trim()),all=[].map.call(src.options,function(o){return o.value});
+var hit=all.filter(function(v){return !q||norm(v).indexOf(q)>-1}).sort(function(a,b){var x=norm(a).indexOf(q)===0?0:1,y=norm(b).indexOf(q)===0?0:1;return x-y||a.localeCompare(b,'nl')}).slice(0,40);
+if(!hit.length||(hit.length===1&&norm(hit[0])===q))return hideSug();
+sugIn=inp;var s=$('sug'),r=inp.getBoundingClientRect();
+s.innerHTML=hit.map(function(v){var i=q?norm(v).indexOf(q):-1,h=i>-1?esc(v.slice(0,i))+'<b>'+esc(v.slice(i,i+q.length))+'</b>'+esc(v.slice(i+q.length)):esc(v);return '<button type="button" role="option" data-v="'+esc(v)+'">'+h+'</button>'}).join('');
+s.style.left=(r.left+window.scrollX)+'px';s.style.top=(r.bottom+window.scrollY+4)+'px';s.style.width=r.width+'px';s.hidden=false;s.scrollTop=0}
+document.addEventListener('focusin',function(e){var i=e.target;if(i.dataset&&i.dataset.sug)showSug(i);else if(!$('sug').contains(i))hideSug()});
+document.addEventListener('input',function(e){var i=e.target;if(i.dataset&&i.dataset.sug)showSug(i)});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')hideSug()});
+document.addEventListener('pointerdown',function(e){if(!$('sug').hidden&&!$('sug').contains(e.target)&&e.target!==sugIn)hideSug()});
+window.addEventListener('resize',function(){if(sugIn&&!$('sug').hidden)showSug(sugIn)});
+$('sug').addEventListener('pointerdown',function(e){e.preventDefault()});
+$('sug').addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!sugIn)return;var i=sugIn;i.value=b.dataset.v;hideSug();
+i.dispatchEvent(new Event('input',{bubbles:true}));i.dispatchEvent(new Event('change',{bubbles:true}));
+if(i.dataset.f)addFeat(+i.dataset.i)});
+
+/* start, stop en snelle vangst */
+function activeSes(){return data.filter(function(s){return s.active})[0]}
+function updLive(){drawLive()}
+function drawLive(){var a=activeSes();$('visIdle').hidden=!!a;$('visRun').hidden=!a;if(!a)return;
+$('runW').textContent=a.wname||'Sessie';$('runMeta').textContent=[a.spot,a.water,a.access].filter(Boolean).join(' · ');
+var ms=Date.now()-new Date(a.date+'T'+(a.time||'00:00')),m=Math.max(0,Math.floor(ms/6e4));$('runT').textContent=Math.floor(m/60)+' u '+(m%60<10?'0':'')+(m%60)+' min';
+var b=0;a.catches.forEach(function(c){var k=parseFloat(c.kg);if(k>b)b=k});$('runN').textContent=a.catches.length;$('runB').textContent=b||'–';$('runR').textContent=rodCount(a.rods);
+var lo=lastPos(a);$('runRods').innerHTML=Object.keys(lo).map(function(no){var i=lo[no],r=a.rods[i],ri=rodInfo(a.rods,i),n=a.catches.filter(function(c){var k=(parseInt(c.rod,10)||1)-1;return (a.rods[k]&&(a.rods[k].no||k+1))==no}).length;
+return '<div class="rrow"><b>'+esc(ri.label)+'</b> <span class="hint">'+esc(rodSpan(a.rods,i,a.time,'nu',a.date,''))+'</span><div class="meta">'+esc([r.rig,r.bait].filter(Boolean).join(' · ')||'geen info')+' · '+(n?n+(n===1?' vangst':' vangsten'):'nog niets')+'</div></div>'}).join('')||'<p class="hint">Nog geen stokken.</p>';
+$('runCatch').innerHTML=a.catches.length?a.catches.slice().sort(function(x,y){return (y.time||'')<(x.time||'')?-1:1}).map(function(c){var k=(parseInt(c.rod,10)||1)-1;return '<div class="rrow"><b>'+esc([c.time,c.sp,c.kg?c.kg+' kg':''].filter(Boolean).join(' · '))+'</b><div class="meta">'+esc(c.rod?rodInfo(a.rods,k).label:'geen stok')+((c.photos||[]).length?' · '+c.photos.length+' foto'+(c.photos.length>1?'\'s':''):'')+'</div></div>'}).join(''):'<p class="hint">Nog geen vangsten. Succes!</p>'}
+setInterval(function(){if(tabNow==='vis'&&mode==='list')drawLive()},30000);
+$('bEdit').onclick=function(){var a=activeSes();if(a)openForm(a)};
+$('bStart').onclick=function(){openForm(null,true)};
+$('bStop').onclick=function(){var a=activeSes();if(!a)return;
+ask('Sessie stoppen? Het einde wordt op dit moment gezet.','Stop',function(){a.dateEnd=nowD();a.timeEnd=nowT();var ms=new Date(a.dateEnd+'T'+a.timeEnd)-new Date(a.date+'T'+(a.time||'00:00'));a.hours=ms>0?String(Math.round(ms/36e4)/10):'';a.active=false;save();render();$('liveInfo').textContent='Sessie gestopt. Je vindt ze terug bij Sessies.'})};
+$('bCatch').onclick=function(){var a=activeSes();if(!a)return;$('qSp').innerHTML=spOpts('Karper');
+var lastOf={};a.rods.forEach(function(r,i){lastOf[r.no||i+1]=i});var ks=Object.keys(lastOf);
+$('qRd').innerHTML='<option value="">–</option>'+ks.map(function(no){var i=lastOf[no];return '<option value="'+(i+1)+'"'+(ks.length===1?' selected':'')+'>'+esc(rodInfo(a.rods,i).label)+'</option>'}).join('');
+$('qKg').value='';$('qCm').value='';QP=[];$('qPh').innerHTML='';$('cq').hidden=false};
+var QP=[];
+function drawQP(){$('qPh').innerHTML=QP.map(function(pid){return thumb(pid,true)}).join('');fillThumbs($('qPh'))}
+$('qPhB').onclick=function(){pickPhotos(null,function(got){QP=QP.concat(got);drawQP()})};
+$('qPh').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&b.dataset.pdel){pDel(b.dataset.pdel);QP=QP.filter(function(x){return x!==b.dataset.pdel});drawQP()}});
+function lastPos(a){var o={};a.rods.forEach(function(r,i){o[r.no||i+1]=i});return o}
+$('bMove').onclick=function(){var a=activeSes();if(!a)return;var lo=lastPos(a),ks=Object.keys(lo);
+$('mRd').innerHTML=ks.map(function(no){var i=lo[no];return '<option value="'+i+'">'+esc(rodInfo(a.rods,i).label)+'</option>'}).join('');$('mT').value=nowT();$('mq').hidden=false};
+$('mNo').onclick=function(){$('mq').hidden=true};
+$('mYes').onclick=function(){var a=activeSes();$('mq').hidden=true;if(!a)return;var i=+$('mRd').value,src=a.rods[i];if(!src)return;var last=-1;a.rods.forEach(function(x,k){if((x.no||k+1)===(src.no||i+1))last=k});
+a.rods.splice(last+1,0,{no:src.no||i+1,from:$('mT').value||nowT(),bait:src.bait,feed:src.feed,rig:src.rig,depth:'',dist:'',feat:(src.feat||[]).slice(),mx:null,my:null});
+a.catches.forEach(function(c){var r=parseInt(c.rod,10);if(r>last+1)c.rod=String(r+1)});save();render();$('liveInfo').textContent=rodInfo(a.rods,last+1).label+' vanaf '+(a.rods[last+1].from)+'. Duid de nieuwe plek aan via Bewerk sessie, Stokken.'};
+$('qNo').onclick=function(){QP.forEach(pDel);QP=[];$('cq').hidden=true};
+$('qYes').onclick=function(){var a=activeSes();$('cq').hidden=true;if(!a)return;
+a.catches.push({cid:'c'+uid(),sp:$('qSp').value,rod:$('qRd').value,kg:$('qKg').value,cm:$('qCm').value,time:nowT(),photos:QP.slice()});QP=[];save();render();$('liveInfo').textContent='Vangst toegevoegd om '+nowT()+'.'};
+
+/* ---- detail ---- */
+function showDetail(id){var s=data.filter(function(x){return x.id==id})[0];if(!s){setMode('list');return}
+detId=s.id;var st=STEKS.filter(function(t){return t.id===s.stekId})[0];
+var rows=[['Start',s.date+(s.time?' '+s.time:'')],['Einde',s.dateEnd?s.dateEnd+' '+s.timeEnd:(s.active?'bezig':'')],['Duur',s.hours!==''&&s.hours!=null?s.hours+' uur':''],['Toegang',s.access],['Watertype',s.water],['Naam water',s.wname],['Stek',st?st.name:s.spot],['Weer',s.weer],['Windrichting',s.wdir],['Windkracht',s.wind],['Temperatuur',s.temp!==''&&s.temp!=null?s.temp+' °C':''],['Luchtdruk',s.press?s.press+' hPa':''],['Maan',s.maan]].filter(function(r){return r[1]!==''&&r[1]!=null});
+var tot=0;s.catches.forEach(function(x){tot+=parseFloat(x.kg)||0});
+var sPh=s.stekPhoto||(st&&st.photo)||'',hasPh=!!sPh;function nC(k){return s.catches.filter(function(c){return (parseInt(c.rod,10)||0)-1===k}).length}function rl(c){return rodInfo(s.rods,(parseInt(c.rod,10)||1)-1).label}
+$('det').innerHTML='<div class="dbar"><button class="ib" id="dBack" aria-label="Terug">'+ICON.back+'</button><h2>'+esc(s.wname||s.spot)+'</h2><button class="ib" id="dEdit" aria-label="Bewerk">'+ICON.edit+'</button><button class="ib" id="dDel" aria-label="Verwijder">'+ICON.del+'</button></div>'
++'<div class="sess"><dl>'+rows.map(function(r){return '<dt>'+r[0]+'</dt><dd>'+esc(r[1])+'</dd>'}).join('')+'</dl>'+(okUrl(s.mapUrl)?'<a class="ghost lnk" style="margin-top:10px" href="'+esc(s.mapUrl)+'" target="_blank" rel="noopener">Open in Google Maps</a>':'')+'</div>'
++(hasPh?'<div class="sess"><h3>Stekfoto</h3><div class="mkwrap" style="margin-top:8px"><img id="dImg" alt="Stekfoto">'+s.rods.map(function(r,k){var n=nC(k);return r.mx!=null?'<span class="mk '+(n?'hit':'blank')+'" style="left:'+(r.mx*100)+'%;top:'+(r.my*100)+'%">'+rodInfo(s.rods,k).tag+'</span>':''}).join('')+'</div>'
++(s.rods.some(function(r){return r.mx!=null})?'<div class="legend"><span style="background:#1f8a4c"></span>vangst <span style="background:#8a8f8c;margin-left:10px"></span>blank</div>':'')+'</div>':'')
++(s.rods.length?'<div class="sess"><h3>Stokken</h3>'+s.rods.map(function(r,i){var bits=[r.rig?'montage '+r.rig:'',r.bait?'haakaas '+r.bait:'',r.feed?'voeraas '+r.feed:'',r.depth?'diepte '+r.depth+' m':'',r.dist?'afstand '+r.dist+' m':'',(r.feat&&r.feat.length)?r.feat.join(', '):''].filter(Boolean);var ri=rodInfo(s.rods,i),n=nC(i);return '<p><b>'+esc(ri.label)+'</b> ('+esc(rodSpan(s.rods,i,s.time,s.timeEnd||(s.active?'bezig':''),s.date,s.dateEnd))+'): '+esc(bits.join(' · ')||'geen info')+' · '+(n?n+(n===1?' vangst':' vangsten'):'blank')+'</p>'}).join('')+'</div>':'')
++'<div class="sess"><h3>Vangsten</h3>'+(s.catches.length?s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).map(function(x){return '<p>'+esc([x.rod?rl(x):'',x.sp,x.kg?x.kg+' kg':'',x.cm?x.cm+' cm':'',x.time||''].filter(Boolean).join(', '))+'</p>'}).join(''):'<p>Geen vangsten</p>')+(tot?'<div class="meta">Totaal '+tot.toFixed(1)+' kg</div>':'')+'</div>'
++(s.notes?'<div class="sess"><h3>Notities</h3><p>'+esc(s.notes)+'</p></div>':'')
++(function(){var it=[];s.catches.slice().sort(function(a,b){return (+a.rod||0)-(+b.rod||0)}).forEach(function(c){(c.photos||[]).forEach(function(k){it.push([k,[c.rod?rl(c):'',c.sp,c.kg?c.kg+' kg':'',c.time||''].filter(Boolean).join(' · ')])})});(s.photos||[]).forEach(function(k){it.push([k,'Sfeerfoto'])});
+return it.length?'<div class="sess" id="dPics"><h3>Foto\'s ('+it.length+')</h3><div class="thumbs">'+it.map(function(x){return '<div class="th"><img data-pid="'+x[0]+'" data-cap="'+esc(x[1])+'" alt="'+esc(x[1])+'"><div class="cap">'+esc(x[1])+'</div></div>'}).join('')+'</div></div>':''})();
+fillThumbs($('det'));
+if(hasPh)pUrl(sPh,function(u){var i=$('dImg');if(u&&i)i.src=u});
+setMode('detail');window.scrollTo(0,0)}
+$('det').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+if(b.id==='dBack')setMode('list');
+else if(b.id==='dEdit')openForm(data.filter(function(x){return x.id==detId})[0]);
+else if(b.id==='dDel')ask('Deze sessie verwijderen? Dit kan niet ongedaan worden gemaakt.','Verwijder',function(){data=data.filter(function(x){return x.id!=detId});save();render();setMode('list')})};
+
+/* ---- filters ---- */
+var GR=[['year','Jaar'],['period','Periode'],['access','Toegang'],['type','Watertype'],['rig','Montage'],['fish','Vis'],['cond','Condities']];
+var CND=[['weer','Weer',OPT.weer],['maan','Maan',OPT.maan],['wdir','Windrichting',OPT.wdir],['press','Luchtdruk',['Laag','Normaal','Hoog']],['temp','Temperatuur',['Koud','Mild','Warm']]];
+var SORT=[['cnt','Aantal'],['kg','Gewicht'],['dur','Duur'],['date','Datum'],['rate','Vangsten per uur'],['spot','Water']];
+function newF(){return{years:[],from:'',to:'',m1:'',m2:'',spots:[],access:[],types:[],names:[],rigs:[],fish:[],parts:[],kmin:0,kmax:150,cond:{}}}
+function cp(x){return JSON.parse(JSON.stringify(x))}
+var F=newF(),AF=newF(),openG=null,sortKey='date-d';
+function gc(g,f){return g==='year'?f.years.length:g==='period'?(f.from||f.to||f.m1||f.m2?1:0):g==='spot'?f.spots.length:g==='access'?f.access.length:g==='type'?f.types.length+f.names.length+f.spots.length:g==='rig'?f.rigs.length:g==='fish'?f.fish.length+(f.parts||[]).length+(f.kmin>0||f.kmax<150?1:0):Object.keys(f.cond).reduce(function(a,k){return a+f.cond[k].length},0)}
+function cls(k,s){if(k==='press'){var p=parseFloat(s.press);return isNaN(p)?'':p<1010?'Laag':p>1020?'Hoog':'Normaal'}if(k==='temp'){var t=parseFloat(s.temp);return isNaN(t)?'':t<8?'Koud':t>18?'Warm':'Mild'}return s[k]||''}
+function wOn(){return AF.kmin>0||AF.kmax<150}
+var PARTS=[['Nacht',0,6],['Ochtend',6,12],['Middag',12,18],['Avond',18,24]];
+function partOf(tm){var h=parseInt(String(tm||'').slice(0,2),10);if(isNaN(h))return '';return PARTS.filter(function(p){return h>=p[1]&&h<p[2]})[0][0]}
+function catchOn(){return AF.fish.length>0||(AF.parts||[]).length>0||wOn()}
+function mc(s){return s.catches.filter(function(x){if(AF.fish.length&&AF.fish.indexOf(x.sp)<0)return false;if((AF.parts||[]).length&&AF.parts.indexOf(partOf(x.time))<0)return false;if(wOn()){var k=parseFloat(x.kg);if(isNaN(k)||k<AF.kmin||k>AF.kmax)return false}return true})}
+function pass(s){var a=AF;
+if(a.years.length&&a.years.indexOf(s.date.slice(0,4))<0)return false;
+if((a.from&&s.date<a.from)||(a.to&&s.date>a.to))return false;
+if(a.m1||a.m2){var mm=parseInt(s.date.slice(5,7),10),mf=parseInt(a.m1||1,10),mt=parseInt(a.m2||12,10);if(!(mf<=mt?(mm>=mf&&mm<=mt):(mm>=mf||mm<=mt)))return false}
+if(a.spots.length&&a.spots.indexOf(s.spot)<0)return false;
+if(a.access.length&&a.access.indexOf(s.access)<0)return false;
+if(a.types.length&&a.types.indexOf(s.water)<0)return false;
+if(a.names.length&&a.names.indexOf(s.wname)<0)return false;
+if(a.rigs.length&&!rigsOf(s).some(function(x){return a.rigs.indexOf(x)>-1}))return false;
+for(var i=0;i<CND.length;i++){var v=a.cond[CND[i][0]]||[];if(v.length&&v.indexOf(cls(CND[i][0],s))<0)return false}
+if(catchOn()&&!mc(s).length)return false;
+return true}
+function val(k,s){var c=mc(s),t=0;c.forEach(function(x){t+=parseFloat(x.kg)||0});var h=parseFloat(s.hours)||0;
+return k==='cnt'?c.length:k==='kg'?t:k==='dur'?h:k==='rate'?(h?c.length/h:0):k==='spot'?(s.wname||'').toLowerCase():s.date+' '+(s.time||'')}
+function view(){var k=sortKey.split('-')[0],d=sortKey.split('-')[1]==='a'?1:-1;return data.filter(pass).sort(function(x,y){var a=val(k,x),b=val(k,y);return(a<b?-1:a>b?1:0)*d})}
+function tog(a,v){var i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1)}
+function chip(t,on,attr){return '<button type="button" class="chip" aria-pressed="'+on+'" '+attr+'>'+esc(t)+'</button>'}
+function uniq(f){var r={};data.forEach(function(s){var v=f(s);if(v)r[v]=1});return Object.keys(r).sort()}
+function prune(){var A=F.access;
+F.types=F.types.filter(function(x){return !A.length||data.some(function(s){return s.water===x&&A.indexOf(s.access)>-1})});
+F.names=F.types.length?F.names.filter(function(n){return data.some(function(s){return s.wname===n&&(!A.length||A.indexOf(s.access)>-1)&&(F.types.indexOf(s.water)>-1)})}):[]}
+var MN=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+function mopt(v,l){return '<option value="">'+l+'…</option>'+MN.map(function(m,i){return '<option value="'+(i+1)+'"'+(String(i+1)===v?' selected':'')+'>'+m+'</option>'}).join('')}
+function okW(s){return (!F.access.length||F.access.indexOf(s.access)>-1)&&(!F.types.length||F.types.indexOf(s.water)>-1)&&(!F.names.length||F.names.indexOf(s.wname)>-1)}
+function prune2(){prune();F.spots=F.names.length?F.spots.filter(function(l){return data.some(function(s){return s.spot===l&&okW(s)})}):[]}
+function updBar(){var n=GR.filter(function(g){return gc(g[0],AF)>0}).length;$('bF').textContent=n?'Filters ('+n+')':'Filters: Alles';
+var x=SORT.filter(function(z){return z[0]===sortKey.split('-')[0]})[0];$('bS').textContent='Sorteer: '+x[1]+(sortKey.slice(-1)==='a'?' ↑':' ↓')}
+function drawF(){var h='<div class="chips">'+GR.map(function(g){var n=gc(g[0],F);
+return '<button type="button" class="chip'+(openG===g[0]?' open':'')+'" aria-pressed="'+(n>0)+'" data-g="'+g[0]+'">'+g[1]+(n?' ('+n+')':'')+'</button>'}).join('')+'</div>';
+var p='';
+if(openG==='year'){var y1=new Date().getFullYear(),o='';data.forEach(function(s){var y=parseInt(s.date.slice(0,4),10);if(y>y1)y1=y});
+for(var y=y1;y>=1950;y--)o+='<option>'+y+'</option>';
+p='<label for="ysel">Jaar toevoegen</label><select id="ysel"><option value="">Kies een jaar…</option>'+o+'</select><div class="chips" style="margin-top:8px">'+F.years.map(function(y){return chip(y+' ×',true,'data-y="'+y+'"')}).join('')+'</div>'}
+if(openG==='period')p='<label>Maanden (elk jaar)</label><div class="g2"><select id="m1" aria-label="Van maand">'+mopt(F.m1,'Van')+'</select><select id="m2" aria-label="Tot maand">'+mopt(F.m2,'Tot')+'</select></div><label>Exacte datums</label><div class="g2"><input type="date" id="pf" value="'+F.from+'" aria-label="Van datum"><input type="date" id="pt" value="'+F.to+'" aria-label="Tot datum"></div>';
+if(openG==='spot')p='<div class="chips">'+(uniq(function(s){return s.spot}).map(function(l){return chip(l,F.spots.indexOf(l)>-1,'data-l="'+esc(l)+'"')}).join('')||'Nog geen locaties')+'</div>';
+if(openG==='access')p='<div class="chips">'+OPT.access.map(function(x){return chip(x,F.access.indexOf(x)>-1,'data-a="'+x+'"')}).join('')+'</div>';
+if(openG==='type'){var A=F.access,ty={},ns={},ls={};
+data.forEach(function(s){if(s.water&&(!A.length||A.indexOf(s.access)>-1))ty[s.water]=1});
+data.forEach(function(s){if(!(!A.length||A.indexOf(s.access)>-1)||!(!F.types.length||F.types.indexOf(s.water)>-1))return;if(s.wname)ns[s.wname]=1;if(s.spot&&F.names.indexOf(s.wname)>-1)ls[s.spot]=1});
+p='<div class="lv"><label>Watertype</label><div class="chips">'+OPT.water.filter(function(x){return !A.length||ty[x]}).map(function(x){return chip(x,F.types.indexOf(x)>-1,'data-w="'+x+'"')}).join('')+'</div>'
++(F.types.length?'<div class="lv"><label>Naam</label><div class="chips">'+(Object.keys(ns).sort().map(function(l){return chip(l,F.names.indexOf(l)>-1,'data-n="'+esc(l)+'"')}).join('')||'Nog geen namen ingevoerd')+'</div>'+(F.names.length?'<div class="lv"><label>Stek</label><div class="chips">'+(Object.keys(ls).sort().map(function(l){return chip(l,F.spots.indexOf(l)>-1,'data-l="'+esc(l)+'"')}).join('')||'Nog geen stekken ingevoerd')+'</div></div>':'')+'</div>':'')+'</div>'}
+if(openG==='rig')p='<div class="chips">'+(uniqRig().map(function(l){return chip(l,F.rigs.indexOf(l)>-1,'data-r="'+esc(l)+'"')}).join('')||'Nog geen montages ingevoerd')+'</div>';
+if(openG==='fish')p='<label>Soort (geen keuze = alle soorten)</label><div class="chips">'+SPECIES.map(function(x){return chip(x,F.fish.indexOf(x)>-1,'data-f="'+x+'"')}).join('')+'</div>'
++'<label>Gewicht per vis (kg)</label><div class="g2"><input type="text" inputmode="decimal" data-dec="1" autocomplete="off" id="kmin" value="'+F.kmin+'" aria-label="Van kg"><input type="text" inputmode="decimal" data-dec="1" autocomplete="off" id="kmax" value="'+F.kmax+'" aria-label="Tot kg"></div>'
++'<input type="range" id="rmin" min="0" max="150" step="0.5" value="'+F.kmin+'" aria-label="Van kg"><input type="range" id="rmax" min="0" max="150" step="0.5" value="'+F.kmax+'" aria-label="Tot kg">'
++'<p class="hint">Toont sessies met minstens één vis in dit bereik. Bij 0 tot 150 is er geen gewichtsfilter.</p>'
++'<label>Tijdstip van de vangst</label><div class="chips">'+PARTS.map(function(x){return chip(x[0]+' ('+x[1]+'–'+x[2]+' u)',(F.parts||[]).indexOf(x[0])>-1,'data-pt="'+x[0]+'"')}).join('')+'</div>';
+if(openG==='cond')p=CND.map(function(c){return '<label>'+c[1]+'</label><div class="chips">'+c[2].map(function(v){return chip(v,(F.cond[c[0]]||[]).indexOf(v)>-1,'data-c="'+c[0]+'|'+v+'"')}).join('')+'</div>'}).join('');
+$('pFb').innerHTML=h+(p?'<div class="sub">'+p+'</div>':'');okCount()}
+function okCount(){var keep=AF;AF=F;var n=data.filter(pass).length;AF=keep;$('fOk').textContent='OK ('+n+(n===1?' sessie':' sessies')+')'}
+function wsync(i,v){v=Math.max(0,Math.min(150,parseFloat(v)||0));if(i.slice(1)==='min')F.kmin=Math.min(v,F.kmax);else F.kmax=Math.max(v,F.kmin);
+$('kmin').value=F.kmin;$('rmin').value=F.kmin;$('kmax').value=F.kmax;$('rmax').value=F.kmax}
+$('pF').onclick=function(e){var t=e.target.closest('button');if(!t)return;var d=t.dataset;
+if(t.id==='fX'){setMode('list');return}
+if(t.id==='fOk'){AF=cp(F);setMode('list');render();return}
+if(t.id==='fClr'){F=newF();AF=newF();openG=null;setMode('list');render();return}
+if(d.g)openG=openG===d.g?null:d.g;
+if(d.y)tog(F.years,d.y);if(d.l)tog(F.spots,d.l);if(d.a)tog(F.access,d.a);if(d.w)tog(F.types,d.w);if(d.n)tog(F.names,d.n);if(d.r)tog(F.rigs,d.r);if(d.f)tog(F.fish,d.f);if(d.pt){F.parts=F.parts||[];tog(F.parts,d.pt)}
+if(d.c){var p=d.c.split('|');F.cond[p[0]]=F.cond[p[0]]||[];tog(F.cond[p[0]],p[1])}
+if(d.a||d.w||d.n)prune2();
+drawF()};
+$('pF').oninput=function(e){var i=e.target.id;if(i==='rmin'||i==='rmax'){wsync(i,e.target.value);okCount()}};
+$('pF').onchange=function(e){var t=e.target,i=t.id;
+if(i==='kmin'||i==='kmax')wsync(i,t.value);
+if(i==='ysel'&&t.value){if(F.years.indexOf(t.value)<0)F.years.push(t.value);F.years.sort();drawF()}
+if(i==='pf'||i==='pt'){F.from=$('pf').value;F.to=$('pt').value}
+if(i==='m1'||i==='m2'){F.m1=$('m1').value;F.m2=$('m2').value}
+okCount()};
+function drawS(){$('pSb').innerHTML=SORT.map(function(x){return '<div class="srow"><span>'+x[1]+'</span><div class="chips">'+['d','a'].map(function(r){return chip(r==='d'?'↓':'↑',sortKey===x[0]+'-'+r,'data-s="'+x[0]+'-'+r+'" aria-label="'+x[1]+(r==='d'?' aflopend':' oplopend')+'"')}).join('')+'</div></div>'}).join('')}
+$('pS').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+if(b.id==='sX'){setMode('list');return}
+if(b.dataset.s){sortKey=b.dataset.s;setMode('list');render()}};
+$('bF').onclick=function(){F=cp(AF);openG=null;drawF();setMode('filter')};
+$('bS').onclick=function(){drawS();setMode('sort')};
+
+/* ---- selecteren ---- */
+function updSel(){var v=view(),all=v.length>0&&v.every(function(s){return selSet.indexOf(String(s.id))>-1});
+$('selDel').textContent='Verwijder ('+selSet.length+')';$('selCsv').textContent='CSV ('+selSet.length+')';$('selAll').textContent=all?'Geen':'Alles'}
+$('bSel').onclick=function(){selSet=[];setMode('select');render();updSel()};
+$('selDone').onclick=function(){selSet=[];setMode('list');render()};
+$('selX').onclick=$('selDone').onclick;
+$('selAll').onclick=function(){var v=view(),all=v.length>0&&v.every(function(s){return selSet.indexOf(String(s.id))>-1});
+selSet=all?[]:v.map(function(s){return String(s.id)});render();updSel()};
+$('selCsv').onclick=function(){if(!selSet.length)return ask('Selecteer eerst sessies.','OK');dl('catchbook-selectie.csv',csvOf(data.filter(function(x){return selSet.indexOf(String(x.id))>-1})),'text/csv')};
+$('selDel').onclick=function(){if(!selSet.length)return;
+ask(selSet.length+(selSet.length===1?' sessie':' sessies')+' verwijderen? Dit kan niet ongedaan worden gemaakt.','Verwijder',function(){data=data.filter(function(x){return selSet.indexOf(String(x.id))<0});save();selSet=[];setMode('list');render()})};
+
+/* ---- lijst ---- */
+function render(){updBar();updLive();var d=view(),n=d.length,c=0,b=0,sel=mode==='select';
+d.forEach(function(s){mc(s).forEach(function(x){c++;var k=parseFloat(x.kg);if(k>b)b=k})});
+$('sN').textContent=n;$('sC').textContent=c;$('sB').textContent=b?b:'–';
+var sp={},rg={},bt={},fd={},ft={};DEF.rig.forEach(function(x){rg[x]=1});DEF.bait.forEach(function(x){bt[x]=1});DEF.feed.forEach(function(x){fd[x]=1});DEF.feat.forEach(function(x){ft[x]=1});data.forEach(function(s){if(s.spot)sp[s.spot]=1;s.rods.forEach(function(r){if(r.rig)rg[r.rig]=1;if(r.bait)bt[r.bait]=1;if(r.feed)fd[r.feed]=1;(r.feat||[]).forEach(function(f){ft[f]=1})})});
+$('spots').innerHTML=Object.keys(sp).map(function(k){return '<option value="'+esc(k)+'">'}).join('');
+$('rigs').innerHTML=Object.keys(rg).sort(function(a,b){return a.localeCompare(b,'nl')}).map(function(k){return '<option value="'+esc(k)+'">'}).join('');
+$('baits').innerHTML=Object.keys(bt).sort().map(function(k){return '<option value="'+esc(k)+'">'}).join('');
+$('feeds').innerHTML=Object.keys(fd).sort().map(function(k){return '<option value="'+esc(k)+'">'}).join('');
+$('feats').innerHTML=Object.keys(ft).sort().map(function(k){return '<option value="'+esc(k)+'">'}).join('');
+['rigs','baits','feeds','feats'].forEach(function(id){var seen={};[].slice.call($(id).options).forEach(function(o){var k=tidyKey(o.value);if(seen[k])o.remove();else seen[k]=1})});
+names();
+if(!n){$('list').innerHTML='<div class="empty">'+(data.length?'Geen sessies met deze filters.':'Nog geen sessies. Tik op "Nieuwe sessie" om te beginnen.')+'</div>';return}
+$('list').innerHTML=d.map(function(s){
+var on=sel&&selSet.indexOf(String(s.id))>-1;
+var m=[s.wdir,s.wind,s.temp!==''?s.temp+'°C':'',s.press?s.press+' hPa':'',s.hours?s.hours+' u':''].filter(Boolean).join(', ');
+var w=[s.access,s.water,s.spot,s.weer,s.maan].filter(Boolean).join(', ');
+var cs=mc(s).map(function(x){return esc([x.sp,x.kg?x.kg+' kg':'',x.cm?x.cm+' cm':''].filter(Boolean).join(' '))}).join('; ');
+return '<div class="sess'+(on?' on':'')+'" data-id="'+s.id+'" role="button" tabindex="0">'
++(sel?'<input type="checkbox" class="cb" tabindex="-1" aria-label="Selecteer sessie"'+(on?' checked':'')+'>':'')
++'<h3>'+esc(s.wname||s.spot)+' – '+esc(s.date+(s.time?' '+s.time:''))+(s.active?' · bezig':'')+'</h3>'
++'<div class="meta">'+esc(bl(s))+'</div>'
++(m?'<div class="meta">'+esc(m)+'</div>':'')
++(w?'<div class="meta">'+esc(w)+'</div>':'')
++'<p>'+(cs?'Vangsten: '+cs:'Geen vangsten')+'</p></div>'}).join('')}
+$('list').onclick=function(e){var c=e.target.closest('.sess');if(!c)return;var id=c.dataset.id;
+if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
+$('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
+
+/* ---- back-up ---- */
+var APP_VERSION='0.1.0';
+function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
+function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
+function dl(name,text,type,ok){
+if(isNative()){var FS=plug('Filesystem'),SH=plug('Share');if(!FS||!SH)return ask('Opslaan lukt niet: de bestandsfuncties van de app ontbreken.','OK');
+FS.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'}).then(function(r){return SH.share({title:name,dialogTitle:'Bewaar of deel '+name,files:[r.uri]})}).then(function(){if(ok)ok()},function(e){var m=String(e&&e.message||e||'');if(/cancel/i.test(m))return;ask('Opslaan lukte niet ('+m+').','OK')});return}
+try{var b=new Blob([text],{type:type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);if(ok)ok()}catch(e){ask('Downloaden lukt hier niet.','OK')}}
+function bakGet(){try{return +localStorage.getItem(KEY+'-bak')||0}catch(e){return 0}}
+function bakSet(){try{localStorage.setItem(KEY+'-bak',String(Date.now()))}catch(e){}bakShow();layout()}
+function bakDue(){if(!data.length)return false;var l=bakGet();return !l||Date.now()-l>14*864e5}
+function bakShow(){var l=bakGet(),txt=l?'Laatste back-up: '+new Date(l).toLocaleDateString('nl-BE',{day:'numeric',month:'long',year:'numeric'}):'Nog geen back-up gemaakt.';$('bakInfo').textContent=txt;
+$('bakWarnT').textContent=l?'Je laatste back-up is meer dan 14 dagen oud.':'Je hebt nog geen back-up gemaakt.'}
+$('bakGo').onclick=function(){tab('bak')};
+function csvOf(list){var h=['start datum','start uur','eind datum','eind uur','uren','toegang','watertype','naam water','locatie','maps-link','stek','stok','positie vanaf','montage','haakaas','voeraas','diepte m','afstand m','kenmerken','weer','windrichting','windkracht','temp','luchtdruk','maan','soort','kg','cm','tijd vangst','notities'];
+var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'};var rows=[h.join(',')];
+list.forEach(function(s){var st=STEKS.filter(function(t){return t.id===s.stekId})[0],cs=s.catches.length?s.catches:[{}];cs.forEach(function(x){var r=s.rods[(parseInt(x.rod,10)||0)-1]||{};
+rows.push([s.date,s.time,s.dateEnd,s.timeEnd,s.hours,s.access,s.water,s.wname,s.spot,s.mapUrl,st?st.name:'',x.rod?rodInfo(s.rods,(parseInt(x.rod,10)||1)-1).tag:'',r.from||'',r.rig,r.bait,r.feed,r.depth,r.dist,(r.feat||[]).join('; '),s.weer,s.wdir,s.wind,s.temp,s.press,s.maan,x.sp,x.kg,x.cm,x.time,s.notes].map(q).join(','))})});
+return rows.join('\n')}
+$('csv').onclick=function(){dl('catchbook-sessies.csv',csvOf(data),'text/csv')};
+$('json').onclick=function(){pAll(function(all){var ks=Object.keys(all),out={},n=0;
+function fin(){dl('catchbook-backup-'+nowD()+'.json',JSON.stringify({v:3,sessions:data,steks:STEKS,locs:LOCS,photos:out}),'application/json',bakSet)}
+if(!ks.length)return fin();
+ks.forEach(function(k){var fr=new FileReader();fr.onload=function(){out[k]=fr.result;if(++n===ks.length)fin()};fr.readAsDataURL(all[k])})})};
+$('imp').onclick=function(){$('file').click()};
+$('file').onchange=function(){var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result),ss=Array.isArray(d)?d:d.sessions;
+if(Array.isArray(ss))ask('Huidige data vervangen door de back-up?','Vervang',function(){data=ss;STEKS=Array.isArray(d.steks)?d.steks:[];LOCS=d.locs||[];migrate();cleanNames();save();var ph=d.photos||{};Object.keys(ph).forEach(function(k){pPut(k,d2b(ph[k]))});render();ask('Back-up teruggezet.','OK')});else ask('Ongeldig bestand.','OK')}catch(e){ask('Ongeldig bestand.','OK')}};
+if(this.files[0])r.readAsText(this.files[0])};
+
+/* ---- namen opkuisen ---- */
+var NMSRC={wname:'wnames',rig:'rigs',bait:'baits',feed:'feeds',feat:'feats'};
+function eachName(cat,fn){data.forEach(function(s){if(cat==='wname'){if(s.wname)s.wname=fn(s.wname)}else s.rods.forEach(function(r){if(cat==='feat'){r.feat=(r.feat||[]).map(fn).filter(function(x,i,a){return x&&a.indexOf(x)===i})}else if(r[cat])r[cat]=fn(r[cat])})});
+if(cat==='wname')STEKS.forEach(function(st){if(st.wname)st.wname=fn(st.wname)})}
+function countNames(cat){var c={};eachName(cat,function(v){c[v]=(c[v]||0)+1;return v});return c}
+function canonOf(cat,v,counts){var base=String(v).replace(/\s+/g,' ').trim(),strip=base.replace(/[\s\d]+$/,'');
+if(cat==='wname'){var d=dbFind(base)||(strip&&strip!==base?dbFind(strip):null);if(d)return d[0]}
+var own=Object.keys(counts).sort(function(a,b){var da=/\d\s*$/.test(a)?1:0,db=/\d\s*$/.test(b)?1:0;return da-db||counts[b]-counts[a]}),cand=(cat==='wname'?[]:DEF[cat].slice()).concat(own);
+function key(x){return tidyKey(x)}var ks=[key(base),key(strip),key(base)+'rig'];
+for(var i=0;i<cand.length;i++){var c=cand[i],m=/^(.*?)\s*\((.*)\)$/.exec(c),ck=[key(c)].concat(m?[key(m[1]),key(m[2])]:[]);if(ck.some(function(x){return ks.indexOf(x)>-1}))return c}
+return cat==='wname'?base:(base.charAt(0).toUpperCase()+base.slice(1))}
+function cleanNames(){var ch=0;['wname','rig','bait','feed','feat'].forEach(function(cat){var cnt=countNames(cat);eachName(cat,function(v){var n=canonOf(cat,v,cnt);if(n!==v)ch++;return n})});
+if(ch){data.forEach(function(s){if(s.wname&&!s.water){var ty=typeOf(s.wname);if(ty)s.water=ty}})}return ch}
+function drawNames(){var cat=$('nmCat').value,c=countNames(cat),ks=Object.keys(c).sort(function(a,b){return a.localeCompare(b,'nl')});
+$('nmList').innerHTML=ks.length?ks.map(function(k){return '<div class="nmr"><div>'+esc(k)+' <span>('+c[k]+'×)</span></div><button type="button" class="ghost" data-nm="'+esc(k)+'">Wijzig</button></div>'}).join(''):'<p class="hint">Nog niets ingevoerd.</p>'}
+$('nmCat').onchange=drawNames;
+var rnFrom=null;
+$('nmList').onclick=function(e){var b=e.target.closest('button[data-nm]');if(!b)return;rnFrom=b.dataset.nm;var cat=$('nmCat').value;$('rnT').textContent='"'+rnFrom+'" wijzigen';$('rnI').value=rnFrom;$('rnI').dataset.sug=NMSRC[cat];$('rnH').textContent='Kies een bestaande naam om samen te voegen, of typ een nieuwe.';$('rn').hidden=false;setTimeout(function(){$('rnI').focus();$('rnI').select()},50)};
+$('rnNo').onclick=function(){$('rn').hidden=true;hideSug()};
+$('rnYes').onclick=function(){var to=$('rnI').value.replace(/\s+/g,' ').trim(),cat=$('nmCat').value,from=rnFrom;$('rn').hidden=true;hideSug();if(!to||to===from)return;
+eachName(cat,function(v){return v===from?to:v});[AF,F].forEach(function(f){['names','rigs'].forEach(function(k){f[k]=(f[k]||[]).map(function(v){return v===from?to:v})})});if(cat==='wname'){var ty=typeOf(to);data.forEach(function(s){if(s.wname===to&&ty&&!s.water)s.water=ty})}save();render();drawNames();ask('"'+from+'" is nu "'+to+'".','OK')};
+$('wipe').onclick=function(){ask('Alle sessies, stekken en foto\'s op dit toestel wissen?','Verder',function(){setTimeout(function(){ask('Zeker? Dit kan niet ongedaan worden gemaakt.','Alles wissen',function(){data=[];STEKS=[];LOCS=[];save();pKeys(function(ks){ks.forEach(pDel)});PU={};render();drawNames();layout();ask('Alle gegevens zijn gewist.','OK')})},50)})};
+
+/* ---- app: versie, opslag, updates ---- */
+$('appVer').textContent='Versie '+APP_VERSION+(isNative()?' (Android-app)':' (web-app)');
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+var swReg=null,swWaiting=null;
+function showUpd(w){swWaiting=w;$('upd').hidden=false}
+$('upd').onclick=function(){if(swWaiting){swWaiting.postMessage('skip')}else location.reload()};
+if('serviceWorker' in navigator&&!isNative()&&location.protocol!=='file:'){
+var reloading=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(reloading)return;reloading=true;location.reload()});
+navigator.serviceWorker.register('sw.js').then(function(r){swReg=r;if(r.waiting&&navigator.serviceWorker.controller)showUpd(r.waiting);
+r.addEventListener('updatefound',function(){var n=r.installing;n&&n.addEventListener('statechange',function(){if(n.state==='installed'&&navigator.serviceWorker.controller)showUpd(n)})});
+setInterval(function(){r.update().catch(function(){})},30*60*1000)}).catch(function(){})}
+$('updChk').onclick=function(){if(isNative())return ask('In de Android-app installeer je een nieuwe versie via de apk-link.','OK');if(!swReg)return ask('Updates zoeken lukt hier niet.','OK');
+swReg.update().then(function(){setTimeout(function(){if(!swWaiting)ask('Je hebt de nieuwste versie ('+APP_VERSION+').','OK')},1500)},function(){ask('Geen verbinding om updates te zoeken.','OK')})};
+
+load();if(cleanNames())save();gcPhotos();render();bakShow();drawNames();tab(activeSes()?'vis':'ses');
+</script>
+</body>
+</html>

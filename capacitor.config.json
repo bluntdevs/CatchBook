@@ -1,0 +1,8 @@
+{
+  "appId": "be.bluntdevs.catchbook",
+  "appName": "CatchBook",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}

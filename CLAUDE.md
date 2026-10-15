@@ -1,10 +1,20 @@
-# TrackFishCatches – Vislogboek
+# CatchBook (vroeger: Vislogboek)
 
 Persoonlijke vislogboek-app (vooral karpervissen) van Nicky. Communiceer in het **Nederlands** (Vlaams/Belgisch), direct en grondig. Nicky werkt stap per stap: bouw wat gevraagd wordt, stel verbeteringen voor, maar begin niet aan grote nieuwe onderdelen zonder dat hij het zegt.
 
+## Vaste gegevens
+
+- App-naam: **CatchBook** · app-ID: **`be.bluntdevs.catchbook`** (nooit meer wijzigen) · repo: **bluntdevs/CatchBook** (publiek).
+- Web-app: **https://bluntdevs.github.io/CatchBook/** (workflow `.github/workflows/pages.yml`, publiceert map `www/`).
+- Android: workflow `.github/workflows/android.yml` maakt met Capacitor (geïnstalleerd in CI, `android/` wordt niet bewaard) een ondertekende apk en zet die als GitHub-release; vaste downloadlink: https://github.com/bluntdevs/CatchBook/releases/latest/download/CatchBook.apk
+- Ondertekening via geheimen `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` (= catchbook). De sleutel staat NIET in de repo; Nicky bewaart hem zelf.
+- **Versie verhogen bij elke release**: `APP_VERSION` in `www/index.html`, `VERSION` in `www/sw.js` en `version` in `package.json` (zelfde nummer). De service worker toont dan "Nieuwe versie beschikbaar".
+- In de npm-registry kan deze werkomgeving soms niet; Capacitor wordt daarom pas in GitHub Actions geïnstalleerd.
+
 ## Stand van zaken (15 okt 2026)
 
-- `prototype/vislogboek.html` is de volledige, werkende app (één HTML-bestand, vanilla JS, geen frameworks). Gebouwd en getest als claude.ai-artifact. Dit is de bron voor de echte app.
+- **`www/index.html` is de echte app** (PWA + bron voor Capacitor). `prototype/vislogboek.html` is de oude artifact-versie, enkel ter referentie.
+- `prototype/vislogboek.html` was de volledige, werkende app (één HTML-bestand, vanilla JS, geen frameworks). Gebouwd en getest als claude.ai-artifact. Dit is de bron voor de echte app.
 - Opslag in het prototype: `localStorage` (sleutel `vislogboek-v1`, `-steks`, `-locs`, `-bak`) en foto's in IndexedDB (`vislogboek`, store `p`). Back-up = JSON met sessies, steks en foto's (base64).
 - In het artifact werkten GPS en externe netwerkcalls niet; downloads liepen via de artifact-`downloads`-capability (`claude.use('downloads')`) met een gewone `<a download>` als fallback.
 
@@ -12,9 +22,9 @@ Persoonlijke vislogboek-app (vooral karpervissen) van Nicky. Communiceer in het 
 
 Nicky gaat dit weekend vissen met een vriend (Android) en wil daar testen. Plan dat met Nicky is afgesproken:
 
-1. **Eén codebasis** (de web-app) → **PWA via GitHub Pages** (`bluntdevs.github.io/TrackFishCatches`) voor iPhone-testers en snelle ontwerptests, en **apk via Capacitor + GitHub Actions** voor Android. Later dezelfde Capacitor-app naar Play Store (AAB) en App Store (TestFlight; vereist Mac of macOS-runner + Apple Developer-account). Alles moet gratis blijven tot de stores.
+1. **Eén codebasis** (de web-app) → **PWA via GitHub Pages** (`bluntdevs.github.io/CatchBook`) voor iPhone-testers en snelle ontwerptests, en **apk via Capacitor + GitHub Actions** voor Android. Later dezelfde Capacitor-app naar Play Store (AAB) en App Store (TestFlight; vereist Mac of macOS-runner + Apple Developer-account). Alles moet gratis blijven tot de stores.
 2. Repository is **publiek** (nodig voor gratis Pages). Geen gebruikersdata in de repo. Ondertekeningssleutel van de apk **nooit** in de repo: als GitHub Secret. Vanaf versie 1 een **vaste** keystore, anders kunnen updates niet over de oude app en verliezen testers hun data.
-3. **Vaste app-ID** kiezen vóór de eerste build (los van de GitHub-naam, bv. `be.vislogboek.app`) en de **app-naam** aan Nicky vragen (nog niet beslist; kandidaten: "Vislogboek", "TrackFishCatches").
+3. App-ID en app-naam zijn gekozen (zie Vaste gegevens).
 4. Bouwen met tussenlagen zodat de overstap later klein is: opslag-laag (nu IndexedDB/localStorage, later SQLite), GPS/camera-laag (nu browser-API, later Capacitor-plugins).
 5. PWA: service worker (offline), manifest, iconen, versienummer in de app + melding "Nieuwe versie beschikbaar, tik om te vernieuwen".
 6. GPS-knop echt laten werken (was in het artifact geblokkeerd), foto rechtstreeks met camera (`capture`).
