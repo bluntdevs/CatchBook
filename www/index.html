@@ -569,10 +569,10 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
-<input type="file" id="file" accept=".json" hidden>
+<input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
 
 <script>
-var APP_VERSION='0.5.9';
+var APP_VERSION='0.5.10';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -786,7 +786,8 @@ function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro',
 $('inC').addEventListener('click',function(e){var i=e.target.closest('img[data-big]');if(i){$('pvI').src=i.src;$('pvC').textContent='Voorbeeld met verzonnen sessies';$('pv').hidden=false}});
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.9',['Bij een back-up of CSV kies je nu zelf waar het bestand komt: Google Drive (of een andere app), een eigen map of Downloads. Daarna zie je waar het staat.']],
+var NEWS=[['0.5.10',['Back-up naar Google Drive werkt nu: Android laat geen .json-bestanden delen, dus de back-up gaat als .txt. Terugzetten kan met beide.']],
+['0.5.9',['Bij een back-up of CSV kies je nu zelf waar het bestand komt: Google Drive (of een andere app), een eigen map of Downloads. Daarna zie je waar het staat.']],
 ['0.5.8',['De uitleg heeft nu bij elke stap een voorbeeldscherm, met de knoppen aangeduid. Tik op een scherm om het groot te zien (Instellingen → Over CatchBook → Toon uitleg).']],
 ['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
 ['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
@@ -1383,12 +1384,12 @@ FS.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'}).then(funct
 saveOpen(name,text,type,ok)}
 /* bewaren: zelf kiezen waar (web-app) */
 var SV=null;
-function fileOf(name,text,type){try{var f=new File([text],name,{type:type});if(navigator.canShare&&navigator.canShare({files:[f]}))return f;f=new File([text],name,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]}))return f}catch(e){}return null}
+function fileOf(name,text,type){try{if(/\.json$/i.test(name)){name=name.replace(/\.json$/i,'.txt');type='text/plain'}var f=new File([text],name,{type:type});if(navigator.canShare&&navigator.canShare({files:[f]}))return f}catch(e){}return null}
 function saveOpen(name,text,type,ok){SV={name:name,text:text,type:type,ok:ok,file:fileOf(name,text,type)};var kb=Math.round(new Blob([text]).size/1024);
 $('svN').textContent=name+' · '+(kb>1024?(kb/1024).toFixed(1).replace('.',',')+' MB':kb+' kB');$('svT').textContent=/backup/.test(name)?'Waar wil je je back-up bewaren?':'Waar wil je het bestand bewaren?';
 $('svShare').hidden=!SV.file;$('svPick').hidden=!window.showSaveFilePicker;$('svq').hidden=false}
 function svDone(msg){var f=SV.ok;$('svq').hidden=true;SV=null;if(f)f();ask(msg,'OK')}
-$('svShare').onclick=function(){var n=SV.name;navigator.share({files:[SV.file],title:n}).then(function(){svDone('Klaar: '+n+' is doorgegeven aan de app die je koos (bv. Google Drive). Je vindt het daar terug.')},function(e){if(e&&e.name==='AbortError')return;ask('Delen lukte niet. Kies Opslaan in Downloads.','OK')})};
+$('svShare').onclick=function(){var n=SV.file.name;navigator.share({files:[SV.file]}).then(function(){svDone('Klaar: '+n+' is doorgegeven aan de app die je koos (bv. Google Drive). Je vindt het daar terug.'+(/\.txt$/.test(n)?' Terugzetten kan later gewoon met dit bestand.':''))},function(e){if(e&&e.name==='AbortError')return;ask('Delen lukte niet ('+(e&&(e.name+': '+e.message)||'onbekende fout')+'). Kies Opslaan in Downloads.','OK')})};
 $('svPick').onclick=function(){var n=SV.name,t=SV.text,ty=SV.type;window.showSaveFilePicker({suggestedName:n}).then(function(h){return h.createWritable().then(function(w){return w.write(new Blob([t],{type:ty})).then(function(){return w.close()})}).then(function(){svDone('Opgeslagen als '+h.name+' in de map die je koos.')})},function(e){if(e&&e.name==='AbortError')return;ask('Bewaren lukte niet. Kies Opslaan in Downloads.','OK')})};
 $('svDl').onclick=function(){var n=SV.name;try{var b=new Blob([SV.text],{type:SV.type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);svDone('Opgeslagen in je map Downloads als '+n+'. Je vindt het via de app Bestanden (of Mijn bestanden) → Downloads. Zet het daarna best ook in Google Drive.')}catch(e){ask('Downloaden lukt hier niet.','OK')}};
 $('svNo').onclick=function(){$('svq').hidden=true;SV=null};
