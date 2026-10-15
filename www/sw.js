@@ -1,6 +1,6 @@
 // CatchBook service worker: werkt zonder bereik en meldt nieuwe versies.
 // Verhoog VERSION bij elke release (samen met APP_VERSION in index.html en package.json).
-const VERSION = '0.5.10';
+const VERSION = '0.5.11';
 const CACHE = 'catchbook-' + VERSION;
 const FILES = [
   './',
@@ -48,6 +48,7 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (/\.(mp4|webm)$/i.test(url.pathname)) return; // filmpjes rechtstreeks van het net (niet in de cache)
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;

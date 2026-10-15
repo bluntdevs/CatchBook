@@ -194,6 +194,8 @@ button:disabled{opacity:.45;cursor:default}
 .ckl{display:flex;gap:8px;align-items:center;margin-top:12px;font-weight:600}.ckl input{width:auto;margin:0}
 .indots{display:flex;gap:6px;justify-content:center;margin:12px 0 4px}.indots span{width:8px;height:8px;border-radius:50%;background:var(--line)}.indots span.on{background:var(--acc)}
 #inC h3{margin:0 0 8px}#inC p{margin:6px 0}#inC ul{margin:6px 0;padding-left:20px}#inC li{margin:4px 0}
+.vidb{margin:4px 0 6px}
+#vid{position:fixed;inset:0;z-index:45;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 10px}#vid video{max-width:100%;max-height:86vh;border-radius:10px;background:#000}#vid p{color:#aaa;font-size:.85rem;margin:8px 0 0}#vidX{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:12px;background:none;border:0;color:#fff;font-size:2.2rem;line-height:1}
 .inimg{display:block;max-width:100%;max-height:36vh;margin:2px auto 10px;border-radius:12px;border:1px solid var(--line);cursor:zoom-in}
 #pv{z-index:40}
 .lnkb{background:none;border:0;color:var(--mute);text-decoration:underline;width:100%;margin-top:8px;padding:6px;font:inherit;cursor:pointer}
@@ -538,7 +540,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <details class="acc sess" data-acc="set"><summary><span class="at">Alles wissen</span><span class="as">sessies, stekken en foto's</span></summary><div class="ab">
 <p class="meta">Wist alle sessies, stekken en foto's op dit toestel. Maak eerst een back-up als je iets wilt bewaren.</p><div class="row"><button class="ghost" id="wipe" style="color:var(--warn)">Alle gegevens wissen</button></div></div></details>
 <details class="acc sess" data-acc="set"><summary><span class="at">Over CatchBook</span><span class="as" id="appVer"></span></summary><div class="ab">
-<div class="row"><button class="ghost" id="updChk">Zoek naar update</button><button class="ghost" id="introB">Toon uitleg</button></div><div class="row"><button class="ghost" id="newsB">Wat is er nieuw?</button></div></div></details>
+<div class="row"><button class="ghost" id="updChk">Zoek naar update</button><button class="ghost" id="introB">Toon uitleg</button></div><div class="row"><button class="ghost" id="newsB">Wat is er nieuw?</button><button class="ghost" data-vid="1">Uitlegfilmpje</button></div></div></details>
 </div>
 <div id="ed" class="ed" hidden><div class="edh"><b id="edT"></b><button type="button" class="ghost" id="edClr">Wis</button><button type="button" class="btn" id="edOk" style="width:auto">Klaar</button></div><div class="edb"><img id="edI" alt="Stekfoto"><div id="edM"></div></div></div>
 <div id="rn" class="dlg" hidden><div class="dbox"><b id="rnT">Naam wijzigen</b><label for="rnI">Nieuwe naam</label><input id="rnI" autocomplete="off"><p class="hint" id="rnH"></p><div class="pf"><button type="button" class="ghost" id="rnNo">Annuleer</button><button type="button" class="btn" id="rnYes">Wijzig</button></div></div></div>
@@ -558,6 +560,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <button type="button" class="ghost" id="svDl" style="width:100%;margin-top:8px">Opslaan in Downloads</button>
 <p class="hint">Tip: bewaar je back-up in Google Drive. Dan ben je niets kwijt als er iets met je telefoon gebeurt.</p>
 <button type="button" class="ghost" id="svNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
+<div id="vid" hidden><button type="button" id="vidX" aria-label="Sluiten">×</button><video id="vidV" controls playsinline preload="none"><source data-src="help/uitleg.webm" type="video/webm"><source data-src="help/uitleg.mp4" type="video/mp4"></video><p id="vidH">Het filmpje heeft internet nodig.</p></div>
 <div id="toast" hidden><span id="toastT"></span><button type="button" id="toastU">Ongedaan maken</button></div>
 <div id="sug" role="listbox" hidden></div>
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
@@ -572,7 +575,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json,.txt,application/json,text/plain" hidden>
 
 <script>
-var APP_VERSION='0.5.10';
+var APP_VERSION='0.5.11';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -772,7 +775,7 @@ slSum();
 /* uitklapbare onderdelen: één tegelijk open per groep */
 document.addEventListener('toggle',function(e){var d=e.target;if(!d.open||!d.dataset||!d.dataset.acc)return;[].forEach.call(document.querySelectorAll('details[data-acc="'+d.dataset.acc+'"][open]'),function(x){if(x!==d)x.open=false});setTimeout(function(){var r=d.getBoundingClientRect(),top=(document.querySelector('.top')||{}).offsetHeight||0;if(r.top<top)window.scrollBy(0,r.top-top-8)},0)},true);
 /* ---- uitleg bij eerste opstart ---- */
-var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stekken, stokken en vangsten op één plek.</p><p>In een paar stappen zie je hoe het werkt.</p>'],
+var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stekken, stokken en vangsten op één plek.</p><button type="button" class="btn vidb" data-vid="1">▶ Bekijk het uitlegfilmpje (1 min)</button><p class="hint">Of blader door de stappen hieronder.</p>'],
 ['Een sessie starten','<ul><li>Tik op <b>Start sessie</b> zodra je aan het water staat. De app houdt de tijd bij.</li><li>Je vult enkel <b>Wanneer</b>, <b>Locatie en water</b> en <b>Stokken</b> in. Per stok tik je op <b>Klaar met stok</b>, daarna op <b>Alle stokken klaar, verder</b> en <b>Sessie opslaan</b>.</li><li>Viste je hier al eerder? Dan stelt de app je stokken van vorige keer voor.</li></ul><p>Vergeten te starten? Kies <b>Sessie achteraf invoeren</b>.</p>'],
 ['Tijdens het vissen','<ul><li><b>Voeg vangst toe</b>: soort, gewicht, uur, foto, naam van de vis. Met een ingestelde weegzak trekt de app die zelf af.</li><li><b>Verplaats stok</b>: duid meteen de nieuwe plek aan op de stekfoto.</li><li><b>Misser</b>, <b>Bijgevoerd</b> en <b>Aas gewisseld</b> noteer je met één tik.</li><li>Elk onderdeel pas je aan via <b>Bewerk</b>.</li><li><b>Stop sessie</b>: daarna vul je de omstandigheden in (of later).</li></ul>'],
 ['Stek en stokken','<ul><li>Gebruik GPS of plak de coördinaten uit Google Maps: een bekende stek binnen 50 m wordt herkend.</li><li>Neem een stekfoto en duid per stok aan waar hij ligt.</li><li>Verplaats je een stok, dan blijft de vorige plek bewaard (blank in grijs, vangst in groen).</li></ul>'],
@@ -784,9 +787,12 @@ var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+(INI
 function inOpen(){inI=0;inDraw();$('intro').hidden=false}
 function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
 $('inC').addEventListener('click',function(e){var i=e.target.closest('img[data-big]');if(i){$('pvI').src=i.src;$('pvC').textContent='Voorbeeld met verzonnen sessies';$('pv').hidden=false}});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-vid]');if(!b)return;var v=$('vidV');if(!v.dataset.ok){[].forEach.call(v.querySelectorAll('source'),function(x){x.src=x.dataset.src});v.dataset.ok=1;v.load()}$('vidH').textContent=navigator.onLine===false?'Je bent offline: het filmpje heeft internet nodig.':'';$('vid').hidden=false;try{v.currentTime=0;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})}catch(x){}});
+$('vidX').onclick=function(){var v=$('vidV');try{v.pause()}catch(x){}$('vid').hidden=true};
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.10',['Back-up naar Google Drive werkt nu: Android laat geen .json-bestanden delen, dus de back-up gaat als .txt. Terugzetten kan met beide.']],
+var NEWS=[['0.5.11',['Het uitlegfilmpje zit nu in de app: bij Toon uitleg en bij Instellingen → Over CatchBook.']],
+['0.5.10',['Back-up naar Google Drive werkt nu: Android laat geen .json-bestanden delen, dus de back-up gaat als .txt. Terugzetten kan met beide.']],
 ['0.5.9',['Bij een back-up of CSV kies je nu zelf waar het bestand komt: Google Drive (of een andere app), een eigen map of Downloads. Daarna zie je waar het staat.']],
 ['0.5.8',['De uitleg heeft nu bij elke stap een voorbeeldscherm, met de knoppen aangeduid. Tik op een scherm om het groot te zien (Instellingen → Over CatchBook → Toon uitleg).']],
 ['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
