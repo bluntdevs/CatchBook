@@ -61,6 +61,18 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .hbg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55))}
 .top>.hrow,.top>.tabs{position:relative;z-index:1}
 .top.hasbg{border-bottom-color:transparent}
+.hbtns{display:flex;gap:10px}
+.pbg{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.pbg img{width:100%;height:100%;object-fit:cover;display:block}
+.pbg::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.25)}
+html.pagebg body{background:transparent}
+html.pagebg{background:#000}
+html.pagebg .top{background:rgba(10,25,20,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom-color:transparent}
+html.pagebg .top h1,html.pagebg .top .hbtn{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+html.pagebg .top .tab{color:rgba(255,255,255,.8)}
+html.pagebg .fbar .ghost{background:var(--card)}
+html.pagebg .dbar h2{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+html.pagebg .top .tab[aria-selected="true"]{color:#fff;border-bottom-color:#fff}
 .top.hasbg h1,.top.hasbg .hbtn{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .top.hasbg .tab{color:rgba(255,255,255,.8);text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .top.hasbg .tab[aria-selected="true"]{color:#fff;border-bottom-color:#fff}
@@ -212,9 +224,10 @@ details.rd[open] summary::after{content:'▴'}
 </style>
 </head>
 <body>
+<div class="pbg" id="pbg" hidden><img id="pbgI" alt=""></div>
 <header class="top" id="top">
 <div class="hbg" id="hbg" hidden><img id="hbgI" alt=""></div>
-<div class="hrow"><h1>CatchBook</h1><button type="button" class="hbtn" id="hbgB" aria-label="Achtergrondfoto kopbalk"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></button></div>
+<div class="hrow"><h1>CatchBook</h1><span class="hbtns"><button type="button" class="hbtn" id="hbgB" aria-label="Achtergrondfoto kopbalk"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg></button><button type="button" class="hbtn" id="pbgB" aria-label="Achtergrondfoto volledige pagina (test)" title="Test: achtergrond volledige pagina"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="10" cy="9" r="1.6"/><path d="M20 17l-5-5-9 9"/></svg></button></span></div>
 <nav class="tabs" role="tablist">
 <button class="tab" role="tab" id="tVis" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M2 12c3-5 9-6.5 14-2l5-3v10l-5-3c-5 4.5-11 3-14-2z"/><circle cx="7" cy="11" r=".6"/></svg>Vissen</button>
 <button class="tab" role="tab" id="tSes" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></svg>Sessies</button>
@@ -343,7 +356,7 @@ details.rd[open] summary::after{content:'▴'}
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
 <input type="file" id="phFile" accept="image/*" multiple hidden>
 <input type="file" id="hdrFile" accept="image/*" hidden>
-<div id="hdrQ" class="dlg" hidden><div class="dbox"><b>Achtergrondfoto kopbalk</b><p class="hint">Kies een foto voor de balk bovenaan. Ze wordt enkel op dit toestel bewaard.</p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" hidden><label for="hdrPos">Uitsnede (hoger / lager)</label><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
+<div id="hdrQ" class="dlg" hidden><div class="dbox"><b id="hdrT">Achtergrondfoto kopbalk</b><p class="hint" id="hdrH"></p><button type="button" class="btn" id="hdrPick" style="width:100%;margin-top:8px">Kies foto</button><div id="hdrPosW" hidden><label for="hdrPos">Uitsnede (hoger / lager)</label><input type="range" id="hdrPos" min="0" max="100" step="1" style="width:100%"></div><div class="pf" style="margin-top:8px"><button type="button" class="ghost" id="hdrDel">Verwijder foto</button><button type="button" class="ghost" id="hdrOk">Klaar</button></div></div></div>
 <div id="srcQ" class="dlg" hidden><div class="dbox"><b>Foto toevoegen</b><div class="pf" style="margin-top:12px"><button type="button" class="btn" id="srcCam">Camera</button><button type="button" class="btn" id="srcGal">Galerij</button></div><button type="button" class="ghost" id="srcNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="pv" hidden><button type="button" id="pvX" aria-label="Sluiten">×</button><div><img id="pvI" alt="Foto"><p id="pvC"></p></div></div>
 <div id="dlg" class="dlg" hidden><div class="dbox"><p id="dmsg"></p><div class="pf"><button type="button" class="ghost" id="dNo">Annuleer</button><button type="button" class="btn" id="dYes">OK</button></div></div></div>
@@ -415,7 +428,7 @@ function pAll(cb){dbOpen(function(d){if(!d)return cb({});var o={},q=d.transactio
 function pKeys(cb){dbOpen(function(d){if(!d)return cb([]);var r=d.transaction('p').objectStore('p').getAllKeys();r.onsuccess=function(){cb(r.result)};r.onerror=function(){cb([])}})}
 var PU={};
 function pUrl(id,cb){if(PU[id])return cb(PU[id]);pGet(id,function(b){if(!b)return cb(null);PU[id]=URL.createObjectURL(b);cb(PU[id])})}
-function gcPhotos(){var used={},hh=hdrGet();if(hh)used[hh.pid]=1;STEKS.forEach(function(t){if(t.photo)used[t.photo]=1});data.forEach(function(s){if(s.stekPhoto)used[s.stekPhoto]=1;(s.photos||[]).forEach(function(k){used[k]=1});(s.catches||[]).forEach(function(c){(c.photos||[]).forEach(function(k){used[k]=1})})});pKeys(function(ks){ks.forEach(function(k){if(!used[k])pDel(k)})})}
+function gcPhotos(){var used={};['hdr','pbg'].forEach(function(k){var hh=bgGet(k);if(hh)used[hh.pid]=1});STEKS.forEach(function(t){if(t.photo)used[t.photo]=1});data.forEach(function(s){if(s.stekPhoto)used[s.stekPhoto]=1;(s.photos||[]).forEach(function(k){used[k]=1});(s.catches||[]).forEach(function(c){(c.photos||[]).forEach(function(k){used[k]=1})})});pKeys(function(ks){ks.forEach(function(k){if(!used[k])pDel(k)})})}
 function shrink(file,max,cb){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var r=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(function(b){cb(b)},'image/jpeg',.82)};img.onerror=function(){cb(null)};img.src=u}
 function d2b(u){var p=u.split(','),m=/:(.*?);/.exec(p[0])[1],b=atob(p[1]),a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);return new Blob([a],{type:m})}
 
@@ -502,16 +515,20 @@ $('srcCam').onclick=function(){$('srcQ').hidden=true;srcInp.setAttribute('captur
 $('srcGal').onclick=function(){$('srcQ').hidden=true;srcInp.removeAttribute('capture');srcInp.click()};
 $('srcNo').onclick=function(){$('srcQ').hidden=true};
 $('stekPh').onclick=function(){pickSrc($('stekFile'))};
-var HK='vislogboek-hdr';function hdrGet(){try{return JSON.parse(localStorage.getItem(HK)||'null')}catch(e){return null}}
-function hdrSet(v){try{if(v)localStorage.setItem(HK,JSON.stringify(v));else localStorage.removeItem(HK)}catch(e){}}
-function hdrShow(){var h=hdrGet();$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(!h){$('hbg').hidden=true;$('top').classList.remove('hasbg');return}
-pUrl(h.pid,function(u){if(!u){$('hbg').hidden=true;$('top').classList.remove('hasbg');return}$('hbgI').src=u;$('hbgI').style.objectPosition='50% '+(h.y==null?50:h.y)+'%';$('hbg').hidden=false;$('top').classList.add('hasbg')});$('hdrPos').value=h.y==null?50:h.y}
-$('hbgB').onclick=function(){hdrShow();$('hdrQ').hidden=false};
+var BG={hdr:{key:'vislogboek-hdr',t:'Achtergrondfoto kopbalk',h:'Kies een foto voor de balk bovenaan.'},pbg:{key:'vislogboek-pbg',t:'Achtergrondfoto volledige pagina (test)',h:'Kies een foto voor de achtergrond van de hele app.'}},bgK='hdr';
+function bgGet(k){try{return JSON.parse(localStorage.getItem(BG[k].key)||'null')}catch(e){return null}}
+function bgSet(k,v){try{if(v)localStorage.setItem(BG[k].key,JSON.stringify(v));else localStorage.removeItem(BG[k].key)}catch(e){}}
+function hdrGet(){return bgGet('hdr')}function hdrSet(v){bgSet('hdr',v)}
+function bgApply(k){var h=bgGet(k),box=k==='hdr'?$('hbg'):$('pbg'),img=k==='hdr'?$('hbgI'):$('pbgI'),on=function(v){box.hidden=!v;if(k==='hdr')$('top').classList.toggle('hasbg',v);else document.documentElement.classList.toggle('pagebg',v)};
+if(!h){on(false);return}pUrl(h.pid,function(u){if(!u){on(false);return}img.src=u;img.style.objectPosition='50% '+(h.y==null?50:h.y)+'%';on(true)})}
+function hdrShow(){bgApply('hdr');bgApply('pbg')}
+function bgDlg(k){bgK=k;var h=bgGet(k);$('hdrT').textContent=BG[k].t;$('hdrH').textContent=BG[k].h+' Ze wordt enkel op dit toestel bewaard.';$('hdrPick').textContent=h?'Andere foto kiezen':'Kies foto';$('hdrPosW').hidden=!h;$('hdrDel').hidden=!h;if(h)$('hdrPos').value=h.y==null?50:h.y;$('hdrQ').hidden=false}
+$('hbgB').onclick=function(){bgDlg('hdr')};$('pbgB').onclick=function(){bgDlg('pbg')};
 $('hdrOk').onclick=function(){$('hdrQ').hidden=true};
 $('hdrPick').onclick=function(){$('hdrQ').hidden=true;pickSrc($('hdrFile'))};
-$('hdrFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}var old=hdrGet(),pid='hdr'+uid();pPut(pid,b);if(old){pDel(old.pid);delete PU[old.pid]}PU[pid]=URL.createObjectURL(b);hdrSet({pid:pid,y:50});hdrShow();$('hdrQ').hidden=false})};
-$('hdrPos').oninput=function(){var h=hdrGet();if(!h)return;h.y=+this.value;hdrSet(h);$('hbgI').style.objectPosition='50% '+h.y+'%'};
-$('hdrDel').onclick=function(){var h=hdrGet();if(h){pDel(h.pid);delete PU[h.pid]}hdrSet(null);hdrShow()};
+$('hdrFile').onchange=function(){var f=this.files[0],k=bgK;this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}var old=bgGet(k),pid=k+uid();pPut(pid,b);if(old){pDel(old.pid);delete PU[old.pid]}PU[pid]=URL.createObjectURL(b);bgSet(k,{pid:pid,y:50});bgApply(k)})};
+$('hdrPos').oninput=function(){var k=bgK,h=bgGet(k);if(!h)return;h.y=+this.value;bgSet(k,h);(k==='hdr'?$('hbgI'):$('pbgI')).style.objectPosition='50% '+h.y+'%'};
+$('hdrDel').onclick=function(){var k=bgK,h=bgGet(k);if(h){pDel(h.pid);delete PU[h.pid]}bgSet(k,null);bgApply(k);$('hdrQ').hidden=true};
 hdrShow();
 $('stekFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,1600,function(b){if(!b){ask('De foto kon niet gelezen worden.','OK');return}stekBlob=b;stekPicked=true;if(stekObj){URL.revokeObjectURL(stekObj);stekObj=null}photoChanged()})};
 
@@ -926,7 +943,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.3.0';
+var APP_VERSION='0.3.1';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
@@ -946,12 +963,12 @@ rows.push([s.date,s.time,s.dateEnd,s.timeEnd,s.hours,s.access,s.water,s.wname,s.
 return rows.join('\n')}
 $('csv').onclick=function(){dl('catchbook-sessies.csv',csvOf(data),'text/csv')};
 $('json').onclick=function(){pAll(function(all){var ks=Object.keys(all),out={},n=0;
-function fin(){dl('catchbook-backup-'+nowD()+'.json',JSON.stringify({v:3,sessions:data,steks:STEKS,locs:LOCS,photos:out,hdr:hdrGet()}),'application/json',bakSet)}
+function fin(){dl('catchbook-backup-'+nowD()+'.json',JSON.stringify({v:3,sessions:data,steks:STEKS,locs:LOCS,photos:out,hdr:bgGet('hdr'),pbg:bgGet('pbg')}),'application/json',bakSet)}
 if(!ks.length)return fin();
 ks.forEach(function(k){var fr=new FileReader();fr.onload=function(){out[k]=fr.result;if(++n===ks.length)fin()};fr.readAsDataURL(all[k])})})};
 $('imp').onclick=function(){$('file').click()};
 $('file').onchange=function(){var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result),ss=Array.isArray(d)?d:d.sessions;
-if(Array.isArray(ss))ask('Huidige data vervangen door de back-up?','Vervang',function(){data=ss;STEKS=Array.isArray(d.steks)?d.steks:[];LOCS=d.locs||[];migrate();cleanNames();save();var ph=d.photos||{};Object.keys(ph).forEach(function(k){pPut(k,d2b(ph[k]))});if(d.hdr&&ph[d.hdr.pid]){hdrSet(d.hdr);setTimeout(hdrShow,300)}render();ask('Back-up teruggezet.','OK')});else ask('Ongeldig bestand.','OK')}catch(e){ask('Ongeldig bestand.','OK')}};
+if(Array.isArray(ss))ask('Huidige data vervangen door de back-up?','Vervang',function(){data=ss;STEKS=Array.isArray(d.steks)?d.steks:[];LOCS=d.locs||[];migrate();cleanNames();save();var ph=d.photos||{};Object.keys(ph).forEach(function(k){pPut(k,d2b(ph[k]))});['hdr','pbg'].forEach(function(k){if(d[k]&&ph[d[k].pid])bgSet(k,d[k])});setTimeout(hdrShow,300);render();ask('Back-up teruggezet.','OK')});else ask('Ongeldig bestand.','OK')}catch(e){ask('Ongeldig bestand.','OK')}};
 if(this.files[0])r.readAsText(this.files[0])};
 
 /* ---- namen opkuisen ---- */
@@ -975,7 +992,7 @@ $('nmList').onclick=function(e){var b=e.target.closest('button[data-nm]');if(!b)
 $('rnNo').onclick=function(){$('rn').hidden=true;hideSug()};
 $('rnYes').onclick=function(){var to=$('rnI').value.replace(/\s+/g,' ').trim(),cat=$('nmCat').value,from=rnFrom;$('rn').hidden=true;hideSug();if(!to||to===from)return;
 eachName(cat,function(v){return v===from?to:v});[AF,F].forEach(function(f){['names','rigs'].forEach(function(k){f[k]=(f[k]||[]).map(function(v){return v===from?to:v})})});if(cat==='wname'){var ty=typeOf(to);data.forEach(function(s){if(s.wname===to&&ty&&!s.water)s.water=ty})}save();render();drawNames();ask('"'+from+'" is nu "'+to+'".','OK')};
-$('wipe').onclick=function(){ask('Alle sessies, stekken en foto\'s op dit toestel wissen?','Verder',function(){setTimeout(function(){ask('Zeker? Dit kan niet ongedaan worden gemaakt.','Alles wissen',function(){data=[];STEKS=[];LOCS=[];save();pKeys(function(ks){var hh=hdrGet();ks.forEach(function(k){if(!hh||k!==hh.pid)pDel(k)})});render();drawNames();layout();ask('Alle gegevens zijn gewist.','OK')})},50)})};
+$('wipe').onclick=function(){ask('Alle sessies, stekken en foto\'s op dit toestel wissen?','Verder',function(){setTimeout(function(){ask('Zeker? Dit kan niet ongedaan worden gemaakt.','Alles wissen',function(){data=[];STEKS=[];LOCS=[];save();pKeys(function(ks){var keep=['hdr','pbg'].map(function(k){var h=bgGet(k);return h&&h.pid});ks.forEach(function(k){if(keep.indexOf(k)<0)pDel(k)})});render();drawNames();layout();ask('Alle gegevens zijn gewist.','OK')})},50)})};
 
 /* ---- app: versie, opslag, updates ---- */
 $('appVer').textContent='Versie '+APP_VERSION+(isNative()?' (Android-app)':' (web-app)');
