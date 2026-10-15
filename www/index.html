@@ -125,8 +125,9 @@ input[type=range]{padding:0;border:0;background:none;accent-color:var(--acc)}
 dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
 dt{color:var(--mute);font-size:.88rem}
 dd{margin:0}
-.dlg{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:grid;place-items:center;padding:20px}
+.dlg{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}
 .dbox{background:var(--card);border-radius:14px;padding:18px;max-width:340px;width:100%}
+#srcQ{z-index:26}#dlg{z-index:27}#abq,#nw{z-index:24}
 .dbox p{margin:0 0 4px}
 .rod{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
 .rod.ropen{border:2px solid var(--acc);padding:10px 12px 12px;background:color-mix(in srgb,var(--acc) 6%,var(--card))}
@@ -281,6 +282,8 @@ details.acc[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 #toast span{flex:1}#toast button{background:none;border:0;color:var(--acc2);font-weight:700;padding:6px 8px;flex:none}
 #shI{display:block;width:100%;border-radius:10px;margin-top:10px;aspect-ratio:4/5;background:var(--line);object-fit:cover}
 .pre{white-space:pre-wrap;margin:0}
+.shbox{max-width:440px}.shbox #shI{max-height:40vh;width:auto;max-width:100%;margin:10px auto 0;position:sticky;top:-18px;z-index:1;box-shadow:0 8px 16px -8px rgba(0,0,0,.5)}
+.shph{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}.shp{flex:none;width:58px;height:58px;padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:var(--line)}.shp img{width:100%;height:100%;object-fit:cover;display:block}.shp.on{border-color:var(--acc)}.shp.none{font-size:.72rem;color:var(--ink);line-height:1.1;padding:4px}
 .legend .lg-hit{background:var(--hit)}.legend .lg-blank{background:var(--blank)}
 .ucb{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:999px;background:repeating-linear-gradient(-45deg,var(--acc2) 0 8px,color-mix(in srgb,var(--acc2) 70%,#000) 8px 16px);color:#1b1400;font-family:system-ui,sans-serif;vertical-align:2px}.ucb.sm{font-size:.66rem;padding:1px 7px}
 .uc .ucb{margin-bottom:8px}.uc h3{margin:2px 0 4px}
@@ -510,6 +513,9 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <details class="acc sess" data-acc="set" id="accBak"><summary><span class="at">Back-up</span><span class="as" id="bakInfo"></span></summary><div class="ab">
 <p class="meta">Je gegevens staan alleen op dit toestel. Maak regelmatig een back-up en bewaar het bestand op een veilige plek, bv. Google Drive. De back-up bevat ook je foto's en kan daardoor groot worden.</p>
 <div class="row"><button class="ghost" id="json">Back-up maken</button><button class="ghost" id="csv">Exporteer CSV</button></div>
+<label>Automatische back-up</label><div class="chips" id="abC"><button type="button" class="chip" data-ab="off">Uit</button><button type="button" class="chip" data-ab="stop">Na elke sessie</button><button type="button" class="chip" data-ab="day">Elke dag</button><button type="button" class="chip" data-ab="week">Elke 7 dagen</button><button type="button" class="chip" data-ab="days">Elke … dagen</button></div>
+<div id="abNW" hidden><label for="abN">Om de hoeveel dagen?</label><input id="abN" type="number" min="1" max="365" inputmode="numeric"></div>
+<p class="hint" id="abH"></p>
 <p class="hint">Deel back-ups en CSV-bestanden niet: ze bevatten de ligging van je stekken.</p></div></details>
 <details class="acc sess" data-acc="set"><summary><span class="at">Back-up terugzetten</span><span class="as">vervangt je huidige gegevens</span></summary><div class="ab">
 <p class="meta">Kies een eerder gemaakte back-up (JSON). Dit vervangt je huidige gegevens op dit toestel.</p>
@@ -542,7 +548,8 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div id="evBait"><div class="g2"><div><label for="evBt">Nieuw haakaas</label><input id="evBt" data-sug="baits" autocomplete="off" placeholder="kies of typ"></div><div><label for="evBn">Specificatie</label><input id="evBn" autocomplete="off" placeholder="bv. 15 mm, + fakecorn"></div></div><label for="evRig">Nieuwe montage (enkel als die ook wisselde)</label><input id="evRig" data-sug="rigs" autocomplete="off"></div>
 <label for="evNote">Notitie</label><input id="evNote" autocomplete="off" placeholder="optioneel">
 <div class="pf"><button type="button" class="ghost" id="evNo">Annuleer</button><button type="button" class="btn" id="evYes">Opslaan</button></div></div></div>
-<div id="shq" class="dlg" hidden><div class="dbox"><b>Vangst delen</b><img id="shI" alt="Voorbeeld van de deelkaart"><label class="ckl"><input type="checkbox" id="shW"> Naam van het water tonen</label><p class="hint">De stek en de coördinaten staan nooit op de kaart.</p><div class="pf"><button type="button" class="ghost" id="shNo">Annuleer</button><button type="button" class="btn" id="shYes">Delen</button></div></div></div>
+<div id="shq" class="dlg" hidden><div class="dbox shbox"><b>Vangst delen</b><img id="shI" alt="Voorbeeld van de deelkaart"><label>Foto</label><div class="shph" id="shP"></div><div id="shRW" class="rng"><label for="shZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="shZ" min="0" max="100" step="1" value="50" style="width:100%"></div><label for="shX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="shX" min="0" max="100" step="1" value="50" style="width:100%"></div><label for="shY"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="shY" min="0" max="100" step="1" value="50" style="width:100%"></div></div><label>Wat staat erop?</label><div class="chips" id="shO"></div><p class="hint">Je ziet meteen het resultaat. De stek en de coördinaten staan nooit op de kaart.</p><div class="pf"><button type="button" class="ghost" id="shNo">Annuleer</button><button type="button" class="btn" id="shYes">Delen</button></div></div></div>
+<div id="abq" class="dlg" hidden><div class="dbox"><h3 style="margin:0 0 6px">Tijd voor je back-up</h3><p class="meta" id="abT"></p><p class="hint">Bewaar het bestand op een veilige plek, bv. Google Drive. Zo ben je niets kwijt als er iets met je telefoon gebeurt.</p><div class="pf"><button type="button" class="ghost" id="abNo">Later</button><button type="button" class="btn" id="abYes">Back-up maken</button></div></div></div>
 <div id="toast" hidden><span id="toastT"></span><button type="button" id="toastU">Ongedaan maken</button></div>
 <div id="sug" role="listbox" hidden></div>
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
@@ -557,7 +564,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json" hidden>
 
 <script>
-var APP_VERSION='0.5.6';
+var APP_VERSION='0.5.7';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -762,14 +769,15 @@ var INTRO=[['Welkom bij CatchBook','<p>Je persoonlijke vislogboek: sessies, stek
 ['Tijdens het vissen','<ul><li><b>Voeg vangst toe</b>: soort, gewicht, uur, foto, naam van de vis. Met een ingestelde weegzak trekt de app die zelf af.</li><li><b>Verplaats stok</b>: duid meteen de nieuwe plek aan op de stekfoto.</li><li><b>Misser</b>, <b>Bijgevoerd</b> en <b>Aas gewisseld</b> noteer je met één tik.</li><li>Elk onderdeel pas je aan via <b>Bewerk</b>.</li><li><b>Stop sessie</b>: daarna vul je de omstandigheden in (of later).</li></ul>'],
 ['Stek en stokken','<ul><li>Gebruik GPS of plak de coördinaten uit Google Maps: een bekende stek binnen 50 m wordt herkend.</li><li>Neem een stekfoto en duid per stok aan waar hij ligt.</li><li>Verplaats je een stok, dan blijft de vorige plek bewaard (blank in grijs, vangst in groen).</li></ul>'],
 ['Sessies','<ul><li>Alle sessies met foto\'s, vangsten en gewicht, met een tijdlijn per sessie.</li><li>Zoek, filter en sorteer op water, soort, gewicht, periode…</li><li>Deel een vangst als foto met gewicht, zonder je stek te verklappen.</li><li>Je zwaarste vissen krijgen een <span class="prt">PR</span>-label. Geef een vis een naam om hem later te herkennen.</li><li>Per ongeluk iets verwijderd? Tik op <b>Ongedaan maken</b>.</li></ul>'],
-['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via <b>Instellingen → Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Na 7 dagen zonder back-up krijg je een herinnering.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
+['Belangrijk: back-up','<p>Je gegevens staan <b>alleen op dit toestel</b>. Maak regelmatig een back-up via <b>Instellingen → Back-up</b> en bewaar het bestand op een veilige plek (bv. Google Drive).</p><p>Kies bij Instellingen → Back-up hoe vaak: na elke sessie, elke dag, elke week of zelf in te stellen. Op dat moment vraagt de app je met één tik om een back-up.</p><p>Deel back-ups of CSV niet: ze bevatten de ligging van je stekken.</p>'],
 ['Handige extra\'s','<ul><li><b>Maantje</b> bovenaan: nachtstand in rood, zodat je niet verblind wordt.</li><li><b>Foto-icoontjes</b>: eigen achtergrondfoto voor de kopbalk of de hele pagina.</li><li>Tijdens een sessie blijft je scherm aan (Instellingen → Weergave).</li><li><b>Weegzak</b>: stel het gewicht in bij Instellingen.</li></ul><p>Veel vangst!</p>']];
 var inI=0;function inDraw(){$('inC').innerHTML='<h3>'+INTRO[inI][0]+'</h3>'+INTRO[inI][1];$('inD').innerHTML=INTRO.map(function(x,i){return '<span'+(i===inI?' class="on"':'')+'></span>'}).join('');$('inPrev').style.visibility=inI?'visible':'hidden';$('inNext').textContent=inI===INTRO.length-1?'Aan de slag':'Volgende';$('inSkip').hidden=inI===INTRO.length-1}
 function inOpen(){inI=0;inDraw();$('intro').hidden=false}
 function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro','1')}catch(e){}}
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
+var NEWS=[['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
+['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
 ['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
 ['0.5.4',['Duidelijker bij stokken: een kader per stok, "Klaar met stok", "+ Stok toevoegen" en "Alle stokken klaar, verder".']],
 ['0.5.3',['Achtergrondfoto voor de hele pagina is weer volledig zichtbaar.']],
@@ -941,7 +949,7 @@ P=[];if(s){(s.photos||[]).forEach(function(k){P.push({pid:k,to:'sfeer'})});s.cat
 maanTouched=!!(s&&s.maan);autoMoon();calcDur();names();stekOptions(s&&s.stekId?s.stekId:'');
 formDirty=false;drawRods();drawLog();setMode('form');DONE=s?{}:{log:1,cond:1,pics:1};if(s)SECS.forEach(function(k){DONE[k]=1});afterConf=null;$('condTip').hidden=true;$('cancel').textContent='Annuleren';show(s?null:'when');window.scrollTo(0,0)}
 $('add').onclick=function(){openForm()};
-$('cancel').onclick=function(){var id=editId;leaveForm(function(){discardForm();if(id&&tabNow!=='vis')showDetail(id);else setMode('list')})};
+$('cancel').onclick=function(){var id=editId;leaveForm(function(){discardForm();if(id&&tabNow!=='vis')showDetail(id);else setMode('list');if(stopBak){stopBak=false;setTimeout(autoBak,400)}})};
 var SECS=['when','loc','rods','log','cond','pics'];
 function secEl(k){return $('f').querySelector('[data-sec="'+k+'"]')}
 function secSum(k){
@@ -951,7 +959,7 @@ if(k==='pics'){var v=P.filter(function(x){return x.to!=='sfeer'}).length,f=P.len
 if(k==='log')return logSum(E.map(function(e){return e}))||'niets gelogd';
 if(k==='rods'){var rc=rodCount(R);return rc+(rc===1?' stok':' stokken')+(R.length>rc?' ('+R.length+' posities)':'')+' · '+C.length+(C.length===1?' vangst':' vangsten')}
 var x=[$('weer').value,$('wdir').value,$('wind').value,$('temp').value?kgs($('temp').value)+' °C':'',$('press').value?$('press').value+' hPa':'',$('wtemp').value?'water '+kgs($('wtemp').value)+' °C':'',$('zicht').value].filter(Boolean).join(' · ');return x||'niets ingevuld'}
-var DONE={},CUR=null,afterConf=null;
+var DONE={},CUR=null,afterConf=null,stopBak=false;
 function secOpen(k,open){var e=secEl(k);e.classList.toggle('closed',!open);e.querySelector('.fss').textContent=open?'':secSum(k)}
 function show(k){CUR=k||null;SECS.forEach(function(x){secOpen(x,x===k);secEl(x).classList.toggle('gone',!!k&&x!==k)});$('saveBtn').hidden=!!k;hideSug();
 var tg=k?secEl(k):$('f');setTimeout(function(){window.scrollTo(0,Math.max(0,tg.getBoundingClientRect().top+window.scrollY-$('top').offsetHeight-12))},0)}
@@ -996,7 +1004,7 @@ s.active=ex?(!!ex.active&&!s.dateEnd):(liveStart&&!s.dateEnd);
 if(was)data=data.map(function(x){return x.id===was?s:x});else data.unshift(s);
 data.sort(function(a,b){var x=a.date+' '+(a.time||''),y=b.date+' '+(b.time||'');return y<x?-1:y>x?1:0});
 var oldC={};if(ex)ex.catches.forEach(function(c){oldC[c.cid]=kgN(c)});var newC=s.catches.filter(function(c){return !(c.cid in oldC)||kgN(c)>oldC[c.cid]});
-formDirty=false;save();editId=null;render();if(was&&tabNow!=='vis')showDetail(s.id);else setMode('list');if(newC.length)prCheck(newC,s.wname)};
+formDirty=false;save();editId=null;render();if(was&&tabNow!=='vis')showDetail(s.id);else setMode('list');if(newC.length)prCheck(newC,s.wname);if(stopBak){stopBak=false;setTimeout(autoBak,newC.length?2500:400)}};
 
 /* invoer: komma, Enter, niet-opgeslagen wijzigingen */
 document.addEventListener('input',function(e){var i=e.target;if(i.dataset&&i.dataset.dec&&i.value.indexOf(',')>-1){var p=i.selectionStart;i.value=i.value.replace(/,/g,'.');try{i.setSelectionRange(p,p)}catch(x){}}},true);
@@ -1051,7 +1059,7 @@ $('runSecs').addEventListener('click',function(e){var b=e.target.closest('[data-
 setInterval(function(){if(tabNow==='vis'&&mode==='list')drawLive()},30000);
 $('bStart').onclick=function(){openForm(null,true)};
 $('bStop').onclick=function(){var a=activeSes();if(!a)return;
-ask('Sessie stoppen? Het einde wordt op dit moment gezet.','Stop',function(){a.dateEnd=nowD();a.timeEnd=nowT();var ms=new Date(a.dateEnd+'T'+a.timeEnd)-new Date(a.date+'T'+(a.time||'00:00'));a.hours=ms>0?String(Math.round(ms/36e4)/10):'';a.active=false;save();render();$('liveInfo').textContent='Sessie gestopt. Je vindt ze terug bij Sessies.';openForm(a);afterConf='cond';$('condTip').hidden=false;$('cancel').textContent='Later invullen';show('cond')})};
+ask('Sessie stoppen? Het einde wordt op dit moment gezet.','Stop',function(){a.dateEnd=nowD();a.timeEnd=nowT();var ms=new Date(a.dateEnd+'T'+a.timeEnd)-new Date(a.date+'T'+(a.time||'00:00'));a.hours=ms>0?String(Math.round(ms/36e4)/10):'';a.active=false;save();try{localStorage.setItem(KEY+'-bakpend','1')}catch(e){}abSnooze=false;stopBak=true;render();$('liveInfo').textContent='Sessie gestopt. Je vindt ze terug bij Sessies.';openForm(a);afterConf='cond';$('condTip').hidden=false;$('cancel').textContent='Later invullen';show('cond')})};
 function slingKg(){try{return numN(localStorage.getItem(KEY+'-sling'))}catch(e){return 0}}
 function qNetKg(){var v=$('qKg').value.trim(),sl=slingKg();if(!v||!sl||!$('qSl').checked)return v;var n=Math.round((numN(v)-sl)*100)/100;return n>0?String(n):v}
 function qNetUpd(){var sl=slingKg(),on=sl&&$('qSl').checked;$('qKgL').textContent=on?'Gewicht met weegzak (kg)':'Gewicht (kg)';var v=$('qKg').value.trim();$('qNet').textContent=on&&v?'Netto: '+kgs(qNetKg())+' kg':''}
@@ -1131,22 +1139,35 @@ $('toastU').onclick=function(){var f=toastCb;toastCb=null;$('toast').hidden=true
 
 /* ---- vangst delen als afbeelding ---- */
 var SH=null;
-function shareOpen(s,c){SH={s:s,c:c,blob:null};$('shW').checked=false;$('shI').removeAttribute('src');$('shq').hidden=false;shDraw()}
-function shDraw(){var s=SH.s,c=SH.c,pid=(c.photos||[])[0]||(s.photos||[])[0]||null;
-function go(img){var W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;var g=cv.getContext('2d');
-if(img){var r=Math.max(W/img.width,H/img.height),w=img.width*r,h=img.height*r;g.drawImage(img,(W-w)/2,(H-h)/2,w,h)}else{var gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#1d4e57');gr.addColorStop(1,'#0b2228');g.fillStyle=gr;g.fillRect(0,0,W,H)}
-var sh=g.createLinearGradient(0,H*.45,0,H);sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,0,.82)');g.fillStyle=sh;g.fillRect(0,0,W,H);
+var SHF=[['sp','Soort'],['kg','Gewicht'],['cm','Lengte'],['name','Naam vis'],['bait','Haakaas'],['date','Datum'],['water','Naam water'],['pr','PR-label'],['logo','CatchBook-logo']];
+function shoGet(){var d={sp:1,kg:1,cm:0,name:1,bait:0,date:1,water:0,pr:1,logo:1};try{var o=JSON.parse(localStorage.getItem(KEY+'-sho')||'{}');Object.keys(o).forEach(function(k){if(k in d)d[k]=o[k]})}catch(e){}return d}
+function shoSave(){var o={};SHF.forEach(function(f){o[f[0]]=SH.o[f[0]]});try{localStorage.setItem(KEY+'-sho',JSON.stringify(o))}catch(e){}}
+function shareOpen(s,c){var ph=(c.photos||[]).slice();(s.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)});s.catches.forEach(function(x){if(x!==c)(x.photos||[]).forEach(function(k){if(ph.indexOf(k)<0)ph.push(k)})});
+SH={s:s,c:c,blob:null,o:shoGet(),ph:ph,pid:ph[0]||null,z:50,x:50,y:50};shPos();$('shI').removeAttribute('src');shUI();$('shq').hidden=false;shDraw()}
+function shUI(){var c=SH.c,ok={sp:!!c.sp,kg:!!c.kg,cm:!!c.cm,name:!!c.name,bait:!!c.rod,pr:!!prOf(c)};
+$('shO').innerHTML=SHF.filter(function(f){return ok[f[0]]!==false}).map(function(f){return chip(f[1],!!SH.o[f[0]],'data-sho="'+f[0]+'"')}).join('');
+$('shP').innerHTML=SH.ph.map(function(k){return '<button type="button" class="shp'+(k===SH.pid?' on':'')+'" data-shp="'+k+'"><img data-pid="'+k+'" alt="Foto"></button>'}).join('')+'<button type="button" class="shp none'+(!SH.pid?' on':'')+'" data-shp="">Geen foto</button>';fillThumbs($('shP'))}
+$('shO').onclick=function(e){var b=e.target.closest('[data-sho]');if(!b)return;var k=b.dataset.sho;SH.o[k]=SH.o[k]?0:1;shoSave();shUI();shDraw()};
+$('shP').addEventListener('click',function(e){var b=e.target.closest('[data-shp]');if(!b)return;e.preventDefault();e.stopPropagation();SH.pid=b.dataset.shp||null;SH.z=50;SH.x=50;SH.y=50;shPos();shUI();shDraw()},true);
+function shPos(){$('shZ').value=SH.z;$('shX').value=SH.x;$('shY').value=SH.y;$('shRW').hidden=!SH.pid}
+var shT=null;[['shZ','z'],['shX','x'],['shY','y']].forEach(function(q){$(q[0]).addEventListener('input',function(){var v=+this.value;if(v>=47&&v<=53&&v!==50){v=50;this.value=50}SH[q[1]]=v;clearTimeout(shT);shT=setTimeout(shDraw,60)})});
+function shDraw(){var s=SH.s,c=SH.c,o=SH.o,pid=SH.pid,tok=SH.tok=(SH.tok||0)+1;
+function go(img){if(tok!==SH.tok)return;var W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;var g=cv.getContext('2d');
+if(img){var cv0=Math.max(W/img.width,H/img.height),ct=Math.min(W/img.width,H/img.height),zz=SH.z/100,r=zz<=.5?ct+(cv0-ct)*zz*2:cv0*(1+(zz-.5)*2),w=img.width*r,h=img.height*r;
+if(w<W-1||h<H-1){g.save();try{g.filter='blur(28px) brightness(.7)'}catch(e){}var bw=img.width*cv0*1.1,bh=img.height*cv0*1.1;g.drawImage(img,(W-bw)/2,(H-bh)/2,bw,bh);g.restore()}
+g.drawImage(img,(W-w)*SH.x/100,(H-h)*SH.y/100,w,h)}else{var gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#1d4e57');gr.addColorStop(1,'#0b2228');g.fillStyle=gr;g.fillRect(0,0,W,H)}
+var sh=g.createLinearGradient(0,H*.42,0,H);sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,0,.84)');g.fillStyle=sh;g.fillRect(0,0,W,H);
 g.fillStyle='#fff';g.textBaseline='alphabetic';var y=H-90,F='CBHead, "Inter Display", system-ui, sans-serif',B='system-ui, sans-serif';
-g.font='500 34px '+B;g.globalAlpha=.85;g.fillText([fmtD(s.date,true),$('shW').checked?s.wname:''].filter(Boolean).join('  ·  '),72,y);g.globalAlpha=1;y-=62;
-if(c.name){g.font='600 44px '+F;g.fillText('„'+c.name+'”',72,y);y-=70}
-g.font='600 56px '+F;g.fillText(c.sp||'Vangst',72,y);y-=78;
-if(c.kg){g.font='700 210px '+F;var kt=kgs(c.kg);g.fillText(kt,64,y);var w=g.measureText(kt).width;g.font='700 80px '+F;g.fillText('kg',64+w+18,y)}
-var p=prOf(c);if(p==='pr'||p.indexOf('v:')===0){var t=p==='pr'?'PR':'PR '+shortSp(p.slice(2));g.font='700 40px '+B;var tw=g.measureText(t).width+44;g.fillStyle='#e9b949';g.beginPath();if(g.roundRect)g.roundRect(72,80,tw,64,32);else g.rect(72,80,tw,64);g.fill();g.fillStyle='#1b1400';g.fillText(t,94,125)}
-g.fillStyle='rgba(255,255,255,.75)';g.font='600 30px '+B;var bt='CatchBook';g.fillText(bt,W-72-g.measureText(bt).width,125);
-cv.toBlob(function(b){SH.blob=b;var u=URL.createObjectURL(b);$('shI').src=u},'image/jpeg',.9)}
+var meta=[o.date?fmtD(s.date,true):'',o.water?s.wname:''].filter(Boolean).join('  ·  ');if(meta){g.font='500 34px '+B;g.globalAlpha=.85;g.fillText(meta,72,y);g.globalAlpha=1;y-=58}
+if(o.bait&&c.rod){var ba=baitAt(s,(parseInt(c.rod,10)||1)-1,c.time),bt=[ba.bait,ba.baitNote].filter(Boolean).join(' – ');if(bt){g.font='500 36px '+B;g.globalAlpha=.9;g.fillText('op '+bt,72,y);g.globalAlpha=1;y-=58}}
+if(o.name&&c.name){g.font='600 44px '+F;g.fillText('„'+c.name+'”',72,y);y-=66}
+var spl=[o.sp?c.sp:'',o.cm&&c.cm?c.cm+' cm':''].filter(Boolean).join('  ·  ');if(spl){g.font='600 56px '+F;g.fillText(spl,72,y);y-=78}
+if(o.kg&&c.kg){g.font='700 210px '+F;var kt=kgs(c.kg);g.fillText(kt,64,y);var w=g.measureText(kt).width;g.font='700 80px '+F;g.fillText('kg',64+w+18,y)}
+var p=prOf(c);if(o.pr&&(p==='pr'||p.indexOf('v:')===0)){var t=p==='pr'?'PR':'PR '+shortSp(p.slice(2));g.font='700 40px '+B;var tw=g.measureText(t).width+44;g.fillStyle='#e9b949';g.beginPath();if(g.roundRect)g.roundRect(72,80,tw,64,32);else g.rect(72,80,tw,64);g.fill();g.fillStyle='#1b1400';g.fillText(t,94,125)}
+if(o.logo){g.fillStyle='rgba(255,255,255,.75)';g.font='600 30px '+B;var lt='CatchBook';g.fillText(lt,W-72-g.measureText(lt).width,125)}
+cv.toBlob(function(b){if(tok!==SH.tok)return;SH.blob=b;var u=URL.createObjectURL(b),i=$('shI');if(i.dataset.u)URL.revokeObjectURL(i.dataset.u);i.dataset.u=u;i.src=u},'image/jpeg',.9)}
 var ld=document.fonts&&document.fonts.load?Promise.all([document.fonts.load('700 80px CBHead'),document.fonts.load('600 40px CBHead')]).catch(function(){}):Promise.resolve();
 ld.then(function(){if(!pid)return go(null);pUrl(pid,function(u){if(!u)return go(null);var im=new Image();im.onload=function(){go(im)};im.onerror=function(){go(null)};im.src=u})})}
-$('shW').onchange=shDraw;
 $('shNo').onclick=function(){$('shq').hidden=true};
 $('shYes').onclick=function(){if(!SH||!SH.blob)return;var c=SH.c,name='catchbook-'+(c.sp||'vangst').toLowerCase()+(c.kg?'-'+kgs(c.kg).replace(',','-')+'kg':'')+'.jpg';$('shq').hidden=true;dlBin(name,SH.blob)};
 function dlBin(name,blob){
@@ -1349,10 +1370,24 @@ if(isNative()){var FS=plug('Filesystem'),SH=plug('Share');if(!FS||!SH)return ask
 FS.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'}).then(function(r){return SH.share({title:name,dialogTitle:'Bewaar of deel '+name,files:[r.uri]})}).then(function(){if(ok)ok()},function(e){var m=String(e&&e.message||e||'');if(/cancel/i.test(m))return;ask('Opslaan lukte niet ('+m+').','OK')});return}
 try{var b=new Blob([text],{type:type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);if(ok)ok()}catch(e){ask('Downloaden lukt hier niet.','OK')}}
 function bakGet(){try{return +localStorage.getItem(KEY+'-bak')||0}catch(e){return 0}}
-function bakSet(){try{localStorage.setItem(KEY+'-bak',String(Date.now()))}catch(e){}bakShow();layout()}
-function bakDue(){if(!data.length)return false;var l=bakGet();return !l||Date.now()-l>7*864e5}
+function bakSet(){try{localStorage.setItem(KEY+'-bak',String(Date.now()));localStorage.removeItem(KEY+'-bakpend')}catch(e){}abSnooze=false;bakShow();layout()}
+function abGet(){var d={mode:'week',n:7};try{var o=JSON.parse(localStorage.getItem(KEY+'-autobak')||'null');if(o&&o.mode)d=o}catch(e){}return d}
+function abSet(o){try{localStorage.setItem(KEY+'-autobak',JSON.stringify(o))}catch(e){}abShow();layout()}
+function abDays(o){return o.mode==='day'?1:o.mode==='week'?7:o.mode==='days'?Math.max(1,parseInt(o.n,10)||7):0}
+function abPend(){try{return localStorage.getItem(KEY+'-bakpend')==='1'}catch(e){return false}}
+function bakDue(){if(!data.length)return false;var o=abGet(),l=bakGet();if(o.mode==='off')return false;if(o.mode==='stop')return abPend()||!l;return !l||Date.now()-l>abDays(o)*864e5}
+function abText(){var o=abGet();return o.mode==='off'?'uit':o.mode==='stop'?'na elke gestopte sessie':o.mode==='day'?'elke dag':'elke '+abDays(o)+' dagen'}
+function abShow(){var o=abGet();[].forEach.call(document.querySelectorAll('#abC [data-ab]'),function(b){b.setAttribute('aria-pressed',b.dataset.ab===o.mode)});$('abNW').hidden=o.mode!=='days';$('abN').value=o.n||7;
+$('abH').textContent=o.mode==='off'?'Je krijgt geen herinneringen meer. Vergeet niet zelf af en toe een back-up te maken.':'Op het juiste moment ('+abText()+') vraagt CatchBook je met één tik om een back-up te maken. Een app in de browser mag niet ongevraagd bestanden op je telefoon zetten, daarom die ene tik.';bakShow()}
+$('abC').onclick=function(e){var b=e.target.closest('[data-ab]');if(!b)return;var o=abGet();o.mode=b.dataset.ab;if(o.mode==='days'&&!o.n)o.n=3;abSet(o);if(o.mode==='days')setTimeout(function(){$('abN').focus()},50)};
+$('abN').addEventListener('change',function(){var o=abGet();o.n=Math.max(1,Math.min(365,parseInt(this.value,10)||7));abSet(o)});
+var abSnooze=false;
+function autoBak(){if(abSnooze||!bakDue()||!$('abq').hidden)return;if(mode!=='list'||[].some.call(document.querySelectorAll('.dlg,#ed,#pv'),function(d){return !d.hidden}))return setTimeout(autoBak,3000);var l=bakGet(),o=abGet();
+$('abT').textContent=(l?'Je laatste back-up was op '+new Date(l).toLocaleDateString('nl-BE',{day:'numeric',month:'long'})+'. ':'Je hebt nog geen back-up gemaakt. ')+'Je automatische back-up staat op: '+abText()+'.';$('abq').hidden=false}
+$('abNo').onclick=function(){$('abq').hidden=true;abSnooze=true};
+$('abYes').onclick=function(){$('abq').hidden=true;$('json').click()};
 function bakShow(){var l=bakGet(),txt=l?'laatste: '+new Date(l).toLocaleDateString('nl-BE',{day:'numeric',month:'long',year:'numeric'}):'nog geen back-up gemaakt';$('bakInfo').textContent=txt;
-$('bakWarnT').textContent=l?'Je laatste back-up is meer dan 7 dagen oud.':'Je hebt nog geen back-up gemaakt.'}
+$('bakWarnT').textContent=!l?'Je hebt nog geen back-up gemaakt.':abGet().mode==='stop'?'Je laatste sessie zit nog niet in een back-up.':'Je laatste back-up is meer dan '+abDays(abGet())+(abDays(abGet())===1?' dag':' dagen')+' oud.'}
 $('bakGo').onclick=function(){tab('bak');$('accBak').open=true};
 function csvOf(list){var h=['start datum','start uur','eind datum','eind uur','uren','toegang','watertype','naam water','locatie','maps-link','stek','stok','positie vanaf','montage','haakaas','voer','diepte m','afstand m','kenmerken','weer','windrichting','windkracht','temp','luchtdruk','maan','soort','kg','cm','tijd vangst','naam vis','kenmerken vis','haakaas bij vangst','watertemp','zicht','missers (sessie)','bijgevoerd kg (sessie)','notities'];
 var q=function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'};var rows=[h.join(',')];
@@ -1406,7 +1441,7 @@ setInterval(function(){r.update().catch(function(){})},30*60*1000)}).catch(funct
 $('updChk').onclick=function(){if(isNative())return ask('In de Android-app installeer je een nieuwe versie via de apk-link.','OK');if(!swReg)return ask('Updates zoeken lukt hier niet.','OK');
 swReg.update().then(function(){setTimeout(function(){if(!swWaiting)ask('Je hebt de nieuwste versie ('+APP_VERSION+').','OK')},1500)},function(){ask('Geen verbinding om updates te zoeken.','OK')})};
 
-load();if(cleanNames())save();gcPhotos();render();bakShow();drawNames();tab(activeSes()?'vis':'ses');
+load();if(cleanNames())save();gcPhotos();render();abShow();drawNames();tab(activeSes()?'vis':'ses');setTimeout(autoBak,1500);
 </script>
 </body>
 </html>
