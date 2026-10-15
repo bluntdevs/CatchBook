@@ -129,6 +129,12 @@ dd{margin:0}
 .dbox{background:var(--card);border-radius:14px;padding:18px;max-width:340px;width:100%}
 .dbox p{margin:0 0 4px}
 .rod{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
+.rod.ropen{border:2px solid var(--acc);padding:10px 12px 12px;background:color-mix(in srgb,var(--acc) 6%,var(--card))}
+.rod.ropen>.rh{margin:-10px -12px 8px;padding:8px 12px;background:color-mix(in srgb,var(--acc) 18%,var(--card));border-radius:8px 8px 0 0}
+.rod.ropen>.rh b{font-size:1.05rem}
+.rokb{display:block;width:100%;margin-top:12px;padding:11px;border-radius:10px;border:2px solid var(--acc);background:transparent;color:var(--ink);font-weight:700}
+.addrod{display:block;width:100%;margin-top:12px;padding:12px;border:2px dashed var(--line);border-radius:10px;background:none;color:var(--mute);font-weight:600}
+.secend{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}.secend .okb{margin-top:0}
 a.lnk{display:block;text-align:center;text-decoration:none;color:var(--ink)}
 .mapr{margin-top:8px}
 button:disabled{opacity:.45;cursor:default}
@@ -456,8 +462,8 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <section class="fs" data-sec="rods"><div class="fsh"><div><b>Stokken</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="rods">Bewerk</button></div><div class="fb">
 <div id="rodSug" class="sugbox" hidden><p id="rodSugT"></p><div class="pf"><button type="button" class="ghost" id="rodSugN">Nee, bedankt</button><button type="button" class="btn" id="rodSugY">Overnemen</button></div></div>
 <div id="rods"></div>
-<button type="button" class="ghost" id="addRod" style="width:100%;margin-top:10px">Stok toevoegen</button>
-<button type="button" class="btn okb" data-conf="rods">Bevestig</button></div></section>
+<button type="button" class="addrod" id="addRod">+ Stok toevoegen</button>
+<div class="secend"><button type="button" class="btn okb" data-conf="rods">Alle stokken klaar, verder</button></div></div></section>
 <section class="fs" data-sec="log"><div class="fsh"><div><b>Logboek</b><div class="fss"></div></div><button type="button" class="ghost fse" data-edit="log">Bewerk</button></div><div class="fb">
 <p class="hint">Missers, bijvoeren en aaswissels, per stok en met het uur.</p>
 <div id="logList"></div>
@@ -795,7 +801,7 @@ return (v===''?'<option value="">–</option>':'')+l.map(function(o){return '<op
 function drawRods(){var ph=hasStekPhoto();$('rods').innerHTML=R.map(function(r,i){var d='data-i="'+i+'"',mine=C.map(function(c,j){return [c,j]}).filter(function(x){return x[0].rod===i});
 var ri=rodInfo(R,i),head=esc(ri.label)+' <span class="hint">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'nu',$('dS').value,$('dE').value))+'</span>';
 if(r._c)return '<div class="rod"><div class="rsum" data-open="'+i+'"><div class="rl">'+rodMini(r,i)+'<div><b>'+head+'</b><br><span class="hint">'+(mine.length?mine.length+(mine.length===1?' vangst':' vangsten'):'blank')+'</span></div></div><button type="button" class="ghost" data-mv="'+i+'">Verplaats</button></div></div>';
-return '<div class="rod"><div class="rh"><b>'+head+'</b><button type="button" class="x" data-rm="'+i+'" aria-label="Verwijder '+esc(ri.label)+'">×</button></div>'
+return '<div class="rod ropen"><div class="rh"><b>'+head+'</b><button type="button" class="x" data-rm="'+i+'" aria-label="Verwijder '+esc(ri.label)+'">×</button></div>'
 +'<div class="g2"><div><label>Vanaf (uur)</label><input '+d+' data-k="from" type="time" value="'+esc(r.from)+'"></div><div><label>Tot (uur)</label><p class="hint" style="margin-top:10px">'+esc(rodSpan(R,i,$('tS').value,$('tE').value||'einde sessie',$('dS').value,$('dE').value).split('–')[1])+'</p></div></div>'+(ri.pos===1?'<p class="hint">Leeg = start van de sessie. Het einde is de volgende positie of het einde van de sessie.</p>':'')
 +'<label>Montage</label>'+cw('<input '+d+' data-k="rig" data-sug="rigs" autocomplete="off" placeholder="kies of typ" value="'+esc(r.rig)+'">')
 +'<div class="g2"><div><label>Haakaas</label>'+cw('<input '+d+' data-k="bait" data-sug="baits" autocomplete="off" placeholder="kies of typ" value="'+esc(r.bait)+'">')+'</div><div><label>Specificatie haakaas</label>'+cw('<input '+d+' data-k="baitNote" autocomplete="off" placeholder="bv. merk, 15 mm, + fakecorn" value="'+esc(r.baitNote)+'">')+'</div></div>'
@@ -810,7 +816,7 @@ return '<div class="rod"><div class="rh"><b>'+head+'</b><button type="button" cl
 +'<p class="hint mkh"'+(ph?' hidden':'')+'>Voeg eerst een stekfoto toe om je stok aan te duiden.</p>'
 +'<div class="rcat"><label>Vangsten '+esc(ri.label.replace('Stok','stok'))+' (soort, kg, cm, uur)</label>'+mine.map(function(x){var c=x[0],j=x[1];return '<div class="crow"><select data-c="'+j+'" data-ck="sp" aria-label="Soort">'+spOpts(c.sp)+'</select><input data-c="'+j+'" data-ck="kg" type="text" inputmode="decimal" data-dec="1" autocomplete="off" placeholder="kg" value="'+esc(c.kg)+'"><input data-c="'+j+'" data-ck="cm" type="number" placeholder="cm" value="'+esc(c.cm)+'"><input data-c="'+j+'" data-ck="time" type="time" aria-label="Uur" value="'+esc(c.time)+'"><button type="button" data-cdel="'+j+'" aria-label="Verwijder vangst">×</button></div><div class="crow2"><input data-c="'+j+'" data-ck="name" data-sug="fnames" autocomplete="off" placeholder="Naam vis (optioneel)" value="'+esc(c.name||'')+'"><input data-c="'+j+'" data-ck="marks" autocomplete="off" placeholder="Kenmerken vis" value="'+esc(c.marks||'')+'"></div><div class="cph">'+P.filter(function(p){return p.to===c.cid}).map(function(p){return thumb(p.pid,true)}).join('')+'<button type="button" class="ghost phb" data-cph="'+j+'">Foto</button></div>'}).join('')
 +'<button type="button" class="ghost" data-cadd="'+i+'">Vangst toevoegen</button></div>'
-+'<button type="button" class="ghost" data-mv="'+i+'" style="width:100%;margin-top:10px">Stok verplaatsen</button><p class="hint">Verplaats je deze stok, maak dan een nieuwe positie aan. Zo blijven ook blanke plekken bewaard.</p>'+'<button type="button" class="btn okb" data-ok="'+i+'">Bevestig '+esc(ri.label.replace('Stok','stok'))+'</button></div>'}).join('');fillThumbs($('rods'));drawPics();if(typeof drawLog==='function'&&$('logList'))drawLog()}
++'<button type="button" class="ghost" data-mv="'+i+'" style="width:100%;margin-top:10px">Stok verplaatsen</button><p class="hint">Verplaats je deze stok, maak dan een nieuwe positie aan. Zo blijven ook blanke plekken bewaard.</p>'+'<button type="button" class="rokb" data-ok="'+i+'">✓ Klaar met '+esc(ri.label.replace('Stok','stok'))+'</button></div>'}).join('');fillThumbs($('rods'));drawPics();if(typeof drawLog==='function'&&$('logList'))drawLog()}
 /* stokken van de vorige sessie op dezelfde stek voorstellen */
 var rodSugOff=false;
 function rodBlank(r){return !r.rig&&!r.bait&&!r.baitNote&&!(r.feed||[]).length&&!r.feedNote&&!r.depth&&!r.dist&&!(r.feat||[]).length&&r.mx==null}
@@ -1316,7 +1322,7 @@ if(mode==='select'){tog(selSet,id);render();updSel()}else showDetail(id)};
 $('list').onkeydown=function(e){if(e.key==='Enter'||e.key===' '){var c=e.target.closest('.sess');if(c){e.preventDefault();c.click()}}};
 
 /* ---- back-up ---- */
-var APP_VERSION='0.5.3';
+var APP_VERSION='0.5.4';
 function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())}catch(e){return false}}
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
