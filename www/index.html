@@ -127,7 +127,7 @@ dt{color:var(--mute);font-size:.88rem}
 dd{margin:0}
 .dlg{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;padding:20px;overflow:auto}
 .dbox{background:var(--card);border-radius:14px;padding:18px;max-width:340px;width:100%}
-#srcQ{z-index:26}#dlg{z-index:27}#abq,#nw{z-index:24}
+#srcQ{z-index:26}#dlg{z-index:27}#svq{z-index:25}#abq,#nw{z-index:24}
 .dbox p{margin:0 0 4px}
 .rod{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px}
 .rod.ropen{border:2px solid var(--acc);padding:10px 12px 12px;background:color-mix(in srgb,var(--acc) 6%,var(--card))}
@@ -552,6 +552,12 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <div class="pf"><button type="button" class="ghost" id="evNo">Annuleer</button><button type="button" class="btn" id="evYes">Opslaan</button></div></div></div>
 <div id="shq" class="dlg" hidden><div class="dbox shbox"><b>Vangst delen</b><img id="shI" alt="Voorbeeld van de deelkaart"><label>Foto</label><div class="shph" id="shP"></div><div id="shRW" class="rng"><label for="shZ"><span>Hele foto</span><span class="mid">Passend</span><span>Inzoomen</span></label><div class="rw"><input type="range" id="shZ" min="0" max="100" step="1" value="50" style="width:100%"></div><label for="shX"><span>Links</span><span class="mid">Midden</span><span>Rechts</span></label><div class="rw"><input type="range" id="shX" min="0" max="100" step="1" value="50" style="width:100%"></div><label for="shY"><span>Hoger</span><span class="mid">Midden</span><span>Lager</span></label><div class="rw"><input type="range" id="shY" min="0" max="100" step="1" value="50" style="width:100%"></div></div><label>Wat staat erop?</label><div class="chips" id="shO"></div><p class="hint">Je ziet meteen het resultaat. De stek en de coördinaten staan nooit op de kaart.</p><div class="pf"><button type="button" class="ghost" id="shNo">Annuleer</button><button type="button" class="btn" id="shYes">Delen</button></div></div></div>
 <div id="abq" class="dlg" hidden><div class="dbox"><h3 style="margin:0 0 6px">Tijd voor je back-up</h3><p class="meta" id="abT"></p><p class="hint">Bewaar het bestand op een veilige plek, bv. Google Drive. Zo ben je niets kwijt als er iets met je telefoon gebeurt.</p><div class="pf"><button type="button" class="ghost" id="abNo">Later</button><button type="button" class="btn" id="abYes">Back-up maken</button></div></div></div>
+<div id="svq" class="dlg" hidden><div class="dbox"><h3 id="svT" style="margin:0 0 4px">Waar wil je je back-up bewaren?</h3><p class="hint" id="svN"></p>
+<button type="button" class="btn" id="svShare" style="margin-top:12px">Bewaren in Google Drive of een andere app</button>
+<button type="button" class="ghost" id="svPick" style="width:100%;margin-top:8px">Zelf een map kiezen</button>
+<button type="button" class="ghost" id="svDl" style="width:100%;margin-top:8px">Opslaan in Downloads</button>
+<p class="hint">Tip: bewaar je back-up in Google Drive. Dan ben je niets kwijt als er iets met je telefoon gebeurt.</p>
+<button type="button" class="ghost" id="svNo" style="width:100%;margin-top:8px">Annuleer</button></div></div>
 <div id="toast" hidden><span id="toastT"></span><button type="button" id="toastU">Ongedaan maken</button></div>
 <div id="sug" role="listbox" hidden></div>
 <button type="button" id="upd" hidden>Nieuwe versie beschikbaar, tik om te vernieuwen</button>
@@ -566,7 +572,7 @@ html[data-theme="night"][data-skin] .tab[aria-selected="true"]{color:var(--ink)}
 <input type="file" id="file" accept=".json" hidden>
 
 <script>
-var APP_VERSION='0.5.8';
+var APP_VERSION='0.5.9';
 var KEY="vislogboek-v1",data=[],editId=null,detId=null,mode='list',tabNow='ses',selSet=[],STEKS=[],LOCS={},R=[];
 var $=function(i){return document.getElementById(i)};
 function migrate(){var oldL=Array.isArray(LOCS)?{}:LOCS;if(!Array.isArray(LOCS))LOCS=[];
@@ -780,7 +786,8 @@ function inClose(){$('intro').hidden=true;try{localStorage.setItem(KEY+'-intro',
 $('inC').addEventListener('click',function(e){var i=e.target.closest('img[data-big]');if(i){$('pvI').src=i.src;$('pvC').textContent='Voorbeeld met verzonnen sessies';$('pv').hidden=false}});
 $('inNext').onclick=function(){if(inI<INTRO.length-1){inI++;inDraw()}else inClose()};$('inPrev').onclick=function(){if(inI){inI--;inDraw()}};$('inSkip').onclick=inClose;$('introB').onclick=inOpen;
 /* ---- wat is er nieuw (na een update) ---- */
-var NEWS=[['0.5.8',['De uitleg heeft nu bij elke stap een voorbeeldscherm, met de knoppen aangeduid. Tik op een scherm om het groot te zien (Instellingen → Over CatchBook → Toon uitleg).']],
+var NEWS=[['0.5.9',['Bij een back-up of CSV kies je nu zelf waar het bestand komt: Google Drive (of een andere app), een eigen map of Downloads. Daarna zie je waar het staat.']],
+['0.5.8',['De uitleg heeft nu bij elke stap een voorbeeldscherm, met de knoppen aangeduid. Tik op een scherm om het groot te zien (Instellingen → Over CatchBook → Toon uitleg).']],
 ['0.5.7',['Automatische back-up: kies zelf hoe vaak (na elke sessie, elke dag, elke 7 dagen of zelf in te stellen) bij Instellingen → Back-up.','Vensters tonen enkel nog waar je mee bezig bent, zonder de pagina erachter.','Vangst delen: kies de foto, schuif en zoom ze op je kaart, en kies wat erop komt, met live voorbeeld.']],
 ['0.5.6',['Deelkaart van een vangst: soort en gewicht overlappen niet meer.']],
 ['0.5.5',['Na een update zie je voortaan dit overzicht met wat er nieuw is.','Uitleg bij de eerste opstart bijgewerkt (Instellingen → Over CatchBook → Toon uitleg).','Analyse en automatische omstandigheden staan aangeduid als "in opbouw".']],
@@ -1372,8 +1379,19 @@ function isNative(){try{return !!(window.Capacitor&&Capacitor.isNativePlatform&&
 function plug(n){var C=window.Capacitor;return C&&C.Plugins&&C.Plugins[n]||null}
 function dl(name,text,type,ok){
 if(isNative()){var FS=plug('Filesystem'),SH=plug('Share');if(!FS||!SH)return ask('Opslaan lukt niet: de bestandsfuncties van de app ontbreken.','OK');
-FS.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'}).then(function(r){return SH.share({title:name,dialogTitle:'Bewaar of deel '+name,files:[r.uri]})}).then(function(){if(ok)ok()},function(e){var m=String(e&&e.message||e||'');if(/cancel/i.test(m))return;ask('Opslaan lukte niet ('+m+').','OK')});return}
-try{var b=new Blob([text],{type:type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);if(ok)ok()}catch(e){ask('Downloaden lukt hier niet.','OK')}}
+FS.writeFile({path:name,data:text,directory:'CACHE',encoding:'utf8'}).then(function(r){return SH.share({title:name,dialogTitle:'Waar wil je '+name+' bewaren?',files:[r.uri]})}).then(function(){if(ok)ok();ask('Klaar: '+name+' is doorgegeven aan de app die je koos (bv. Google Drive). Je vindt het daar terug.','OK')},function(e){var m=String(e&&e.message||e||'');if(/cancel/i.test(m))return;ask('Opslaan lukte niet ('+m+').','OK')});return}
+saveOpen(name,text,type,ok)}
+/* bewaren: zelf kiezen waar (web-app) */
+var SV=null;
+function fileOf(name,text,type){try{var f=new File([text],name,{type:type});if(navigator.canShare&&navigator.canShare({files:[f]}))return f;f=new File([text],name,{type:'text/plain'});if(navigator.canShare&&navigator.canShare({files:[f]}))return f}catch(e){}return null}
+function saveOpen(name,text,type,ok){SV={name:name,text:text,type:type,ok:ok,file:fileOf(name,text,type)};var kb=Math.round(new Blob([text]).size/1024);
+$('svN').textContent=name+' · '+(kb>1024?(kb/1024).toFixed(1).replace('.',',')+' MB':kb+' kB');$('svT').textContent=/backup/.test(name)?'Waar wil je je back-up bewaren?':'Waar wil je het bestand bewaren?';
+$('svShare').hidden=!SV.file;$('svPick').hidden=!window.showSaveFilePicker;$('svq').hidden=false}
+function svDone(msg){var f=SV.ok;$('svq').hidden=true;SV=null;if(f)f();ask(msg,'OK')}
+$('svShare').onclick=function(){var n=SV.name;navigator.share({files:[SV.file],title:n}).then(function(){svDone('Klaar: '+n+' is doorgegeven aan de app die je koos (bv. Google Drive). Je vindt het daar terug.')},function(e){if(e&&e.name==='AbortError')return;ask('Delen lukte niet. Kies Opslaan in Downloads.','OK')})};
+$('svPick').onclick=function(){var n=SV.name,t=SV.text,ty=SV.type;window.showSaveFilePicker({suggestedName:n}).then(function(h){return h.createWritable().then(function(w){return w.write(new Blob([t],{type:ty})).then(function(){return w.close()})}).then(function(){svDone('Opgeslagen als '+h.name+' in de map die je koos.')})},function(e){if(e&&e.name==='AbortError')return;ask('Bewaren lukte niet. Kies Opslaan in Downloads.','OK')})};
+$('svDl').onclick=function(){var n=SV.name;try{var b=new Blob([SV.text],{type:SV.type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000);svDone('Opgeslagen in je map Downloads als '+n+'. Je vindt het via de app Bestanden (of Mijn bestanden) → Downloads. Zet het daarna best ook in Google Drive.')}catch(e){ask('Downloaden lukt hier niet.','OK')}};
+$('svNo').onclick=function(){$('svq').hidden=true;SV=null};
 function bakGet(){try{return +localStorage.getItem(KEY+'-bak')||0}catch(e){return 0}}
 function bakSet(){try{localStorage.setItem(KEY+'-bak',String(Date.now()));localStorage.removeItem(KEY+'-bakpend')}catch(e){}abSnooze=false;bakShow();layout()}
 function abGet(){var d={mode:'week',n:7};try{var o=JSON.parse(localStorage.getItem(KEY+'-autobak')||'null');if(o&&o.mode)d=o}catch(e){}return d}
