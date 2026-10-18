@@ -1,6 +1,6 @@
 // CatchBook service worker: werkt zonder bereik en meldt nieuwe versies.
 // Verhoog VERSION bij elke release (samen met APP_VERSION in index.html en package.json).
-const VERSION = '0.8.2';
+const VERSION = '0.8.3';
 const CACHE = 'catchbook-' + VERSION;
 const FILES = [
   './',
