@@ -945,7 +945,7 @@ if(k>all&&all>0)msg.push('Nieuw persoonlijk record '+nm+': '+kgs(k)+' kg (vorige
 else if(k>v&&v>0)msg.push('Je zwaarste '+c.sp.toLowerCase()+' ooit: '+kgs(k)+' kg (vorige: '+kgs(v)+' kg).');
 else if(k>w&&w>0)msg.push('Zwaarste '+(g==='karper'?'karper':c.sp.toLowerCase())+' ooit op '+wn+': '+kgs(k)+' kg (vorige: '+kgs(w)+' kg).')});
 if(msg.length)setTimeout(function(){ask('Proficiat! '+msg.join(' '),'Top!')},150)}
-function recap(c,s){if(!c.name)return '';var o=[];eachCatch(function(x,t){if(x.cid!==c.cid&&x.name&&norm(x.name)===norm(c.name))o.push(t.date.split('-').reverse().slice(0,2).join('/')+'/'+t.date.slice(2,4)+(x.kg?' ('+kgs(x.kg)+' kg)':''))});return o.length?'Ook gevangen op '+o.join(', '):''}
+function recap(c,s){if(!c.name)return '';var o=[];eachCatch(function(x,t){if(x.cid!==c.cid&&x.name&&norm(x.name)===norm(c.name))var cd=cDay(t,x);o.push(cd.split('-').reverse().slice(0,2).join('/')+'/'+cd.slice(2,4)+(x.kg?' ('+kgs(x.kg)+' kg)':''))});return o.length?'Ook gevangen op '+o.join(', '):''}
 function kgs(v){return String(v).replace('.',',')}
 function catchLabel(c){return [rodInfo(R,c.rod).label,c.sp,c.kg?kgs(c.kg)+' kg':'',c.time||''].filter(Boolean).join(' · ')}
 var DEF={rig:['Hair rig','D-rig','Wafter D-rig','Ronnie rig (spinner rig)','360 rig','Chod rig','Naked chod','Hinged stiff rig','Multi rig','KD rig','Blowback rig','Combi rig','Snowman rig','Zig rig','Mini zig','Solid PVA bag rig','Method feeder','Helicopter rig','Inline lood','Lood op clip (safety clip)'],
@@ -1078,7 +1078,7 @@ s.photos=P.filter(function(x){return x.to==='sfeer'||!keep.some(function(c){retu
 s.active=ex?(!!ex.active&&!s.dateEnd):(liveStart&&!s.dateEnd);
 if(was)data=data.map(function(x){return x.id===was?s:x});else data.unshift(s);
 data.sort(function(a,b){var x=a.date+' '+(a.time||''),y=b.date+' '+(b.time||'');return y<x?-1:y>x?1:0});
-var oldC={};if(ex)ex.catches.forEach(function(c){oldC[c.cid]=kgN(c)});var newC=s.catches.filter(function(c){return !(c.cid in oldC)||kgN(c)>oldC[c.cid]});
+if(ex&&ex.wx&&!s.wx&&ex.date===s.date&&ex.time===s.time&&(ex.dateEnd||'')===(s.dateEnd||'')&&(ex.timeEnd||'')===(s.timeEnd||'')&&ex.mapUrl===s.mapUrl){s.wx=ex.wx;s.wxDone=ex.wxDone;s.wxAt=ex.wxAt}s.catches.forEach(function(c){var o=ex&&ex.catches.filter(function(x){return x.cid===c.cid})[0];if(o&&((o.date||'')!==(c.date||'')||o.time!==c.time))c.wx=null;if(!c.wx&&s.wx){var pk=wxPick(s.wx,wxIdx(s.wx,catchAt(s,c)));if(pk)c.wx=pk}});var oldC={};if(ex)ex.catches.forEach(function(c){oldC[c.cid]=kgN(c)});var newC=s.catches.filter(function(c){return !(c.cid in oldC)||kgN(c)>oldC[c.cid]});
 formDirty=false;save();editId=null;render();if(was&&tabNow!=='vis')showDetail(s.id);else setMode('list');if(newC.length)prCheck(newC,s.wname);if(stopBak){stopBak=false;setTimeout(autoBak,newC.length?2500:400)}setTimeout(wxFill,800)};
 
 /* invoer: komma, Enter, niet-opgeslagen wijzigingen */
@@ -1219,10 +1219,11 @@ var SHF=[['sp','Soort'],['kg','Gewicht'],['cm','Lengte'],['name','Naam vis'],['b
 function shoGet(){var d={sp:1,kg:1,cm:0,name:1,bait:0,date:1,water:0,pr:1,logo:1};try{var o=JSON.parse(localStorage.getItem(KEY+'-sho')||'{}');Object.keys(o).forEach(function(k){if(k in d)d[k]=o[k]})}catch(e){}return d}
 function shoSave(){var o={};SHF.forEach(function(f){o[f[0]]=SH.o[f[0]]});try{localStorage.setItem(KEY+'-sho',JSON.stringify(o))}catch(e){}}
 var CD=null;
+function cDay(s,c){var a=catchAt(s,c);return a?isoT(a):s.date}
 function catchOpen(s,c){CD=[s,c];var k=(parseInt(c.rod,10)||1)-1,ba=c.rod?baitAt(s,k,c.time,c.date):null,rc=recap(c,s),mp=mainPh(c),ps=(c.photos||[]).filter(function(x){return x!==mp});if(mp)ps.unshift(mp);
 $('cdPh').innerHTML=ps.length?ps.map(function(pid){return '<img data-pid="'+esc(pid)+'" data-nopv="1" alt="Vangstfoto">'}).join(''):'<div class="cthn">🐟</div>';$('cdPh').scrollLeft=0;
 $('cdN').innerHTML=ps.length>1?ps.map(function(x,i){return '<i'+(i?'':' class="on"')+'></i>'}).join(''):'';$('cdN').hidden=ps.length<2;
-var rows=[['Lengte',c.cm?c.cm+' cm':''],['Datum',fmtD(s.date)],['Uur',c.time],['Stok',c.rod?rodInfo(s.rods,k).label:''],['Aas',ba&&(ba.bait||ba.baitNote)?[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''],['Water',s.wname||s.spot||''],['Naam',c.name?'„'+c.name+'”':''],['Kenmerken',c.marks||''],['Herkend',rc]].filter(function(r){return r[1]});
+var rows=[['Lengte',c.cm?c.cm+' cm':''],['Datum',fmtD(cDay(s,c))],['Uur',c.time],['Stok',c.rod?rodInfo(s.rods,k).label:''],['Aas',ba&&(ba.bait||ba.baitNote)?[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''],['Water',s.wname||s.spot||''],['Naam',c.name?'„'+c.name+'”':''],['Kenmerken',c.marks||''],['Herkend',rc]].filter(function(r){return r[1]});
 $('cdB').innerHTML='<p style="margin:0"><b style="font-size:1.2em">'+esc([c.sp,c.kg?kgs(c.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(c)+'</p><dl class="cdg">'+rows.map(function(r){return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>'}).join('')+'</dl><p class="at" style="margin:12px 0 4px">Weer bij deze vangst</p>'+catchWxHTML(s,c)+(ps.length>1?'<p class="hint">Veeg over de foto voor de volgende ('+ps.length+' foto\'s). Op ware grootte bekijken doe je bij Foto\'s.</p>':'');
 fillThumbs($('cdq'));$('cdB').scrollTop=0;$('cdq').hidden=false}
 $('cdPh').addEventListener('scroll',function(){var w=this.clientWidth||1,i=Math.round(this.scrollLeft/w);[].forEach.call($('cdN').children,function(d,k){d.className=k===i?'on':''})},{passive:true});
@@ -1245,7 +1246,7 @@ if(w<W-1||h<H-1){g.save();try{g.filter='blur(28px) brightness(.7)'}catch(e){}var
 g.drawImage(img,(W-w)*SH.x/100,(H-h)*SH.y/100,w,h)}else{var gr=g.createLinearGradient(0,0,0,H);gr.addColorStop(0,'#1d4e57');gr.addColorStop(1,'#0b2228');g.fillStyle=gr;g.fillRect(0,0,W,H)}
 var sh=g.createLinearGradient(0,H*.42,0,H);sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,0,.84)');g.fillStyle=sh;g.fillRect(0,0,W,H);
 g.fillStyle='#fff';g.textBaseline='alphabetic';var y=H-90,F='CBHead, "Inter Display", system-ui, sans-serif',B='system-ui, sans-serif';
-var meta=[o.date?fmtD(s.date,true):'',o.water?s.wname:''].filter(Boolean).join('  ·  ');if(meta){g.font='500 34px '+B;g.globalAlpha=.85;g.fillText(meta,72,y);g.globalAlpha=1;y-=58}
+var meta=[o.date?fmtD(cDay(s,SH.c),true):'',o.water?s.wname:''].filter(Boolean).join('  ·  ');if(meta){g.font='500 34px '+B;g.globalAlpha=.85;g.fillText(meta,72,y);g.globalAlpha=1;y-=58}
 if(o.bait&&c.rod){var ba=baitAt(s,(parseInt(c.rod,10)||1)-1,c.time,c.date),bt=[ba.bait,ba.baitNote].filter(Boolean).join(' – ');if(bt){g.font='500 36px '+B;g.globalAlpha=.9;g.fillText('op '+bt,72,y);g.globalAlpha=1;y-=58}}
 if(o.name&&c.name){g.font='600 44px '+F;g.fillText('„'+c.name+'”',72,y);y-=66}
 var spl=[o.sp?c.sp:'',o.cm&&c.cm?c.cm+' cm':''].filter(Boolean).join('  ·  ');if(spl){g.font='600 56px '+F;g.fillText(spl,72,y);y-=78}
@@ -1282,7 +1283,7 @@ var cs=s.catches.slice().sort(function(a,b){return kgN(b)-kgN(a)});
 h+=acc('','Vangsten',cs.length?cs.length+(cs.length===1?' vangst':' vangsten')+(tot?' · totaal '+kgs(Math.round(tot*10)/10)+' kg':''):'geen vangsten',
 cs.length?cs.map(function(x){var rc=recap(x,s),k=(parseInt(x.rod,10)||1)-1,ba=x.rod?baitAt(s,k,x.time,x.date):null;
 var mp=mainPh(x);return '<div class="cline cl2" data-cdet="'+esc(x.cid)+'">'+(mp?'<img class="cthb" data-pid="'+esc(mp)+'" data-nopv="1" alt="Vangstfoto">':'<div class="cthb cthn">🐟</div>')+'<div class="clb"><div class="clh"><p><b>'+esc([x.sp,x.kg?kgs(x.kg)+' kg':''].filter(Boolean).join(' '))+'</b>'+prTag(x)+'</p><button type="button" class="ghost sm" data-share="'+esc(x.cid)+'">Deel</button></div>'
-+'<p class="hint">'+esc([x.time||'',x.rod?rl(x):'',x.cm?x.cm+' cm':'',ba&&(ba.bait||ba.baitNote)?'op '+[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''].filter(Boolean).join(' · '))+'</p>'
++'<p class="hint">'+esc([(x.time||'')+(x.time&&(s.dateEnd||'')!==s.date?' '+dShort(new Date(cDay(s,x)+'T12:00')):''),x.rod?rl(x):'',x.cm?x.cm+' cm':'',ba&&(ba.bait||ba.baitNote)?'op '+[ba.bait,ba.baitNote].filter(Boolean).join(' – '):''].filter(Boolean).join(' · '))+'</p>'
 +((x.name||x.marks)?'<p class="hint">'+esc([x.name?'„'+x.name+'”':'',x.marks].filter(Boolean).join(' · '))+'</p>':'')+(rc?'<p class="hint">'+esc(rc)+'</p>':'')+'</div><span class="chev">›</span></div>'}).join(''):'<p class="hint">Geen vangsten in deze sessie.</p>');
 /* stokken */
 if(s.rods.length){var withC=s.rods.filter(function(r,i){return nC(i)}).length;
